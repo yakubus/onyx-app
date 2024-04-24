@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Domain", "budget\src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Infrastructure", "budget\src\Budget.Infrastructure\Budget.Infrastructure.csproj", "{FDC630CA-13DD-4814-8163-D205AD4FE6DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abstractions", "shared-kernel\Abstractions\Abstractions.csproj", "{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstractions", "shared-kernel\Abstractions\Abstractions.csproj", "{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converters", "Converters\Converters.csproj", "{F26643B3-0433-4243-8CBA-9B0928DCD1BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{8080DA46-AD17-41C8-B45F-0FDCA8B991D4} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
 		{FDC630CA-13DD-4814-8163-D205AD4FE6DA} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
 		{1AAC538E-4D80-41E5-BE99-9D2917EA29ED} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
+		{F26643B3-0433-4243-8CBA-9B0928DCD1BE} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {515E49A0-2D84-477F-A6B4-623EDA0F5216}

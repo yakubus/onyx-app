@@ -2,15 +2,13 @@
 
 namespace Abstractions.DomainBaseTypes;
 
-public abstract record EntityId
+public abstract record EntityId : ValueObject
 {
     public Guid Value { get; init; }
 
-    protected EntityId() : this(Guid.NewGuid())
-    {
-    }
-
     protected EntityId(Guid value) => Value = value;
+
+    protected EntityId() : this(Guid.NewGuid()) { }
 
     protected EntityId(string value)
     {
