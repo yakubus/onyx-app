@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Responses
+namespace Models.Responses;
+
+public record Error(string Code, string Name)
 {
-    public record Error(string Code, string Name)
-    {
-        public static Error None = new(string.Empty, string.Empty);
+    public static Error None = new(string.Empty, string.Empty);
 
-        public static Error NullValue = new("Error.NullValue", "Passed null value");
+    public static Error NullValue = new("Error.NullValue", "Passed null value");
 
-        public override string ToString() => $"{Code}: {Name}";
-    }
+    public override string ToString() => $"{Code}: {Name}";
 }
