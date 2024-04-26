@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Extensions\Extensions.csproj" />
-    <ProjectReference Include="..\..\..\shared-kernel\Abstractions\Abstractions.csproj" />
-  </ItemGroup>
-
 </Project>

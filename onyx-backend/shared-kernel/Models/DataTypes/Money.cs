@@ -77,4 +77,63 @@ public record Money(
 
         return first with { Amount = first.Amount / second.Amount };
     }
+
+    public static bool operator <(Money first, decimal secondAmount) =>
+        first.Amount < secondAmount;
+
+    public static bool operator <=(Money first, decimal secondAmount) =>
+        first < secondAmount || first == secondAmount;
+
+    public static bool operator >(Money first, decimal secondAmount) =>
+        first.Amount > secondAmount;
+
+    public static bool operator >=(Money first, decimal secondAmount) =>
+        first > secondAmount || first == secondAmount;
+
+
+    public static bool operator ==(Money first, decimal secondAmount) =>
+        first.Amount == secondAmount;
+
+    public static bool operator !=(Money first, decimal secondAmount) =>
+        !(first == secondAmount);
+
+    public static bool operator <(Money first, Money second)
+    {
+        if (first.Currency != second.Currency)
+        {
+            throw new DomainException<Money>("Currencies must be equal");
+        }
+
+        return first < second.Amount;
+    }
+
+    public static bool operator <=(Money first, Money second)
+    {
+        if (first.Currency != second.Currency)
+        {
+            throw new DomainException<Money>("Currencies must be equal");
+        }
+
+        return first < second.Amount || first == second.Amount;
+    }
+
+    public static bool operator >=(Money first, Money second)
+    {
+        if (first.Currency != second.Currency)
+        {
+            throw new DomainException<Money>("Currencies must be equal");
+        }
+
+        return first > second.Amount || first == second.Amount;
+    }
+
+    public static bool operator >(Money first, Money second)
+    {
+        if (first.Currency != second.Currency)
+        {
+            throw new DomainException<Money>("Currencies must be equal");
+        }
+
+        return first > second.Amount;
+    }
 }

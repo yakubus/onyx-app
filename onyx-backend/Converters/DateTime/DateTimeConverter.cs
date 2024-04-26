@@ -2,36 +2,35 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PennyPlanner.Domain.Shared
+namespace PennyPlanner.Domain.Shared;
+
+public sealed class DateTimeConverter : JsonConverter<DateTime>
 {
-    public sealed class DateTimeConverter : JsonConverter<DateTime>
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        if (reader.TokenType == JsonTokenType.String)
         {
-            if (reader.TokenType == JsonTokenType.String)
+            var dateString = reader.GetString();
+            if (DateTime.TryParseExact(dateString, "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             {
-                var dateString = reader.GetString();
-                if (DateTime.TryParseExact(dateString, "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
-                {
-                    return result.ToUniversalTime();
-                }
-            }
-
-            try
-            {
-                return reader.GetDateTime().ToUniversalTime();
-            }
-            catch (FormatException)
-            {
-                return DateTime.ParseExact(reader.GetString(), "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
+                return result.ToUniversalTime();
             }
         }
 
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        try
         {
-            var localTime = value.ToLocalTime();
-
-            writer.WriteStringValue(localTime.ToString("dd-MM-yyyyTHH:mm:ss"));
+            return reader.GetDateTime().ToUniversalTime();
         }
+        catch (FormatException)
+        {
+            return DateTime.ParseExact(reader.GetString(), "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
+        }
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+    {
+        var localTime = value.ToLocalTime();
+
+        writer.WriteStringValue(localTime.ToString("dd-MM-yyyyTHH:mm:ss"));
     }
 }

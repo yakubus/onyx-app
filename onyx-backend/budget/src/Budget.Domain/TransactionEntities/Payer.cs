@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Budget.Domain.TransactionEntities
+namespace Budget.Domain.TransactionEntities;
+
+internal class Payer
 {
-    internal class Payer
-    {
-    }
 }

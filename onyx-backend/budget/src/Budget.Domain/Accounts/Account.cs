@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Abstractions.DomainBaseTypes;
 
-namespace Budget.Domain.Accounts
+namespace Budget.Domain.Accounts;
+
+public abstract class Account : Entity<AccountId>
 {
-    public abstract class Account : Entity<AccountId>
-    {
-    }
 }

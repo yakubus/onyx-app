@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Budget.Domain.Transactions
+namespace Budget.Domain.Transactions;
+
+public class Transaction
 {
-    public class Transaction
-    {
-    }
 }

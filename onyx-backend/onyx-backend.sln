@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstractions", "shared-kern
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converters", "Converters\Converters.csproj", "{F26643B3-0433-4243-8CBA-9B0928DCD1BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "Extensions\Extensions.csproj", "{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F26643B3-0433-4243-8CBA-9B0928DCD1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{FDC630CA-13DD-4814-8163-D205AD4FE6DA} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
 		{1AAC538E-4D80-41E5-BE99-9D2917EA29ED} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 		{F26643B3-0433-4243-8CBA-9B0928DCD1BE} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
+		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {515E49A0-2D84-477F-A6B4-623EDA0F5216}

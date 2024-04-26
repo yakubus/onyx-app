@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Budget.Domain.BudgetPlans
+namespace Budget.Domain.BudgetPlans;
+
+internal class BudgetPlan
 {
-    internal class BudgetPlan
-    {
-    }
 }

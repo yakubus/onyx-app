@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Budget.Domain.Accounts.CheckingAccounts
+namespace Budget.Domain.Accounts.CheckingAccounts;
+
+public sealed class CheckingAccount : Account
 {
-    public sealed class CheckingAccount : Account
-    {
         
-    }
 }
