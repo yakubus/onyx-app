@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Budget.Domain.TransactionEntities;
 
-public sealed class Payee : 
+public sealed class Payee : TransactionEntity
 {
 }

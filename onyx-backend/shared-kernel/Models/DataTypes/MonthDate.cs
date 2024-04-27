@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,5 +95,7 @@ namespace Models.DataTypes
 
         public static bool operator >=(MonthDate date1, MonthDate date2) =>
             date1 == date2 || date1 > date2;
+
+        public bool ContainsDate(DateTime date) => date.Month == Month && date.Year == Year;
     }
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abstractions.DomainBaseTypes;
 
 namespace Budget.Domain.TransactionEntities;
 
-internal class TransactionEntity
+public abstract class TransactionEntity
 {
 }

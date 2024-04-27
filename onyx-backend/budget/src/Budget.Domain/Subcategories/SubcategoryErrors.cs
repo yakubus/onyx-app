@@ -32,5 +32,9 @@ namespace Budget.Domain.Subcategories
         internal static readonly Error SubcategoryNotAssignedForMonth = new(
             "Subcategory.NotAssignedForMonth",
             "Subcategory is not assigned for this month");
+
+        internal static readonly Error WrongTransactionDateTimeForAssignment = new(
+            "Subcategory.Assignment.WrongTransactionDateTime",
+            "Assignment does not cover date of transaction");
     }
 }

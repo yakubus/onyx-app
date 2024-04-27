@@ -67,7 +67,6 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    // TODO: Assignment related actions
     public Result<Assignment> Assign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
@@ -137,6 +136,61 @@ public sealed class Subcategory : Entity<SubcategoryId>
             return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
         }
 
-        assignment
+        var reassignResult = assignment.ChangeAssignedAmount(amount);
+
+        if (reassignResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(reassignResult.Error);
+        }
+
+        return assignment;
+    }
+
+    public Result<Assignment> Transact(Transaction transaction)
+    {
+        var transactionMonthDateCreateResult = MonthDate.Create(
+            transaction.TransactedAt.Month,
+            transaction.TransactedAt.Year);
+
+        if (transactionMonthDateCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(transactionMonthDateCreateResult.Error);
+        }
+
+        var transactionMonthDate = transactionMonthDateCreateResult.Value;
+        var assignment = _assignments.FirstOrDefault(a => a.Month == transactionMonthDate);
+
+        if (assignment is null)
+        {
+            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
+        }
+
+        assignment.Transact(transaction);
+
+        return Result.Success(assignment);
+    }
+
+    public Result RemoveTransaction(Transaction transaction)
+    {
+        var transactionMonthDateCreateResult = MonthDate.Create(
+            transaction.TransactedAt.Month,
+            transaction.TransactedAt.Year);
+
+        if (transactionMonthDateCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(transactionMonthDateCreateResult.Error);
+        }
+
+        var transactionMonthDate = transactionMonthDateCreateResult.Value;
+        var assignment = _assignments.FirstOrDefault(a => a.Month == transactionMonthDate);
+
+        if (assignment is null)
+        {
+            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
+        }
+
+        assignment.RemoveTransaction(transaction);
+
+        return Result.Success(assignment);
     }
 }
