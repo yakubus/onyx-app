@@ -21,21 +21,30 @@ namespace Models.DataTypes
         private const int maxMonth = 12;
         private const int minMonth = 1;
 
-        public MonthDate(int month, int year)
+        private MonthDate(int month, int year)
+        {
+            Month = month;
+            Year = year;
+        }
+
+        
+        public static Result<MonthDate> Create(int month, int year)
         {
             if (month is < minMonth or > maxMonth)
             {
-                throw new DomainException<MonthDate>("Invalid month value");
+                return Result.Failure<MonthDate>(new (
+                    "MonthDate.InvalidMonthValue", "Invalid month value"));
             }
 
             if (year < 0)
             {
-                throw new DomainException<MonthDate>("Invalid year value");
+                return Result.Failure<MonthDate>(new(
+                    "MonthDate.InvalidYearValue", "Invalid year value"));
             }
 
-            Month = month;
-            Year = year;
+            return new MonthDate(month, year);
         }
+
 
         public static MonthDate Current => new (DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 

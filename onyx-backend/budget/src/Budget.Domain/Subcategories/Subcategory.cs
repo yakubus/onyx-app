@@ -6,6 +6,7 @@ using Models.Responses;
 
 namespace Budget.Domain.Subcategories;
 
+// TODO: Think abount transactions flow inside subcategory (is it ok to persist transactions in Assignment?)
 public sealed class Subcategory : Entity<SubcategoryId>
 {
     public SubcategoryName Name { get; private set; }
@@ -67,4 +68,75 @@ public sealed class Subcategory : Entity<SubcategoryId>
     }
 
     // TODO: Assignment related actions
+    public Result<Assignment> Assign(int month, int year, Money amount)
+    {
+        var monthDateCreateResult = MonthDate.Create(month, year);
+
+        if (monthDateCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(monthDateCreateResult.Error);
+        }
+
+        var monthDate = monthDateCreateResult.Value;
+        var isAssignedForMonth = _assignments.Any(x => x.Month == monthDate);
+
+        if (isAssignedForMonth)
+        {
+            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryAlreadyAssignedForMonth);
+        }
+
+        var assignmentCreateResult = Assignment.Create(monthDate, amount);
+
+        if (assignmentCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(assignmentCreateResult.Error);
+        }
+
+        var assignment = assignmentCreateResult.Value;
+        _assignments.Add(assignment);
+
+        return Result.Success(assignment);
+    }
+
+    public Result Unassign(int month, int year)
+    {
+        var monthDateCreateResult = MonthDate.Create(month, year);
+
+        if (monthDateCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(monthDateCreateResult.Error);
+        }
+
+        var monthDate = monthDateCreateResult.Value;
+        var assignment = _assignments.FirstOrDefault(x => x.Month == monthDate);
+
+        if (assignment is null)
+        {
+            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
+        }
+
+        _assignments.Remove(assignment);
+
+        return Result.Success();
+    }
+
+    public Result<Assignment> Reassign(int month, int year, Money amount)
+    {
+        var monthDateCreateResult = MonthDate.Create(month, year);
+
+        if (monthDateCreateResult.IsFailure)
+        {
+            return Result.Failure<Assignment>(monthDateCreateResult.Error);
+        }
+
+        var monthDate = monthDateCreateResult.Value;
+        var assignment = _assignments.FirstOrDefault(x => x.Month == monthDate);
+
+        if (assignment is null)
+        {
+            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
+        }
+
+        assignment
+    }
 }

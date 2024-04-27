@@ -14,7 +14,7 @@ namespace Budget.Domain.Subcategories
     public sealed record Assignment : ValueObject
     {
         public MonthDate Month { get; init; }
-        public Money AssignedAmount { get; init; }
+        public Money AssignedAmount { get; private set; }
         public Money ActualAmount { get; init; }
         private readonly List<Transaction> _transactions;
         public IReadOnlyList<Transaction> Transactions => _transactions;
@@ -27,6 +27,18 @@ namespace Budget.Domain.Subcategories
             _transactions = transactions;
         }
 
+        public Result ChangeAssignedAmount(Money amount)
+        {
+            if (amount <= 0)
+            {
+                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
+            }
+
+            AssignedAmount = amount;
+
+            return Result.Success();
+        }
+
         public static Result<Assignment> Create(MonthDate month, Money assignedAmount)
         {
             if(assignedAmount <= 0)
@@ -36,7 +48,7 @@ namespace Budget.Domain.Subcategories
 
             if (MonthDate.Current > month || MonthDate.Current + 1 < month)
             {
-                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentDateMustBeInNextorCurrentMonth);
+                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentDateMustBeInNextOrCurrentMonth);
             }
 
             return new Assignment(

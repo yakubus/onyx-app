@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models.Exceptions;
+using Models.Responses;
 
 namespace Models.DataTypes;
 
@@ -183,10 +184,10 @@ public sealed record Currency
 
     public string Code { get; init; }
 
-    public static Currency FromCode(string code)
+    public static Result<Currency> FromCode(string code)
     {
         return All.FirstOrDefault(c => c.Code.ToLower() == code.ToLower()) ??
-               throw new DomainException<Currency>("The currency code is invalid");
+               Result.Failure<Currency>(new ("Currency.NotFoune", "Currency not found"));
     }
 
     public static readonly IReadOnlyCollection<Currency> All = new[]
