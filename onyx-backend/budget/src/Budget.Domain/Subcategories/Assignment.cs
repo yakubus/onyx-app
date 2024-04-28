@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
@@ -26,7 +21,7 @@ namespace Budget.Domain.Subcategories
 
         internal static Result<Assignment> Create(MonthDate month, Money assignedAmount)
         {
-            if(assignedAmount <= 0)
+            if (assignedAmount <= 0)
             {
                 return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
             }
@@ -61,7 +56,7 @@ namespace Budget.Domain.Subcategories
                 return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
             }
 
-            ActualAmount += transaction.Amount;
+            ActualAmount += transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
 
             return Result.Success();
         }
@@ -73,7 +68,7 @@ namespace Budget.Domain.Subcategories
                 return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
             }
 
-            ActualAmount -= transaction.Amount;
+            ActualAmount -= transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
 
             return Result.Success();
         }

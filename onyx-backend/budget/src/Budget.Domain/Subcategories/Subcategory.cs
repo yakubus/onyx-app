@@ -1,27 +1,29 @@
 ﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Categories;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
+using System.Transactions;
+using Transaction = Budget.Domain.Transactions.Transaction;
 
 namespace Budget.Domain.Subcategories;
 
-// TODO: Think abount transactions flow inside subcategory (is it ok to persist transactions in Assignment?)
 public sealed class Subcategory : Entity<SubcategoryId>
 {
     public SubcategoryName Name { get; private set; }
     public SubcategoryDescription? Description { get; private set; }
     private readonly List<Assignment> _assignments;
     public IReadOnlyCollection<Assignment> Assignments => _assignments;
+    public Target? Target { get; private set; }
 
-    private Subcategory(SubcategoryName name, SubcategoryDescription? description, List<Assignment> assignments)
+    private Subcategory(SubcategoryName name, SubcategoryDescription? description, List<Assignment> assignments, Target? target)
     {
         Name = name;
         Description = description;
         _assignments = assignments;
+        Target = target;
     }
 
-    public static Result<Subcategory> Create(string name)
+    internal static Result<Subcategory> Create(string name)
     {
         var subcategoryNameCreateResult = SubcategoryName.Create(name);
 
@@ -32,7 +34,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         var subcategoryName = subcategoryNameCreateResult.Value;
 
-        return new Subcategory(subcategoryName, null, new List<Assignment>());
+        return new Subcategory(subcategoryName, null, new List<Assignment>(), null);
     }
 
     public Result ChangeName(string name)
@@ -167,6 +169,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         assignment.Transact(transaction);
 
+        Target?.Transact(transaction);
+
         return Result.Success(assignment);
     }
 
@@ -190,6 +194,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         }
 
         assignment.RemoveTransaction(transaction);
+
+        Target?.RemoveTransaction(transaction);
 
         return Result.Success(assignment);
     }

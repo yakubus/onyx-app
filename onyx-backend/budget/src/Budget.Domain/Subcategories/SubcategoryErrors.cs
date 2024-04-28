@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Models.Responses;
+﻿using Models.Responses;
 
 namespace Budget.Domain.Subcategories
 {
@@ -36,5 +31,21 @@ namespace Budget.Domain.Subcategories
         internal static readonly Error WrongTransactionDateTimeForAssignment = new(
             "Subcategory.Assignment.WrongTransactionDateTime",
             "Assignment does not cover date of transaction");
+
+        internal static readonly Error TargetAmountMustBePositive = new(
+            "Subcategory.Target.Amount.MustBePositive",
+            "Target amount must be positive");
+
+        internal static readonly Error TargetDateMustBeInNextOrCurrentMonth = new(
+            "Subcategory.Target.EndDate.MustBeInNextorCurrentMonth",
+            "Target date must be in next or current month");
+
+        internal static readonly Error TargetDateHasPassed = new (
+            "Subcategory.Target.EndDate.HasPassed",
+            "Target date has passed");
+        
+        internal static Error TargetStartedAfterTransactionDate = new (
+            "Subcategory.Target.StartDate.IsAfterTransactionDate",
+            "Target start date is after transaction date"););
     }
 }

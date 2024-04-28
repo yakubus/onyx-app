@@ -12,7 +12,7 @@ public sealed record CategoryName : ValueObject
 
     private CategoryName(string value) => Value = value;
 
-    public static Result<CategoryName> Create(string value)
+    internal static Result<CategoryName> Create(string value)
     {
         value = value.Trim().Capitalize();
 

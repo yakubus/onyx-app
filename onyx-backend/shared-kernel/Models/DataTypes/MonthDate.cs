@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.Exceptions;
 using Models.Responses;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Models.DataTypes
 {
@@ -49,6 +50,14 @@ namespace Models.DataTypes
 
         public static MonthDate Current => new (DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 
+        public static int MonthsInterval(MonthDate later, MonthDate earlier)
+        {
+            var earlierTotalMonths = earlier.Month + earlier.Year * 12;
+            var laterTotalMonths = later.Month + later.Year * 12;
+
+            return laterTotalMonths - earlierTotalMonths;
+        }
+
         public override string ToString() => $"{Month:00}/{Year}";
 
         // Operators
@@ -64,24 +73,40 @@ namespace Models.DataTypes
 
         public static MonthDate operator +(MonthDate date, int monthsToAdd)
         {
-            var yearsToAdd = monthsToAdd / 12;
-            var monthsRemaining = monthsToAdd % 12;
+            var totalMonths = date.Year * 12 + date.Month;
+            var newTotalMonths = totalMonths + monthsToAdd;
 
-            var newMonth = date.Month - monthsRemaining;
-            var newYear = date.Year - yearsToAdd;
+            var newYear = newTotalMonths / 12;
+            var newMonth = newTotalMonths % 12;
 
-            return new MonthDate(newMonth, newYear);
+            if (newMonth != 0)
+            {
+                return new(newMonth, newYear);
+            }
+
+            newYear--;
+            newMonth = 12;
+
+            return new(newMonth, newYear);
         }
 
         public static MonthDate operator -(MonthDate date, int monthsToSubstract)
         {
-            var yearsToSubstract = monthsToSubstract / 12;
-            var monthsRemaining = monthsToSubstract % 12;
+            var totalMonths = date.Year * 12 + date.Month;
+            var newTotalMonths = totalMonths - monthsToSubstract;
 
-            var newMonth = date.Month - monthsRemaining;
-            var newYear = date.Year - yearsToSubstract;
+            var newYear = newTotalMonths / 12;
+            var newMonth = newTotalMonths % 12;
 
-            return new MonthDate(newMonth, newYear);
+            if (newMonth != 0)
+            {
+                return new (newMonth, newYear);
+            }
+
+            newYear--;
+            newMonth = 12;
+
+            return new (newMonth, newYear);
         }
 
         public static bool operator <(MonthDate date1, MonthDate date2) =>

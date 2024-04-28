@@ -48,16 +48,24 @@ public sealed class Category : Entity<CategoryId>
         return Result.Success();
     }
 
-    public Result AddSubcategory(Subcategory subcategory)
+    public Result<Subcategory> NewSubcategory(string subcategoryName)
     {
         if (_subcategories.Count >= maxSubcategoriesCount)
         {
-            return Result.Failure<Category>(CategoryErrors.MaxSubcategoriesCountReached);
+            return Result.Failure<Subcategory>(CategoryErrors.MaxSubcategoriesCountReached);
         }
 
+        var subcategoryCreateResult = Subcategory.Create(subcategoryName);
+
+        if (subcategoryCreateResult.IsFailure)
+        {
+            return Result.Failure<Subcategory>(subcategoryCreateResult.Error);
+        }
+
+        var subcategory = subcategoryCreateResult.Value;
         _subcategories.Add(subcategory);
 
-        return Result.Success();
+        return Result.Success(subcategory);
     }
 
     public Result RemoveSubcategory(Subcategory subcategory)
@@ -67,5 +75,5 @@ public sealed class Category : Entity<CategoryId>
             Result.Failure<Category>(CategoryErrors.SubcategoryNotFound);
     }
 
-
+    public Result 
 }
