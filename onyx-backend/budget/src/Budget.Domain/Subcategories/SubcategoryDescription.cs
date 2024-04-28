@@ -1,7 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
 using Models.Responses;
-using System.Text.RegularExpressions;
-using Extensions.Formatters;
 
 namespace Budget.Domain.Subcategories;
 
@@ -12,7 +10,7 @@ public sealed record SubcategoryDescription : ValueObject
 
     private SubcategoryDescription(string value) => Value = value;
 
-    public static Result<SubcategoryDescription> Create(string value)
+    internal static Result<SubcategoryDescription> Create(string value)
     {
         value = value.Trim();
 
