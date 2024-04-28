@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Infrastructure", "bu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstractions", "shared-kernel\Abstractions\Abstractions.csproj", "{1AAC538E-4D80-41E5-BE99-9D2917EA29ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converters", "Converters\Converters.csproj", "{F26643B3-0433-4243-8CBA-9B0928DCD1BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converters", "shared-kernel\Converters\Converters.csproj", "{F26643B3-0433-4243-8CBA-9B0928DCD1BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "Extensions\Extensions.csproj", "{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "shared-kernel\Extensions\Extensions.csproj", "{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

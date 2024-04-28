@@ -14,7 +14,7 @@ namespace Budget.Domain.Categories
             "Max subcategories count reached");
 
         internal static readonly Error InvalidNameError = new(
-            "Category.Name.InvalidValue",
+            "Category.Message.InvalidValue",
             "Invalid category name input");
 
         internal static readonly Error SubcategoryNotFound = new(

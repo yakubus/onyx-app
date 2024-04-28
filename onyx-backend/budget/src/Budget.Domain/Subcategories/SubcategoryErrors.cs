@@ -9,7 +9,7 @@ namespace Budget.Domain.Subcategories
             "Subcategory is already assigned for this month");
 
         internal static readonly Error InvalidNameError = new(
-            "Subcategory.Name.InvalidValue",
+            "Subcategory.Message.InvalidValue",
             "Invalid subcategory name input");
 
         internal static readonly Error DescriptionTooLong = new(
@@ -36,9 +36,9 @@ namespace Budget.Domain.Subcategories
             "Subcategory.Target.Amount.MustBePositive",
             "Target amount must be positive");
 
-        internal static readonly Error TargetDateMustBeInNextOrCurrentMonth = new(
+        internal static readonly Error TargetDateMustBeInFuture = new(
             "Subcategory.Target.EndDate.MustBeInNextorCurrentMonth",
-            "Target date must be in next or current month");
+            "Target date must be in future month");
 
         internal static readonly Error TargetDateHasPassed = new (
             "Subcategory.Target.EndDate.HasPassed",
@@ -46,6 +46,6 @@ namespace Budget.Domain.Subcategories
         
         internal static Error TargetStartedAfterTransactionDate = new (
             "Subcategory.Target.StartDate.IsAfterTransactionDate",
-            "Target start date is after transaction date"););
+            "Target start date is after transaction date");
     }
 }

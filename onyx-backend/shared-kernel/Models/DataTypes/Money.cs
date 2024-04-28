@@ -13,9 +13,6 @@ public record Money(
     [property: BsonRepresentation(BsonType.Decimal128)]
     decimal Amount, Currency Currency)
 {
-    private const string moneyFormatRegex =
-        "^\\d+(\\.\\d+)?\\s*[Zz][Łł]$|[Pp][Ll][Nn]$";
-
     // Overrides
 
     public override string ToString() => $"{Amount} {Currency.Code}";

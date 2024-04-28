@@ -42,7 +42,7 @@ public sealed record Target : ValueObject
 
         if (upToMonth <= MonthDate.Current)
         {
-            return Result.Failure<Target>(SubcategoryErrors.TargetDateMustBeInNextOrCurrentMonth);
+            return Result.Failure<Target>(SubcategoryErrors.TargetDateMustBeInFuture);
         }
 
         return new Target(
@@ -56,7 +56,7 @@ public sealed record Target : ValueObject
     {
         if (upToMonth <= MonthDate.Current)
         {
-            return Result.Failure<Target>(SubcategoryErrors.TargetDateMustBeInNextOrCurrentMonth);
+            return Result.Failure<Target>(SubcategoryErrors.TargetDateMustBeInFuture);
         }
 
         UpToMonth = upToMonth;

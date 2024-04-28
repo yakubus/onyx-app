@@ -10,7 +10,7 @@ namespace Budget.Domain.Counterparties
     internal static class CounterpartyErrors
     {
         internal static readonly Error InvalidName = new(
-            "Counterparty.Name.InvalidValue",
+            "Counterparty.Message.InvalidValue",
             "Invalid counterparty name");
     }
 }
