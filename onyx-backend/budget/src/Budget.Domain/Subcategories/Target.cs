@@ -9,21 +9,12 @@ public sealed record Target : ValueObject
 {
     public MonthDate UpToMonth { get; private set; }
     public MonthDate StartedAt { get; init; }
-    public Money TargetAmount { get; init; }
+    public Money TargetAmount { get; private set; }
     public Money CollectedAmount { get; private set; }
     public Money AmountAssignedEveryMonth =>
         MonthDate.MonthsInterval(UpToMonth, MonthDate.Current) is var monthsInterval && monthsInterval <= 0 ?
             TargetAmount with { Amount = 0 } :
             (TargetAmount - CollectedAmount) / monthsInterval ;
-
-    //TODO: Add Target type (recurring or one-time)
-
-    //TODO: Add Target collecting policy:
-    // ------------ AVAILABLE FOR RECURRING ------------
-    // - set aside target amount when target ends
-    // - refill up to previous state
-    // ------------ AVAILABLE FOR ONE-TIME ------------
-    // - end the target
 
     private Target(MonthDate upToMonth, Money targetAmount, Money collectedAmount, MonthDate startedAt)
     {
