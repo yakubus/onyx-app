@@ -149,7 +149,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return assignment;
     }
 
-    public Result<Assignment> Transact(Transaction transaction)
+    internal Result<Assignment> Transact(Transaction transaction)
     {
         var transactionMonthDateCreateResult = MonthDate.Create(
             transaction.TransactedAt.Month,
@@ -199,5 +199,61 @@ public sealed class Subcategory : Entity<SubcategoryId>
         Target?.RemoveTransaction(transaction);
 
         return Result.Success(assignment);
+    }
+
+    public Result<Target> SetTarget(Money targetAmount, MonthDate upToMonth)
+    {
+        if (Target is not null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetAlreadySet);
+        }
+
+        var targetCreateResult = Target.Create(upToMonth, targetAmount);
+
+        if (targetCreateResult.IsFailure)
+        {
+            return Result.Failure<Target>(targetCreateResult.Error);
+        }
+
+        var target = targetCreateResult.Value;
+        Target = target;
+
+        return target;
+    }
+
+    public Result UnsetTarget()
+    {
+        if(Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        Target = null;
+
+        return Result.Success();
+    }
+
+    public Result MoveTargetEndMonth(MonthDate newEndMonth)
+    {
+        if (Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        var monthMoveResult = Target.MoveTargetEndMonth(newEndMonth);
+
+        return monthMoveResult;
+    }
+
+    public Result UpdateTargetAmount(Money amount)
+    {
+        if (Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        var targetAmountUpdateResult = Target.UpdateTargetAmount(amount);
+
+        return targetAmountUpdateResult;
     }
 }

@@ -47,5 +47,11 @@ namespace Budget.Domain.Subcategories
         internal static Error TargetStartedAfterTransactionDate = new (
             "Subcategory.Target.StartDate.IsAfterTransactionDate",
             "Target start date is after transaction date");
+        internal static readonly Error TargetAlreadySet = new (
+            "Subcategory.Target.AlreadySet",
+            "Target is already set");
+        internal static readonly Error TargetNotSet = new (
+            "Subcategory.Target.NotSet",
+            "Target is not set");
     }
 }

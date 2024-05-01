@@ -55,6 +55,18 @@ public sealed record Target : ValueObject
         return Result.Success();
     }
 
+    internal Result UpdateTargetAmount(Money amount)
+    {
+        if (amount.Amount <= 0)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetAmountMustBePositive);
+        }
+
+        TargetAmount = amount;
+
+        return Result.Success();
+    }
+
     internal Result Transact(Transaction transaction)
     {
         if (!UpToMonth.ContainsDate(transaction.TransactedAt))
