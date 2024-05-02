@@ -2,9 +2,10 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import 'package:firebase_kurs/routing/routing.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'routing/routing.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,13 +36,13 @@ class MyApp extends StatelessWidget {
       builder: (theme, darkTheme) => ProviderScope(
         child: MaterialApp.router(
           localizationsDelegates: const [
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [
-            Locale('pl'),
-            Locale('en'),
+            Locale('en', ''), // English, no country code
+            Locale('pl', ''),
           ],
           routerConfig: goRouter,
           title: 'Onyx',

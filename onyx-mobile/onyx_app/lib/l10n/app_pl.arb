@@ -1,3 +1,8 @@
 {
-    "sampleText": "przykładowy tekst"
-}
+    "sampleText": "Jakiś przykładowy tekst",
+    "transactions": "transakcje",
+    "budget_plans": "plany budżetowe",
+    "account": "konta",
+    "goals": "cele",
+    "statistic":  "statystyki"
+  }

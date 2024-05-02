@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DefaultltAppBar extends HookConsumerWidget
-    implements PreferredSizeWidget {
+class DefaultAppBar extends HookConsumerWidget implements PreferredSizeWidget {
   final String title;
-  const DefaultltAppBar({
+  const DefaultAppBar({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -13,17 +13,16 @@ class DefaultltAppBar extends HookConsumerWidget
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: Text(title),
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        tooltip: 'Menu Icon',
-        onPressed: () {},
+      leading: const SizedBox(
+        width: 10,
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: 'Setting Icon',
-          onPressed: () {},
-        )
+            icon: const Icon(Icons.settings),
+            tooltip: 'Setting Icon',
+            onPressed: () {
+              context.go('/settings');
+            })
       ],
     );
   }
