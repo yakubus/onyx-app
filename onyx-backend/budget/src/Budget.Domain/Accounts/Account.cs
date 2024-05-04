@@ -51,11 +51,25 @@ public abstract class Account : Entity<AccountId>
 
     internal Result Transact(Transaction transaction)
     {
+        if(transaction.Amount.Currency != Balance.Currency)
+        {
+            return Result.Failure(AccountErrors.InconsistentCurrency);
+        }
+
+        Balance += transaction.Amount;
+
         return Result.Success();
     }
 
     public Result RemoveTransaction(Transaction transaction)
     {
+        if (transaction.Amount.Currency != Balance.Currency)
+        {
+            return Result.Failure(AccountErrors.InconsistentCurrency);
+        }
+
+        Balance -= transaction.Amount;
+
         return Result.Success();
     }
 }

@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.Responses;
 
-namespace Budget.Domain.Counterparties
+namespace Budget.Domain.Counterparties;
+
+internal static class CounterpartyErrors
 {
-    internal static class CounterpartyErrors
-    {
-        internal static readonly Error InvalidName = new(
-            "Counterparty.Message.InvalidValue",
-            "Invalid counterparty name");
-    }
+    internal static readonly Error InvalidName = new(
+        "Counterparty.Message.InvalidValue",
+        "Invalid counterparty name");
 }
