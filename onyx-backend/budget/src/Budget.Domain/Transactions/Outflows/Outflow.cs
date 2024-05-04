@@ -13,12 +13,14 @@ namespace Budget.Domain.Transactions.Outflows;
 
 public sealed class Outflow : Transaction
 {
+    public Subcategory Subcategory { get; init; }
     public Payee Payee { get; init; }
 
     private Outflow(Account account, Subcategory subcategory, Money amount, DateTime transactedAt, Payee payee, Money? originalAmount) 
-        : base(account, subcategory, amount, transactedAt, originalAmount)
+        : base(account, amount, transactedAt, originalAmount)
     {
         Payee = payee;
+        Subcategory = subcategory;
     }
 
     public static Result<Outflow> CreatePrincipal(

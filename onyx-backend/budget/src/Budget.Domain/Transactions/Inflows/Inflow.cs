@@ -18,20 +18,19 @@ public sealed class Inflow : Transaction
 {
     public Payer Payer { get; init; }
 
-    private Inflow(Account account, Subcategory subcategory, Money amount, DateTime transactedAt, Payer payer, Money? originalAmount) 
-        : base(account, subcategory, amount, transactedAt, originalAmount)
+    private Inflow(Account account, Money amount, DateTime transactedAt, Payer payer, Money? originalAmount) 
+        : base(account, amount, transactedAt, originalAmount)
     {
         Payer = payer;
     }
 
     public static Result<Inflow> CreatePrincipal(
         Account account,
-        Subcategory subcategory,
         Money amount,
         DateTime transactedAt,
         Payer payer)
     {
-        var transaction = new Inflow(account, subcategory, amount, transactedAt, payer, null);
+        var transaction = new Inflow(account, amount, transactedAt, payer, null);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -40,19 +39,11 @@ public sealed class Inflow : Transaction
             return Result.Failure<Inflow>(accountTransactResult.Error);
         }
 
-        var subcategoryTransactResult = subcategory.Transact(transaction);
-
-        if (subcategoryTransactResult.IsFailure)
-        {
-            return Result.Failure<Inflow>(subcategoryTransactResult.Error);
-        }
-
         return transaction;
     }
 
     public static Result<Inflow> CreateForeign(
         Account account,
-        Subcategory subcategory,
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
@@ -63,20 +54,13 @@ public sealed class Inflow : Transaction
             return Result.Failure<Inflow>(TransactionErrors.TransactionIsNotForeign);
         }
 
-        var transaction = new Inflow(account, subcategory, convertedAmount, transactedAt, payer, originalAmount);
+        var transaction = new Inflow(account, convertedAmount, transactedAt, payer, originalAmount);
 
         var accountTransactResult = account.Transact(transaction);
 
         if (accountTransactResult.IsFailure)
         {
             return Result.Failure<Inflow>(accountTransactResult.Error);
-        }
-
-        var subcategoryTransactResult = subcategory.Transact(transaction);
-
-        if (subcategoryTransactResult.IsFailure)
-        {
-            return Result.Failure<Inflow>(subcategoryTransactResult.Error);
         }
 
         return transaction;
