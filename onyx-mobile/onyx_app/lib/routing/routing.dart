@@ -1,12 +1,11 @@
-import 'package:firebase_kurs/views/accounts/accounts_view.dart';
-import 'package:firebase_kurs/views/budget_palns/budget_palns_view.dart';
-import 'package:firebase_kurs/views/goals/goals_view.dart';
-import 'package:firebase_kurs/views/home/home_view.dart';
-import 'package:firebase_kurs/views/home/statistic_tile.dart';
-import 'package:firebase_kurs/views/home/transaction_tile.dart';
-import 'package:firebase_kurs/views/settings/setings_view.dart';
-import 'package:firebase_kurs/views/statistic/statistic.dart';
-import 'package:firebase_kurs/views/transactions/transactions_view.dart';
+import 'package:onyx_app/views/accounts/accounts_view.dart';
+import 'package:onyx_app/views/budget_palns/budget_palns_view.dart';
+import 'package:onyx_app/views/goals/goals_view.dart';
+import 'package:onyx_app/views/home/home_view.dart';
+
+import 'package:onyx_app/views/settings/setings_view.dart';
+import 'package:onyx_app/views/statistic/statistic.dart';
+import 'package:onyx_app/views/transactions/transactions_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,7 +20,7 @@ final GoRouter goRouter = GoRouter(
         GoRoute(
           path: 'settings',
           builder: (BuildContext context, GoRouterState state) {
-            return const Settings();
+            return const SettingsView();
           },
         ),
         GoRoute(

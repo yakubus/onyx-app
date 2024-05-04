@@ -1,9 +1,9 @@
-import 'package:firebase_kurs/views/home/goals_tile.dart';
-import 'package:firebase_kurs/views/home/statistic_tile.dart';
-import 'package:firebase_kurs/views/home/transaction_tile.dart';
-import 'package:firebase_kurs/views/home/budget_plans_tile.dart';
-import 'package:firebase_kurs/views/home/account_tile.dart';
-import 'package:firebase_kurs/widgets/appbar.dart';
+import 'package:onyx_app/views/home/widgets/goals_tile.dart';
+import 'package:onyx_app/views/home/widgets/statistic_tile.dart';
+import 'package:onyx_app/views/home/widgets/transaction_tile.dart';
+import 'package:onyx_app/views/home/widgets/budget_plans_tile.dart';
+import 'package:onyx_app/views/home/widgets/account_tile.dart';
+import 'package:onyx_app/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

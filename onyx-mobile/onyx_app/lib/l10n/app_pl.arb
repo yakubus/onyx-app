@@ -4,5 +4,7 @@
     "budget_plans": "plany budżetowe",
     "account": "konta",
     "goals": "cele",
-    "statistic":  "statystyki"
+    "statistic":  "statystyki",
+    "language": "język",
+    "dark_mode": "ciemny motyw"
   }

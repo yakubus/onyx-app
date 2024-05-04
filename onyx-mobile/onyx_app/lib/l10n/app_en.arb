@@ -4,5 +4,7 @@
     "budget_plans": "budget plans",
     "account": "account",
     "goals": "goals",
-    "statistic":  "statistic"
+    "statistic":  "statistic",
+    "language": "language",
+    "dark_mode": "dark mode"
   }
