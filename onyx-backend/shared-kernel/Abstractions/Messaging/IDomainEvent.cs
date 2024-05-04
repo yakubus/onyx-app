@@ -1,4 +1,6 @@
-﻿namespace Abstractions.Messaging;
+﻿using MediatR;
+
+namespace Abstractions.Messaging;
 
 public interface IDomainEvent : INotification
 {

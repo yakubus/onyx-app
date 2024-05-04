@@ -1,5 +1,4 @@
-﻿using Budget.Domain.Counterparties.Payees;
-using Models.Responses;
+﻿using Models.Responses;
 using System.Text.Json.Serialization;
 
 namespace Budget.Domain.Counterparties.Payers;

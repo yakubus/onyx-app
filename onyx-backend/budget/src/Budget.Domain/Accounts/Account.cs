@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 using Abstractions.DomainBaseTypes;
-using Budget.Domain.Categories;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
@@ -17,7 +11,7 @@ public abstract class Account : Entity<AccountId>
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
 
-    protected Account(AccountName name, Money balance) : base()
+    protected Account(AccountName name, Money balance)
     {
         Name = name;
         Balance = balance;

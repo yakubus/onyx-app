@@ -7,32 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Accounts\AddAccount\" />
-    <Folder Include="Accounts\GetAccounts\" />
-    <Folder Include="Accounts\RemoveAccount\" />
-    <Folder Include="Accounts\UpdateAccount\" />
-    <Folder Include="Categories\AddCategory\" />
-    <Folder Include="Categories\GetCategories\" />
-    <Folder Include="Categories\RemoveCategory\" />
-    <Folder Include="Categories\UpdateCategory\" />
-    <Folder Include="Counterparties\AddPayee\" />
-    <Folder Include="Counterparties\AddPayer\" />
-    <Folder Include="Counterparties\GetPayees\" />
-    <Folder Include="Counterparties\GetPayers\" />
-    <Folder Include="Counterparties\RemoveCounterparty\" />
-    <Folder Include="Counterparties\UpdateCounterparty\" />
-    <Folder Include="Subcategories\AddSubcategory\" />
-    <Folder Include="Subcategories\RemoveSubcategory\" />
-    <Folder Include="Subcategories\UpdateSubcategory\" />
-    <Folder Include="Transactions\AddTransaction\" />
-    <Folder Include="Transactions\GetAccountTransactions\" />
-    <Folder Include="Transactions\GetPayeeTransactions\" />
-    <Folder Include="Transactions\GetSubcategoryTransactions\" />
-    <Folder Include="Transactions\GetTransactions\" />
-    <Folder Include="Transactions\RemoveTransaction\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Budget.Domain\Budget.Domain.csproj" />
   </ItemGroup>
 
