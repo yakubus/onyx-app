@@ -2,6 +2,6 @@
 
 namespace Budget.Application.Accounts.RemoveAccount;
 
-public sealed record RemoveAccountCommand(Guid AccountId) : ICommand
+public sealed record RemoveAccountCommand(Guid Id) : ICommand
 {
 }

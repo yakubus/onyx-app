@@ -1,5 +1,8 @@
-﻿namespace Budget.Application.Categories.UpdateCategory;
+﻿using Abstractions.Messaging;
+using Budget.Application.Categories.Models;
 
-internal class UpdateCategoryCommand
+namespace Budget.Application.Categories.UpdateCategory;
+
+public sealed record UpdateCategoryCommand(Guid Id, string NewName) : ICommand<CategoryModel>
 {
 }

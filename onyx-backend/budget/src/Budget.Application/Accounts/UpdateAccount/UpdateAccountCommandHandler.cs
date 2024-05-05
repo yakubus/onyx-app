@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Application.Shared.Models;
 using Budget.Domain.Accounts;
-using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Accounts.UpdateAccount;
@@ -19,7 +17,7 @@ internal sealed class UpdateAccountCommandHandler : ICommandHandler<UpdateAccoun
 
     public async Task<Result<AccountModel>> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
     {
-        var accountId = new AccountId(request.AccountId);
+        var accountId = new AccountId(request.Id);
 
         var accountGetResult = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
 

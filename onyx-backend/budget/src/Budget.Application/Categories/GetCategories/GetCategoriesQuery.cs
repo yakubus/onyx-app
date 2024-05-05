@@ -1,5 +1,8 @@
-﻿namespace Budget.Application.Categories.GetCategories;
+﻿using Abstractions.Messaging;
+using Budget.Application.Categories.Models;
 
-internal class GetCategoriesQuery
+namespace Budget.Application.Categories.GetCategories;
+
+public sealed record GetCategoriesQuery : IQuery<IEnumerable<CategoryModel>>, ICommand<IEnumerable<CategoryModel>>
 {
 }

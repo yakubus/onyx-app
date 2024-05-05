@@ -1,5 +1,7 @@
-﻿namespace Budget.Application.Categories.RemoveCategory;
+﻿using Abstractions.Messaging;
 
-internal class RemoveCategoryCommand
+namespace Budget.Application.Categories.RemoveCategory;
+
+public sealed record RemoveCategoryCommand(Guid CategoryId) : ICommand
 {
 }

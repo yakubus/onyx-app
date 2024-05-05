@@ -1,5 +1,8 @@
-﻿namespace Budget.Application.Categories.AddCategory;
+﻿using Abstractions.Messaging;
+using Budget.Application.Categories.Models;
 
-internal class AddCategoryCommand
+namespace Budget.Application.Categories.AddCategory;
+
+public sealed record AddCategoryCommand(string Name) : ICommand<CategoryModel>
 {
 }

@@ -51,6 +51,14 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
         }
 
         var account = accountCreateResult.Value;
+
+        var accountIsNotUniqueResult = await _accountRepository.GetByNameAsync(account.Name, cancellationToken);
+
+        if (accountIsNotUniqueResult.IsSuccess)
+        {
+            return Result.Failure<AccountModel>(AddAccountErrors.AccountAlreadyExists);
+        }
+
         var addAccountResult = await _accountRepository.AddAsync(account, cancellationToken);
 
         if (addAccountResult.IsFailure)
