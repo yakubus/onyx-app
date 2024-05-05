@@ -9,4 +9,6 @@ public interface IAccountRepository
     Task<Result<IEnumerable<Account>>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Result<Account>> UpdateAsync(Account account, CancellationToken cancellationToken = default);
     Task<Result> DeleteAsync(AccountId accountId, CancellationToken cancellationToken = default);
+
+    Task<Result<Account>> GetByIdAsync(AccountId accountId, CancellationToken cancellationToken);
 }
