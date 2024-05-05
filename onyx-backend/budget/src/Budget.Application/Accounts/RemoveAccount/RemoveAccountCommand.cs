@@ -1,5 +1,7 @@
-﻿namespace Budget.Application.Accounts.RemoveAccount;
+﻿using Abstractions.Messaging;
 
-internal class RemoveAccountCommand
+namespace Budget.Application.Accounts.RemoveAccount;
+
+public sealed record RemoveAccountCommand(Guid AccountId) : ICommand
 {
 }

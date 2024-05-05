@@ -1,5 +1,8 @@
-﻿namespace Budget.Application.Accounts.GetAccounts;
+﻿using Abstractions.Messaging;
+using Budget.Application.Accounts.Models;
 
-internal class GetAccountsQuery
+namespace Budget.Application.Accounts.GetAccounts;
+
+public sealed record GetAccountsQuery : IQuery<IEnumerable<AccountModel>>
 {
 }

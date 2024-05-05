@@ -17,11 +17,12 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
         _accountRepository = accountRepository;
     }
 
+    // TODO: Add max account validation (5 per budget (increased by 1 for each budget member))
     public async Task<Result<AccountModel>> Handle(AddAccountCommand request, CancellationToken cancellationToken)
     {
         var moneyCreateResult = request.Balance.ToDomainModel();
 
-        if(moneyCreateResult.IsFailure)
+        if (moneyCreateResult.IsFailure)
         {
             return Result.Failure<AccountModel>(moneyCreateResult.Error);
         }
@@ -37,7 +38,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
 
         var accountType = accountTypeCreateResult.Value;
 
-        if (!accountCreateDictionsry.TryGetValue(accountType, out var accountCreateFunc))
+        if (!accountCreateDictionary.TryGetValue(accountType, out var accountCreateFunc))
         {
             return Result.Failure<AccountModel>(AddAccountErrors.NotSupportedAccountType);
         }
@@ -63,7 +64,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
         return createdAccountModel;
     }
 
-    private static readonly IReadOnlyDictionary<AccountType, Func<string, Money, Result<Account>>> accountCreateDictionsry = new
+    private static readonly IReadOnlyDictionary<AccountType, Func<string, Money, Result<Account>>> accountCreateDictionary = new
         Dictionary<AccountType, Func<string, Money, Result<Account>>>
     {
         {AccountType.Checking, CheckingAccount.Create},
