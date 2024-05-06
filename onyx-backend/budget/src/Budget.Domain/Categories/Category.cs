@@ -62,6 +62,12 @@ public sealed class Category : Entity<CategoryId>
         }
 
         var subcategory = subcategoryCreateResult.Value;
+
+        if (_subcategories.Any(s => s.Name == subcategory.Name))
+        {
+            return Result.Failure<Subcategory>(CategoryErrors.SubcategoryAlreadyExists);
+        }
+
         _subcategories.Add(subcategory);
 
         return Result.Success(subcategory);
@@ -74,5 +80,4 @@ public sealed class Category : Entity<CategoryId>
             Result.Failure<Category>(CategoryErrors.SubcategoryNotFound);
     }
 
-    public Result 
 }

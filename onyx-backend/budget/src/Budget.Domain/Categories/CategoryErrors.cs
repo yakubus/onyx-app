@@ -15,4 +15,7 @@ internal static class CategoryErrors
     internal static readonly Error SubcategoryNotFound = new(
         "Category.SubcategoryNotFound",
         "Subcategory not found");
+    internal static readonly Error SubcategoryAlreadyExists = new (
+        "Category.SubcategoryAlreadyExists",
+        "Subcategory already exists");
 }

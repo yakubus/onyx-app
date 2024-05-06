@@ -6,8 +6,8 @@ namespace Budget.Domain.Transactions;
 public interface ITransactionRepository
 {
     Task<Result<IEnumerable<Transaction>>> GetAllTransactionsAsync(CancellationToken cancellationToken = default);
-    Task<Result<IEnumerable<Transaction>>> GetFilteredTransactionsAsync(
+    Task<Result<IEnumerable<Transaction>>> GetWhereAsync(
         Expression<Func<Transaction, bool>> filterPredicate, 
         CancellationToken cancellationToken = default);
-    Task<Result> DeleteRangeAsync(IEnumerable<Transaction> relatedTransactions, CancellationToken cancellationToken);
+    Task<Result> RemoveRangeAsync(IEnumerable<Transaction> relatedTransactions, CancellationToken cancellationToken);
 }

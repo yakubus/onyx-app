@@ -26,7 +26,7 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
     {
         var accountId = new AccountId(request.Id);
 
-        var relatedTransactionsGetResult = await _transactionRepository.GetFilteredTransactionsAsync(
+        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
             transaction => transaction.Account.Id == accountId, 
             cancellationToken);
 
@@ -37,7 +37,7 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
 
         var relatedTransactions = relatedTransactionsGetResult.Value;
 
-        var relatedSubcategoriesGetResult = await _subcategoryRepository.GetFilteredSubcategoriesAsync(
+        var relatedSubcategoriesGetResult = await _subcategoryRepository.GetWhereAsync(
             subcategory => relatedTransactions.Any(
                 transaction => transaction.Subcategory != null && transaction.Subcategory.Id == subcategory.Id),
             cancellationToken);
@@ -65,7 +65,7 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
         AccountId accountId,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsRemoveTask = _transactionRepository.DeleteRangeAsync(
+        var relatedTransactionsRemoveTask = _transactionRepository.RemoveRangeAsync(
             relatedTransactions,
             cancellationToken);
         var relatedSubcategoriesUpdateTask = _subcategoryRepository.UpdateRangeAsync(

@@ -61,4 +61,5 @@ public class Result<TValue> : Result
         : throw new DomainException<Result<TValue>>("The value of a failure result can not be accessed.");
 
     public static implicit operator Result<TValue>(TValue? value) => Create(value);
+
 }
