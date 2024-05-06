@@ -1,8 +1,9 @@
-﻿using Models.Responses;
+﻿using Abstractions.DomainBaseTypes;
+using Models.Responses;
 
-namespace Budget.Application.Accounts.Models;
+namespace Budget.Domain.Accounts;
 
-internal sealed record AccountType
+public sealed record AccountType : ValueObject
 {
     public string Value { get; init; }
 
@@ -17,7 +18,7 @@ internal sealed record AccountType
     };
 
     private static readonly Error invalidAccountTypeError = new(
-        "AccountType.InvalidValue",
+        "Type.InvalidValue",
         "Invalid account type");
 
     public static Result<AccountType> Create(string value) =>

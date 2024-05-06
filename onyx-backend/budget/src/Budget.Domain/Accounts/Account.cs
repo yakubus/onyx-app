@@ -6,20 +6,47 @@ using Models.Responses;
 
 namespace Budget.Domain.Accounts;
 
-public abstract class Account : Entity<AccountId>
+public sealed class Account : Entity<AccountId>
 {
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
+    public AccountType Type { get; init; }
 
-    protected Account(AccountName name, Money balance)
+    private Account(AccountName name, Money balance, AccountType type)
     {
         Name = name;
         Balance = balance;
+        Type = type;
     }
 
     [JsonConstructor]
-    protected Account()
-    { }
+    protected Account(AccountType type)
+    {
+        Type = type;
+    }
+
+    public static Result<Account> Create(string name, Money balance, string type)
+    {
+        var accountNameCreateResult = AccountName.Create(name);
+
+        if (accountNameCreateResult.IsFailure)
+        {
+            return Result.Failure<Account>(accountNameCreateResult.Error);
+        }
+
+        var accountName = accountNameCreateResult.Value;
+
+        var accountTypeCreateResult = AccountType.Create(type);
+
+        if (accountTypeCreateResult.IsFailure)
+        {
+            return Result.Failure<Account>(accountTypeCreateResult.Error);
+        }
+
+        var accountType = accountTypeCreateResult.Value;
+
+        return new Account(accountName, balance, accountType);
+    }
 
     public Result ChangeName(string name)
     {

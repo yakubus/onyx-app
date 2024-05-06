@@ -4,17 +4,17 @@ using Models.Responses;
 
 namespace Budget.Domain.Counterparties;
 
-public abstract class Counterparty : Entity<CounterpartyId>
+public sealed class Counterparty : Entity<CounterpartyId>
 {
     public CounterpartyName Name { get; private set; }
-
-    protected Counterparty(CounterpartyName name)
-    {
-        Name = name;
-    }
+    public CounterpartyType Type { get; init; }
 
     [JsonConstructor]
-    protected Counterparty(){}
+    private Counterparty(CounterpartyName name, CounterpartyType type)
+    {
+        Name = name;
+        Type = type;
+    }
 
     public Result ChangeName(string name)
     {
@@ -29,5 +29,28 @@ public abstract class Counterparty : Entity<CounterpartyId>
         Name = counterpartyName;
 
         return Result.Success();
+    }
+
+    public static Result<Counterparty> Create(string name, string type)
+    {
+        var counterpartyNameCreateResult = CounterpartyName.Create(name);
+
+        if (counterpartyNameCreateResult.IsFailure)
+        {
+            return Result.Failure<Counterparty>(counterpartyNameCreateResult.Error);
+        }
+
+        var counterpartyName = counterpartyNameCreateResult.Value;
+
+        var counterpartyTypeCreateResult = CounterpartyType.Create(type);
+
+        if (counterpartyTypeCreateResult.IsFailure)
+        {
+            return Result.Failure<Counterparty>(counterpartyTypeCreateResult.Error);
+        }
+
+        var counterpartyType = counterpartyTypeCreateResult.Value;
+
+        return new Counterparty(counterpartyName, counterpartyType);
     }
 }

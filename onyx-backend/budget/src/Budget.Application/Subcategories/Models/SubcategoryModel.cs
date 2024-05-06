@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Intrinsics.Arm;
 using System.Text.Json.Serialization;
 using Abstractions.Messaging;
-using Budget.Application.Abstractions.BusinessModels;
 using Budget.Domain.Subcategories;
 
 namespace Budget.Application.Subcategories.Models;

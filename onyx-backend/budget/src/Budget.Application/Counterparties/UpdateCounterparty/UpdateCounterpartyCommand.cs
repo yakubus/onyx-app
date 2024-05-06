@@ -1,5 +1,8 @@
-﻿namespace Budget.Application.Counterparties.UpdateCounterparty;
+﻿using Abstractions.Messaging;
+using Budget.Application.Counterparties.Models;
 
-internal class UpdateCounterpartyCommand
+namespace Budget.Application.Counterparties.UpdateCounterparty;
+
+public sealed record UpdateCounterpartyCommand(Guid Id, string Name) : ICommand<CounterpartyModel>
 {
 }

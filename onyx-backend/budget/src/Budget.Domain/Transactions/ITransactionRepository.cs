@@ -9,5 +9,6 @@ public interface ITransactionRepository
     Task<Result<IEnumerable<Transaction>>> GetWhereAsync(
         Expression<Func<Transaction, bool>> filterPredicate, 
         CancellationToken cancellationToken = default);
-    Task<Result> RemoveRangeAsync(IEnumerable<Transaction> relatedTransactions, CancellationToken cancellationToken);
+    Task<Result> RemoveRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
+    Task<Result> UpdateRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
 }

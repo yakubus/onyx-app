@@ -1,5 +1,7 @@
-﻿namespace Budget.Application.Counterparties.RemoveCounterparty;
+﻿using Abstractions.Messaging;
 
-internal class RemoveCounterpartyCommand
+namespace Budget.Application.Counterparties.RemoveCounterparty;
+
+public sealed record RemoveCounterpartyCommand(Guid Id) : ICommand
 {
 }

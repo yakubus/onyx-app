@@ -1,8 +1,6 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Domain.Accounts;
-using Budget.Domain.Accounts.CheckingAccounts;
-using Budget.Domain.Accounts.SavingAccounts;
 using Models.DataTypes;
 using Models.Responses;
 
@@ -17,7 +15,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
         _accountRepository = accountRepository;
     }
 
-    // TODO: Add max account validation (5 per budget (increased by 1 for each budget member))
+    // TODO: Add max account validation (5 per budget (increased by 2 for each budget member))
     public async Task<Result<AccountModel>> Handle(AddAccountCommand request, CancellationToken cancellationToken)
     {
         var moneyCreateResult = request.Balance.ToDomainModel();
@@ -29,21 +27,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
 
         var balance = moneyCreateResult.Value;
 
-        var accountTypeCreateResult = AccountType.Create(request.AccountType);
-
-        if (accountTypeCreateResult.IsFailure)
-        {
-            return Result.Failure<AccountModel>(accountTypeCreateResult.Error);
-        }
-
-        var accountType = accountTypeCreateResult.Value;
-
-        if (!accountCreateDictionary.TryGetValue(accountType, out var accountCreateFunc))
-        {
-            return Result.Failure<AccountModel>(AddAccountErrors.NotSupportedAccountType);
-        }
-
-        var accountCreateResult = accountCreateFunc.Invoke(request.Name, balance);
+        var accountCreateResult = Account.Create(request.Name, balance, request.AccountType);
 
         if (accountCreateResult.IsFailure)
         {
@@ -56,7 +40,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
 
         if (accountIsNotUniqueResult.IsSuccess)
         {
-            return Result.Failure<AccountModel>(AddAccountErrors.AccountAlreadyExists);
+            return Result.Failure<AccountModel>(AddCounterpartyErrors.AccountAlreadyExists);
         }
 
         var addAccountResult = await _accountRepository.AddAsync(account, cancellationToken);
@@ -71,11 +55,4 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
 
         return createdAccountModel;
     }
-
-    private static readonly IReadOnlyDictionary<AccountType, Func<string, Money, Result<Account>>> accountCreateDictionary = new
-        Dictionary<AccountType, Func<string, Money, Result<Account>>>
-    {
-        {AccountType.Checking, CheckingAccount.Create},
-        {AccountType.Savings, SavingsAccount.Create}
-    };
 }

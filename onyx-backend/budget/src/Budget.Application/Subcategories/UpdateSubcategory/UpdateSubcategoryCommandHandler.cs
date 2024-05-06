@@ -15,6 +15,7 @@ internal sealed class UpdateSubcategoryCommandHandler : ICommandHandler<UpdateSu
         _subcategoryRepository = subcategoryRepository;
     }
 
+    // TODO Update subcateories in related transactions
     public async Task<Result<SubcategoryModel>> Handle(UpdateSubcategoryCommand request, CancellationToken cancellationToken)
     {
         var subcategoryId = new SubcategoryId(request.Id);

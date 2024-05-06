@@ -1,7 +1,6 @@
 ﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Accounts;
-using Budget.Domain.Counterparties.Payees;
-using Budget.Domain.Counterparties.Payers;
+using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Models.DataTypes;
 using Models.Responses;
@@ -14,9 +13,8 @@ public sealed class Transaction : Entity<TransactionId>
     public Money Amount { get; init; }
     public Money? OriginalAmount { get; init; }
     public DateTime TransactedAt { get; init; }
-    public Subcategory? Subcategory { get; init; }
-    public Payee? Payee { get; init; }
-    public Payer? Payer { get; init; }
+    public Subcategory? Subcategory { get; private set; }
+    public Counterparty Counterparty { get; private set; }
 
     private Transaction(
         Account account,
@@ -24,16 +22,38 @@ public sealed class Transaction : Entity<TransactionId>
         Money amount,
         Money? originalAmount,
         DateTime transactedAt,
-        Payee? payee,
-        Payer? payer)
+        Counterparty counterparty)
     {
         Account = account;
         Amount = amount;
         OriginalAmount = originalAmount;
         TransactedAt = transactedAt;
         Subcategory = subcategory;
-        Payee = payee;
-        Payer = payer;
+        Counterparty = counterparty;
+    }
+
+    public Result UpdateSubcategory(Subcategory subcategory)
+    {
+        if (Subcategory is null)
+        {
+            return Result.Failure(TransactionErrors.CannotUpdateSubcategoryForUncategorizedTransactionError);
+        }
+
+        Subcategory = subcategory;
+
+        return Result.Success();
+    }
+
+    public Result UpdateCounterparty(Counterparty counterparty)
+    {
+        if (Counterparty.Type != counterparty.Type)
+        {
+            return Result.Failure(TransactionErrors.CannotUpdateCounterpartyWithDifferentType);
+        }
+
+        Counterparty = counterparty;
+
+        return Result.Success();
     }
 
     public static Result<Transaction> CreatePrincipalOutflow(
@@ -41,9 +61,14 @@ public sealed class Transaction : Entity<TransactionId>
         Subcategory subcategory,
         Money amount,
         DateTime transactedAt,
-        Payee payee)
+        Counterparty payee)
     {
-        var transaction = new Transaction(account, subcategory, amount, null, transactedAt, payee, null);
+        if (payee.Type != CounterpartyType.Payee)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
+        }
+
+        var transaction = new Transaction(account, subcategory, amount, null, transactedAt, payee);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -68,8 +93,13 @@ public sealed class Transaction : Entity<TransactionId>
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
-        Payee payee)
+        Counterparty payee)
     {
+        if (payee.Type != CounterpartyType.Payee)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
+        }
+
         if (account.Balance.Currency == originalAmount.Currency)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionIsNotForeign);
@@ -81,8 +111,7 @@ public sealed class Transaction : Entity<TransactionId>
             convertedAmount,
             originalAmount,
             transactedAt,
-            payee,
-            null);
+            payee);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -105,9 +134,14 @@ public sealed class Transaction : Entity<TransactionId>
         Account account,
         Money amount,
         DateTime transactedAt,
-        Payer payer)
+        Counterparty payer)
     {
-        var transaction = new Transaction(account, null, amount, null, transactedAt, null, payer);
+        if (payer.Type != CounterpartyType.Payer)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
+        }
+
+        var transaction = new Transaction(account, null, amount, null, transactedAt, payer);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -124,14 +158,19 @@ public sealed class Transaction : Entity<TransactionId>
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
-        Payer payer)
+        Counterparty payer)
     {
+        if (payer.Type != CounterpartyType.Payer)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
+        }
+
         if (account.Balance.Currency == originalAmount.Currency)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionIsNotForeign);
         }
 
-        var transaction = new Transaction(account, null, convertedAmount, originalAmount, transactedAt, null, payer);
+        var transaction = new Transaction(account, null, convertedAmount, originalAmount, transactedAt, payer);
 
         var accountTransactResult = account.Transact(transaction);
 
