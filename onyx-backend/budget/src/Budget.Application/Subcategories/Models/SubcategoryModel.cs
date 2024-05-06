@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.Intrinsics.Arm;
+using System.Text.Json.Serialization;
+using Abstractions.Messaging;
+using Budget.Application.Abstractions.BusinessModels;
 using Budget.Domain.Subcategories;
 
 namespace Budget.Application.Subcategories.Models;
 
-public sealed record SubcategoryModel
+public sealed record SubcategoryModel : EntityBusinessModel
 {
     public Guid Id { get; init; }
     public string Name { get; init; }
@@ -17,7 +20,9 @@ public sealed record SubcategoryModel
         string name,
         string? description,
         List<AssignmentModel> assignments,
-        TargetModel? target)
+        TargetModel? target,
+        IEnumerable<IDomainEvent> domainEvents) 
+        : base(domainEvents)
     {
         Id = id;
         Name = name;
@@ -33,5 +38,6 @@ public sealed record SubcategoryModel
             domainModel.Assignments.Select(AssignmentModel.FromDomainModel).ToList(),
             domainModel.Target is null 
                 ? null 
-                : TargetModel.FromDomainModel(domainModel.Target));
+                : TargetModel.FromDomainModel(domainModel.Target),
+            domainModel.GetDomainEvents());
 }

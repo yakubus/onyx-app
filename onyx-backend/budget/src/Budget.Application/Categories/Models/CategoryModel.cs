@@ -1,18 +1,25 @@
 ﻿using Budget.Application.Shared.Models;
 using System.Text.Json.Serialization;
+using Abstractions.Messaging;
+using Budget.Application.Abstractions.BusinessModels;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Categories;
 
 namespace Budget.Application.Categories.Models;
 
-public sealed record CategoryModel
+public sealed record CategoryModel : EntityBusinessModel
 {
     public Guid Id { get; init; }
     public string Name { get; init; }
     public List<SubcategoryModel> Subcategories { get; init; }
 
     [JsonConstructor]
-    public CategoryModel(Guid id, string name, List<SubcategoryModel> subcategories)
+    public CategoryModel(
+        Guid id,
+        string name,
+        List<SubcategoryModel> subcategories,
+        IEnumerable<IDomainEvent> domainEvents) 
+        : base(domainEvents)
     {
         Id = id;
         Name = name;
@@ -25,5 +32,6 @@ public sealed record CategoryModel
             domainModel.Name.Value,
             domainModel.Subcategories
                 .Select(SubcategoryModel.FromDomainModel)
-                .ToList());
+                .ToList(),
+            domainModel.GetDomainEvents());
 }

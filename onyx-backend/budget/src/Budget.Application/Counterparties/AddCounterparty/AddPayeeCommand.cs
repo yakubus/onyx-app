@@ -1,4 +1,4 @@
-﻿namespace Budget.Application.Counterparties.AddPayee;
+﻿namespace Budget.Application.Counterparties.AddCounterparty;
 
 internal class AddPayeeCommand
 {

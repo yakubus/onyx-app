@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Budget.Domain.Subcategories.DomainEvents;
 using Models.DataTypes;
 using Models.Responses;
 using Transaction = Budget.Domain.Transactions.Transaction;
@@ -93,6 +94,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         var assignment = assignmentCreateResult.Value;
         _assignments.Add(assignment);
+
+        RaiseDomainEvent(new SubcategoryAssignedForMonthDomainEvent(Id, assignment.Month));
 
         return Result.Success(assignment);
     }
@@ -215,6 +218,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         var target = targetCreateResult.Value;
         Target = target;
 
+        RaiseDomainEvent(new TargetSetDomainEvent(Id));
+
         return target;
     }
 
@@ -238,6 +243,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         }
 
         var monthMoveResult = Target.MoveTargetEndMonth(newEndMonth);
+
+        RaiseDomainEvent(new TargetMoveDomainEvent(Id));
 
         return monthMoveResult;
     }
