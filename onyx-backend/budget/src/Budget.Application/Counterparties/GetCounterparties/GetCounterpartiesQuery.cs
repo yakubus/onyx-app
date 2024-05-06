@@ -1,6 +1,5 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Counterparties.Models;
-using Budget.Domain.Counterparties;
 
 namespace Budget.Application.Counterparties.GetCounterparties;
 

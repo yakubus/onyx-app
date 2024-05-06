@@ -37,38 +37,11 @@ internal sealed class UpdateCounterpartyCommandHandler : ICommandHandler<UpdateC
             return Result.Failure<CounterpartyModel>(changeNameResult.Error);
         }
 
-        var getRelatedTransactionsResult = await _transactionRepository.GetWhereAsync(
-            t => t.Counterparty.Id == counterparty.Id, 
-            cancellationToken);
-
-        if (getRelatedTransactionsResult.IsFailure)
-        {
-            return Result.Failure<CounterpartyModel>(getRelatedTransactionsResult.Error);
-        }
-
-        var relatedTransactions = getRelatedTransactionsResult.Value.ToList();
-
-        var relatedTransactionsUpdateResult = relatedTransactions.Select(t => t.UpdateCounterparty(counterparty));
-
-        var relatedTransactionsUpdateFailureResult = relatedTransactionsUpdateResult.FirstOrDefault(r => r.IsFailure);
-
-        if (relatedTransactionsUpdateFailureResult is not null)
-        {
-            return Result.Failure<CounterpartyModel>(relatedTransactionsUpdateFailureResult.Error);
-        }
-
         var counterpartyUpdateResult = await _counterpartyRepository.UpdateAsync(counterparty, cancellationToken);
 
         if (counterpartyUpdateResult.IsFailure)
         {
             return Result.Failure<CounterpartyModel>(counterpartyUpdateResult.Error);
-        }
-
-        var transactionsUpdateResult = await _transactionRepository.UpdateRangeAsync(relatedTransactions, cancellationToken);
-
-        if (transactionsUpdateResult.IsFailure)
-        {
-            return Result.Failure<CounterpartyModel>(transactionsUpdateResult.Error);
         }
 
         counterparty = counterpartyUpdateResult.Value;

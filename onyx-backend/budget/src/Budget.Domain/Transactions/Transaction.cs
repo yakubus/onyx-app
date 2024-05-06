@@ -9,12 +9,12 @@ namespace Budget.Domain.Transactions;
 
 public sealed class Transaction : Entity<TransactionId>
 {
-    public Account Account { get; init; }
+    public AccountId AccountId { get; init; }
     public Money Amount { get; init; }
     public Money? OriginalAmount { get; init; }
     public DateTime TransactedAt { get; init; }
-    public Subcategory? Subcategory { get; private set; }
-    public Counterparty Counterparty { get; private set; }
+    public SubcategoryId? SubcategoryId { get; private set; }
+    public CounterpartyId CounterpartyId { get; private set; }
 
     private Transaction(
         Account account,
@@ -24,36 +24,12 @@ public sealed class Transaction : Entity<TransactionId>
         DateTime transactedAt,
         Counterparty counterparty)
     {
-        Account = account;
+        AccountId = account.Id;
         Amount = amount;
         OriginalAmount = originalAmount;
         TransactedAt = transactedAt;
-        Subcategory = subcategory;
-        Counterparty = counterparty;
-    }
-
-    public Result UpdateSubcategory(Subcategory subcategory)
-    {
-        if (Subcategory is null)
-        {
-            return Result.Failure(TransactionErrors.CannotUpdateSubcategoryForUncategorizedTransactionError);
-        }
-
-        Subcategory = subcategory;
-
-        return Result.Success();
-    }
-
-    public Result UpdateCounterparty(Counterparty counterparty)
-    {
-        if (Counterparty.Type != counterparty.Type)
-        {
-            return Result.Failure(TransactionErrors.CannotUpdateCounterpartyWithDifferentType);
-        }
-
-        Counterparty = counterparty;
-
-        return Result.Success();
+        SubcategoryId = subcategory?.Id;
+        CounterpartyId = counterparty.Id;
     }
 
     public static Result<Transaction> CreatePrincipalOutflow(

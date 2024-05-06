@@ -1,7 +1,6 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Subcategories;
-using MediatR;
 using Models.Responses;
 
 namespace Budget.Application.Subcategories.UpdateSubcategory;

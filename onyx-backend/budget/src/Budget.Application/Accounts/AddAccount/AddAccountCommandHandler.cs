@@ -1,7 +1,6 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Domain.Accounts;
-using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Accounts.AddAccount;

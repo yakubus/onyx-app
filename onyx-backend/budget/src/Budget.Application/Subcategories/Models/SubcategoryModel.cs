@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Abstractions.Messaging;
 using Budget.Domain.Subcategories;
 

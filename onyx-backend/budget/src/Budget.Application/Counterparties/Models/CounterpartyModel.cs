@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 using Abstractions.Messaging;
-using Budget.Application.Accounts.Models;
-using Budget.Application.Shared.Models;
-using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
 
 namespace Budget.Application.Counterparties.Models;

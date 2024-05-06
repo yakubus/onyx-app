@@ -1,5 +1,4 @@
-﻿using Budget.Application.Shared.Models;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Abstractions.Messaging;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Categories;

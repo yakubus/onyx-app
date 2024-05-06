@@ -38,7 +38,7 @@ internal sealed class RemoveCategoryCommandHandler : ICommandHandler<RemoveCateg
     {
         var subcategoriesRemoveTask = _subcategoryRepository.RemoveRangeAsync(subcategoriesToRemove, cancellationToken);
         var categoryRemoveTask = _categoryRepository.RemoveAsync(category.Id, cancellationToken);
-     
+
         var results = await Task.WhenAll(subcategoriesRemoveTask, categoryRemoveTask);
 
         var failureResult = results.FirstOrDefault(x => x.IsFailure);
