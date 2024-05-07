@@ -20,4 +20,7 @@ internal static class TransactionErrors
     internal static readonly Error CannotUpdateCounterpartyWithDifferentType = new (
         "Transaction.Counterparty.DiffrentType.CannotUpdate",
         "Cannot update counterparty with different type");
+    internal static readonly Error TransactionCannotBeInFuture = new (
+        "Transaction.Date.CannotBeInFuture",
+        "Transaction date cannot be in future");
 }

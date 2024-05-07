@@ -12,7 +12,7 @@ public sealed record CounterpartyName : ValueObject
 
     private CounterpartyName(string value) => Value = value;
 
-    internal static Result<CounterpartyName> Create(string value)
+    public static Result<CounterpartyName> Create(string value)
     {
         value = value.Trim().Capitalize();
 

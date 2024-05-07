@@ -44,6 +44,11 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
         }
 
+        if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
+        }
+
         var transaction = new Transaction(account, subcategory, amount, null, transactedAt, payee);
 
         var accountTransactResult = account.Transact(transaction);
@@ -79,6 +84,11 @@ public sealed class Transaction : Entity<TransactionId>
         if (account.Balance.Currency == originalAmount.Currency)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionIsNotForeign);
+        }
+
+        if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
         var transaction = new Transaction(
@@ -117,6 +127,11 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.InvalidCounterpartyType);
         }
 
+        if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
+        }
+
         var transaction = new Transaction(account, null, amount, null, transactedAt, payer);
 
         var accountTransactResult = account.Transact(transaction);
@@ -144,6 +159,11 @@ public sealed class Transaction : Entity<TransactionId>
         if (account.Balance.Currency == originalAmount.Currency)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionIsNotForeign);
+        }
+
+        if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
+        {
+            return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
         var transaction = new Transaction(account, null, convertedAmount, originalAmount, transactedAt, payer);
