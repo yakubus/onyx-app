@@ -7,11 +7,11 @@ public interface ICounterpartyRepository
 {
     Task<Result<Counterparty>> AddAsync(Counterparty counterparty, CancellationToken cancellationToken);
 
-    Task<Result<Counterparty>> GetWhereAsync(
+    Task<Result<Counterparty>> GetSingleAsync(
         Expression<Func<Counterparty, bool>> filterPredicate,
         CancellationToken cancellationToken);
 
-    Task<Result> RemoveAsync(CounterpartyId counterpartyId, CancellationToken cancellationToken);
+    Task<Result> RemoveAsync(CounterpartyId counterpartyId, CancellationToken cancellationToken = default);
 
     Task<Result<Counterparty>> GetByIdAsync(CounterpartyId counterpartyId, CancellationToken cancellationToken);
 

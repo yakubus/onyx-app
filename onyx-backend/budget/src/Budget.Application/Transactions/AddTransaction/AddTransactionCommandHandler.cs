@@ -1,6 +1,5 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Abstractions.Services;
-using Budget.Application.Shared.Models;
 using Budget.Application.Transactions.Models;
 using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
@@ -141,7 +140,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         var counterpartyName = counterpartyNameCreateResult.Value;
         var isPayee = request.Amount.Amount > 0;
         var counterpartyType = isPayee ? CounterpartyType.Payee : CounterpartyType.Payer;
-        var counterpartyGetResult = await _counterpartyRepository.GetWhereAsync(
+        var counterpartyGetResult = await _counterpartyRepository.GetSingleAsync(
             c => c.Name == counterpartyName && c.Type == counterpartyType, cancellationToken);
 
         if (counterpartyGetResult.IsSuccess)

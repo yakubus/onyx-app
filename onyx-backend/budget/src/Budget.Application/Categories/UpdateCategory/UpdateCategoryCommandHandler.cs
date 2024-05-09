@@ -16,7 +16,7 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
 
     public async Task<Result<CategoryModel>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var categoryGetResult = await _categoryRepository.GetByIdAsync(request.Id, cancellationToken);
+        var categoryGetResult = await _categoryRepository.GetByIdAsync(new (request.Id), cancellationToken);
 
         if (categoryGetResult.IsFailure)
         {

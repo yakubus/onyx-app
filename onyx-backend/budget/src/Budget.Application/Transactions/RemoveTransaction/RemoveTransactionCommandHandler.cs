@@ -1,7 +1,5 @@
-﻿using System.Transactions;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Domain.Accounts;
-using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Models.Responses;
@@ -66,7 +64,7 @@ internal sealed class RemoveTransactionCommandHandler : ICommandHandler<RemoveTr
             return Result.Failure(accountRemoveTransactionResult.Error);
         }
 
-        var transactionRemoveResult = await _transactionRepository.RemoveAsync(transaction, cancellationToken);
+        var transactionRemoveResult = await _transactionRepository.RemoveAsync(transaction.Id, cancellationToken);
 
         if(transactionRemoveResult.IsFailure)
         {

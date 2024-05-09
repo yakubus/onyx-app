@@ -14,9 +14,9 @@ public interface ICategoryRepository
         Expression<Func<Category, bool>> filterPredicate,
         CancellationToken cancellationToken);
 
-    Task<Result<Category>> GetByIdAsync(Guid requestCategoryId, CancellationToken cancellationToken);
+    Task<Result<Category>> GetByIdAsync(CategoryId categoryId, CancellationToken cancellationToken);
 
-    Task<Result> RemoveAsync(CategoryId categoryId, CancellationToken cancellationToken);
+    Task<Result> RemoveAsync(CategoryId categoryId, CancellationToken cancellationToken = default);
 
     Task<Result<Category>> UpdateAsync(Category category, CancellationToken cancellationToken);
 }

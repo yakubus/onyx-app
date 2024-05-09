@@ -17,7 +17,7 @@ public interface ISubcategoryRepository
 
     Task<Result<Subcategory>> GetByIdAsync(SubcategoryId subcategoryId, CancellationToken cancellationToken);
 
-    Task<Result> RemoveAsync(Subcategory subcategory, CancellationToken cancellationToken);
+    Task<Result> RemoveAsync(SubcategoryId subcategoryId, CancellationToken cancellationToken);
 
     Task<Result<Subcategory>> UpdateAsync(Subcategory subcategory, CancellationToken cancellationToken);
 }

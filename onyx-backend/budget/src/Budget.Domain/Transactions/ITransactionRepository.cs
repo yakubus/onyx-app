@@ -5,16 +5,15 @@ namespace Budget.Domain.Transactions;
 
 public interface ITransactionRepository
 {
-    Task<Result<IEnumerable<Transaction>>> GetAllTransactionsAsync(CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<Transaction>>> GetWhereAsync(
         Expression<Func<Transaction, bool>> filterPredicate, 
         CancellationToken cancellationToken = default);
-    Task<Result> RemoveRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
-    Task<Result> UpdateRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
 
-    Task<Result<Transaction>> AddAsync(Transaction transaction, CancellationToken cancellationToken);
+    Task<Result> RemoveRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default);
 
-    Task<Result<Transaction>> GetByIdAsync(TransactionId requestTransactionId, CancellationToken cancellationToken);
+    Task<Result<Transaction>> AddAsync(Transaction transaction, CancellationToken cancellationToken = default);
 
-    Task<Result<Transaction>> RemoveAsync(Transaction transaction, CancellationToken cancellationToken);
+    Task<Result<Transaction>> GetByIdAsync(TransactionId requestTransactionId, CancellationToken cancellationToken = default);
+
+    Task<Result> RemoveAsync(TransactionId transactionId, CancellationToken cancellationToken = default);
 }

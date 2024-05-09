@@ -23,7 +23,9 @@ internal sealed class AddSubcategoryCommandHandler : ICommandHandler<AddSubcateg
         AddSubcategoryCommand request,
         CancellationToken cancellationToken)
     {
-        var categoryGetResult = await _categoryRepository.GetByIdAsync(request.ParentCategoryId, cancellationToken);
+        var categoryGetResult = await _categoryRepository.GetByIdAsync(
+            new(request.ParentCategoryId),
+            cancellationToken);
 
         if (categoryGetResult.IsFailure)
         {

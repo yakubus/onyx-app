@@ -18,7 +18,7 @@ internal sealed class RemoveCategoryCommandHandler : ICommandHandler<RemoveCateg
 
     public async Task<Result> Handle(RemoveCategoryCommand request, CancellationToken cancellationToken)
     {
-        var categoryGetResult = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
+        var categoryGetResult = await _categoryRepository.GetByIdAsync(new (request.CategoryId), cancellationToken);
 
         if (categoryGetResult.IsFailure)
         {
