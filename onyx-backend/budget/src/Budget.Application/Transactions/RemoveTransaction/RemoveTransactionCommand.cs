@@ -1,5 +1,7 @@
-﻿namespace Budget.Application.Transactions.RemoveTransaction;
+﻿using Abstractions.Messaging;
 
-internal class RemoveTransactionCommand
+namespace Budget.Application.Transactions.RemoveTransaction;
+
+public sealed record RemoveTransactionCommand(Guid TransactionId) : ICommand
 {
 }

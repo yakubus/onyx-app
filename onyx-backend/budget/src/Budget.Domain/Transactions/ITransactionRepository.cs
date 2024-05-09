@@ -13,4 +13,8 @@ public interface ITransactionRepository
     Task<Result> UpdateRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
 
     Task<Result<Transaction>> AddAsync(Transaction transaction, CancellationToken cancellationToken);
+
+    Task<Result<Transaction>> GetByIdAsync(TransactionId requestTransactionId, CancellationToken cancellationToken);
+
+    Task<Result<Transaction>> RemoveAsync(Transaction transaction, CancellationToken cancellationToken);
 }

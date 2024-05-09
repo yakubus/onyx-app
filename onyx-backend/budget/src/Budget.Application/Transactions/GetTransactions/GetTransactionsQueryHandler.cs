@@ -58,7 +58,7 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
         var transactions = transactionsGetResult.Value;
 
         var transactionModelsGetResults = await Task.WhenAll(
-            await GetTransactionModelsTasks(
+            GetTransactionModelsTasks(
                 transactions,
                 cancellationToken));
 
@@ -72,7 +72,7 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
         return Result.Create(transactionModels);
     }
 
-    private async Task<IEnumerable<Task<Result<TransactionModel>>>> GetTransactionModelsTasks(
+    private IEnumerable<Task<Result<TransactionModel>>> GetTransactionModelsTasks(
         IEnumerable<Transaction> transactions,
         CancellationToken cancellationToken)
     {
