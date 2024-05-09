@@ -47,6 +47,11 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         var counterpartyGetResult = await GetOrCreateCounterparty(request, cancellationToken);
 
+        if (counterpartyGetResult.IsFailure)
+        {
+            return Result.Failure<TransactionModel>(counterpartyGetResult.Error);
+        }
+
         var subcategoryId = request.SubcategoryId is not null ? 
             new SubcategoryId(request.SubcategoryId.Value) : 
             null;
@@ -121,7 +126,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         transaction = addTransactionResult.Value;
 
-        return TransactionModel.FromDomainModel(transaction);
+        return TransactionModel.FromDomainModel(transaction, counterparty, account, subcategory);
     }
 
     private async Task<Result<Counterparty>> GetOrCreateCounterparty(AddTransactionCommand request, CancellationToken cancellationToken)

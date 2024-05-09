@@ -14,7 +14,7 @@ internal sealed class AddCounterpartyCommandHandler : ICommandHandler<AddCounter
         _counterpartyRepository = counterpartyRepository;
     }
 
-    // TODO: Add max account validation (50 per budget (increased by 10 for each budget member))
+    // TODO: Add max account validation (50 per budget (increased by 25 for each budget member))
     public async Task<Result<CounterpartyModel>> Handle(AddCounterpartyCommand request, CancellationToken cancellationToken)
     {
         var counterpartyCreateResult = Counterparty.Create(request.CounterpartyName, request.CounterpartyType);

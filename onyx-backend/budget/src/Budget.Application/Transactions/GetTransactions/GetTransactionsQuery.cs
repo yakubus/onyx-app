@@ -1,6 +1,14 @@
-﻿namespace Budget.Application.Transactions.GetTransactions;
+﻿using Abstractions.Messaging;
+using Budget.Application.Transactions.Models;
+using Models.DataTypes;
 
-//TODO: Payee, AccountId, Subcategory, All, Assignment
-internal class GetTransactionsQuery
+namespace Budget.Application.Transactions.GetTransactions;
+
+public sealed record GetTransactionsQuery(
+    string Query,
+    Guid? CounterpartyId,
+    Guid? AccountId,
+    Guid? SubcategoryId,
+    MonthDate? AssignmentPeriod) : IQuery<IEnumerable<TransactionModel>>
 {
 }
