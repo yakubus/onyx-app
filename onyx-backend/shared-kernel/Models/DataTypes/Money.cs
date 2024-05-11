@@ -4,10 +4,19 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Models.DataTypes;
 
-public record Money(
-    [property: BsonRepresentation(BsonType.Decimal128)]
-    decimal Amount, Currency Currency)
-{
+public record Money
+{    
+    [BsonRepresentation(BsonType.Decimal128)]
+    public decimal Amount { get; init; }
+    public Currency Currency { get; init; }
+
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    public Money(decimal Amount, Currency Currency)
+    {
+        this.Amount = Amount;
+        this.Currency = Currency;
+    }
     // Overrides
 
     public override string ToString() => $"{Amount} {Currency.Code}";
@@ -128,4 +137,6 @@ public record Money(
 
         return first > second.Amount;
     }
+
+
 }

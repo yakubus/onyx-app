@@ -10,6 +10,8 @@ public sealed record CategoryName : ValueObject
     public string Value { get; init; }
     private static readonly Regex valuePattern = new(@"^[a-zA-Z0-9\s.-]{1,50}$");
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private CategoryName(string value) => Value = value;
 
     internal static Result<CategoryName> Create(string value)

@@ -8,6 +8,8 @@ public sealed record AccountName
     public string Value { get; private set; }
     private static readonly Regex valuePattern = new(@"^[a-zA-Z0-9\s.-]{1,50}$");
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private AccountName(string value) => Value = value;
 
     public static Result<AccountName> Create(string value)

@@ -3,6 +3,7 @@ using Abstractions.DomainBaseTypes;
 using Budget.Infrastructure.Data;
 using Microsoft.Azure.Cosmos;
 using Models.Responses;
+using Newtonsoft.Json;
 
 namespace Budget.Infrastructure.Repositories;
 
@@ -11,12 +12,10 @@ internal abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId
 {
-    private readonly CosmosDbContext _context;
     protected readonly Container Container;
 
     protected Repository(CosmosDbContext context)
     {
-        _context = context;
         Container = context.Set<TEntity>();
     }
 
@@ -75,7 +74,11 @@ internal abstract class Repository<TEntity, TEntityId>
         TEntity entity, 
         CancellationToken cancellationToken = default)
     {
-        var response = await Container.CreateItemAsync(entity, null, null, cancellationToken);
+        var response = await Container.CreateItemAsync(
+            entity,
+            new (entity.Id.Value.ToString()),
+            null,
+            cancellationToken);
 
         var isSuccess = (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
 
@@ -89,7 +92,11 @@ internal abstract class Repository<TEntity, TEntityId>
         CancellationToken cancellationToken = default)
     {
         var tasks = entities.Select(
-            entity => Container.CreateItemAsync(entity, null, null, cancellationToken));
+            entity => Container.CreateItemAsync(
+                entity,
+                new PartitionKey(entity.Id.Value.ToString()),
+                null,
+                cancellationToken));
 
         var responses = await Task.WhenAll(tasks);
 
@@ -107,7 +114,7 @@ internal abstract class Repository<TEntity, TEntityId>
     {
         var response = await Container.DeleteItemAsync<TEntity>(
             entityId.Value.ToString(),
-            new PartitionKey(),
+            new PartitionKey(entityId.Value.ToString()),
             null,
             cancellationToken);
 
@@ -125,7 +132,7 @@ internal abstract class Repository<TEntity, TEntityId>
         var tasks = entities.Select(
             entity => Container.DeleteItemAsync<TEntity>(
                 entity.Id.Value.ToString(),
-                new PartitionKey(),
+                new PartitionKey(entity.Id.Value.ToString()),
                 null,
                 cancellationToken));
 
@@ -146,7 +153,7 @@ internal abstract class Repository<TEntity, TEntityId>
         var response = await Container.ReplaceItemAsync(
             entity,
             entity.Id.Value.ToString(),
-            null,
+            new PartitionKey(entity.Id.Value.ToString()),
             null,
             cancellationToken);
 
@@ -165,7 +172,7 @@ internal abstract class Repository<TEntity, TEntityId>
             entity => Container.ReplaceItemAsync(
                 entity,
                 entity.Id.Value.ToString(),
-                null,
+                new PartitionKey(entity.Id.Value.ToString()),
                 null,
                 cancellationToken));
 

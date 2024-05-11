@@ -6,6 +6,8 @@ public sealed record CounterpartyType
 {
     public string Value { get; init; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private CounterpartyType(string value) => Value = value;
 
     public static readonly CounterpartyType Payee = new("Payee");

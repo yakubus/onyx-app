@@ -12,6 +12,8 @@ public sealed record Assignment : ValueObject
     public Money AssignedAmount { get; private set; }
     public Money ActualAmount { get; private set; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private Assignment(MonthDate month, Money assignedAmount, Money actualAmount)
     {
         Month = month;

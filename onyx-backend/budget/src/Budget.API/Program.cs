@@ -5,17 +5,40 @@ namespace Budget.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
         builder.Services.InjectApplication();
         builder.Services.InjectInfrastructure(builder.Configuration);
+        builder.Services.AddControllers();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("DefaultPolicy",
+                b =>
+                {
+                    b.WithOrigins(
+                            "http://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+        });
 
         var app = builder.Build();
 
-        app.MapGet("/", () => "Hello World!");
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
-        app.Run();
+        app.UseRouting();
+        app.MapControllers();
+
+        await app.RunAsync();
     }
 }

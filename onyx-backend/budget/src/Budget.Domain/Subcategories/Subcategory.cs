@@ -14,7 +14,13 @@ public sealed class Subcategory : Entity<SubcategoryId>
     public IReadOnlyCollection<Assignment> Assignments => _assignments;
     public Target? Target { get; private set; }
 
-    private Subcategory(SubcategoryName name, SubcategoryDescription? description, List<Assignment> assignments, Target? target)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Subcategory(
+        SubcategoryName name,
+        SubcategoryDescription? description,
+        List<Assignment> assignments,
+        Target? target) : base(new SubcategoryId())
     {
         Name = name;
         Description = description;

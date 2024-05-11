@@ -7,6 +7,8 @@ public sealed record AccountType : ValueObject
 {
     public string Value { get; init; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private AccountType(string value) => Value = value;
 
     public static readonly AccountType Checking = new("Checking");

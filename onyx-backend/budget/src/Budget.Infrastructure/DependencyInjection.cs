@@ -1,4 +1,12 @@
-﻿using Budget.Infrastructure.Data;
+﻿using Budget.Application.Abstractions.Services;
+using Budget.Domain.Accounts;
+using Budget.Domain.Categories;
+using Budget.Domain.Counterparties;
+using Budget.Domain.Subcategories;
+using Budget.Domain.Transactions;
+using Budget.Infrastructure.CurrencyServices;
+using Budget.Infrastructure.Data;
+using Budget.Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +24,7 @@ public static class DependencyInjection
     public static IServiceCollection InjectInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddPersistence(configuration);
-
+        services.AddCurrencyConverter(configuration);
 
         return services;
     }
@@ -25,10 +33,15 @@ public static class DependencyInjection
     {
         services.Configure<CosmosDbOptions>(configuration.GetSection("CosmosDb"));
         services.AddScoped<CosmosDbContext>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
+        services.AddScoped<ICounterpartyRepository, CounterpartyRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
     }
 
     private static void AddCurrencyConverter(this IServiceCollection services, IConfiguration configuration)
     {
-        
+        services.AddTransient<ICurrencyConverter, CurrencyConverter>();
     }
 }

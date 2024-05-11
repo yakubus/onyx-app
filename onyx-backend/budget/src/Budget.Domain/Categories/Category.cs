@@ -11,7 +11,9 @@ public sealed class Category : Entity<CategoryId>
     public IReadOnlyCollection<Subcategory> Subcategories => _subcategories;
     private const int maxSubcategoriesCount = 10;
 
-    private Category(CategoryName name, List<Subcategory> subcategories)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Category(CategoryName name, List<Subcategory> subcategories) : base(new CategoryId())
     {
         Name = name;
         _subcategories = subcategories;

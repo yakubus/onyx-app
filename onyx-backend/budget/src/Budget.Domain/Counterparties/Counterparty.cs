@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Models.Responses;
 
 namespace Budget.Domain.Counterparties;
@@ -9,8 +8,9 @@ public sealed class Counterparty : Entity<CounterpartyId>
     public CounterpartyName Name { get; private set; }
     public CounterpartyType Type { get; init; }
 
-    [JsonConstructor]
-    private Counterparty(CounterpartyName name, CounterpartyType type)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Counterparty(CounterpartyName name, CounterpartyType type) : base(new CounterpartyId())
     {
         Name = name;
         Type = type;

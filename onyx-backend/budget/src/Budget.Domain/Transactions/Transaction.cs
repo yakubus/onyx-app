@@ -16,13 +16,16 @@ public sealed class Transaction : Entity<TransactionId>
     public SubcategoryId? SubcategoryId { get; private set; }
     public CounterpartyId CounterpartyId { get; private set; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private Transaction(
         Account account,
         Subcategory? subcategory,
         Money amount,
         Money? originalAmount,
         DateTime transactedAt,
-        Counterparty counterparty)
+        Counterparty counterparty) 
+        : base(new TransactionId())
     {
         AccountId = account.Id;
         Amount = amount;

@@ -170,10 +170,8 @@ public sealed record Currency
     public static readonly Currency Zmw = new("ZMW");
     public static readonly Currency Zwl = new("ZWL");
 
-    public Currency()
-    {
-    }
-
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private Currency(string code) => Code = code;
 
     public string Code { get; init; }

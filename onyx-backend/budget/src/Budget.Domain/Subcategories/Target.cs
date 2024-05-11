@@ -16,6 +16,8 @@ public sealed record Target : ValueObject
             TargetAmount with { Amount = 0 } :
             (TargetAmount - CollectedAmount) / monthsInterval ;
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private Target(MonthDate upToMonth, Money targetAmount, Money collectedAmount, MonthDate startedAt)
     {
         UpToMonth = upToMonth;

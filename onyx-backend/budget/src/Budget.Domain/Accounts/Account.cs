@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
@@ -12,16 +11,12 @@ public sealed class Account : Entity<AccountId>
     public Money Balance { get; private set; }
     public AccountType Type { get; init; }
 
-    private Account(AccountName name, Money balance, AccountType type)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Account(AccountName name, Money balance, AccountType type) : base(new AccountId())
     {
         Name = name;
         Balance = balance;
-        Type = type;
-    }
-
-    [JsonConstructor]
-    protected Account(AccountType type)
-    {
         Type = type;
     }
 

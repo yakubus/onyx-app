@@ -30,7 +30,7 @@ internal sealed class UpdateCounterpartyCommandHandler : ICommandHandler<UpdateC
 
         var counterparty = counterpartyGetResult.Value;
 
-        var changeNameResult = counterparty.ChangeName(request.Name);
+        var changeNameResult = counterparty.ChangeName(request.NewName);
 
         if (changeNameResult.IsFailure)
         {

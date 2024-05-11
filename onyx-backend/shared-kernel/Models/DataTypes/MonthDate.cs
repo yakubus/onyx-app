@@ -15,11 +15,13 @@ public sealed record MonthDate
     private const int maxMonth = 12;
     private const int minMonth = 1;
 
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private MonthDate(int month, int year)
     {
-            Month = month;
-            Year = year;
-        }
+        Month = month;
+        Year = year;
+    }
 
         
     public static Result<MonthDate> Create(int month, int year)
