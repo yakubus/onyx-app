@@ -4,6 +4,7 @@ using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
+using Models.DataTypes;
 using Models.Responses;
 using Transaction = Budget.Domain.Transactions.Transaction;
 
@@ -26,6 +27,11 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
 
     public async Task<Result<IEnumerable<TransactionModel>>> Handle(GetTransactionsQuery request, CancellationToken cancellationToken)
     {
+        if (request.Query is null)
+        {
+            return Result.Failure<IEnumerable<TransactionModel>>(GetTransactionErrors.QueryIsNull);
+        }
+
         var queryCreateResult = GetTransactionQueryRequest.FromString(request.Query);
 
         if (queryCreateResult.IsFailure)
@@ -129,7 +135,8 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
                 request.CounterpartyId is not null,
             _ when query == GetTransactionQueryRequest.Assignment =>
                 request.SubcategoryId is not null &&
-                request.AssignmentPeriod is not null,
+                request.AssignmentMonth is not null &&
+                request.AssignmentYear is not null,
             _ => false
         };
 }

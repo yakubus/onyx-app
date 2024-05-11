@@ -2,7 +2,7 @@
 
 namespace Budget.API.Controllers.Transactions.Requests;
 
-internal sealed record AddTransactionRequest
+public sealed record AddTransactionRequest
 {
     public Guid AccountId { get; set; }
     public MoneyModel Amount { get; set; }

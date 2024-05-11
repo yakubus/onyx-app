@@ -3,7 +3,7 @@ using Models.DataTypes;
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-internal sealed record UpdateAssignmentRequest
+public sealed record UpdateAssignmentRequest
 {
     public MoneyModel AssignedAmount { get; set; }
     public MonthDate AssignmentMonth { get; set; }

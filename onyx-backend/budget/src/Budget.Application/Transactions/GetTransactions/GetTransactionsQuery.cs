@@ -5,7 +5,7 @@ using Models.DataTypes;
 namespace Budget.Application.Transactions.GetTransactions;
 
 public sealed record GetTransactionsQuery(
-    string Query,
+    string? Query,
     Guid? CounterpartyId,
     Guid? AccountId,
     Guid? SubcategoryId,
