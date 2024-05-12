@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Budget.API.Controllers.Accounts.Requests;
+﻿using Budget.API.Controllers.Accounts.Requests;
 using Budget.Application.Accounts.AddAccount;
 using Budget.Application.Accounts.GetAccounts;
 using Budget.Application.Accounts.Models;
@@ -20,8 +19,10 @@ public sealed class AccountsController : ControllerBase
     public AccountsController(ISender sender) => _sender = sender;
 
     [HttpGet]
-    [ProducesResponseType(typeof(Result<IEnumerable<AccountModel>>), 200)]
-    [ProducesResponseType(typeof(Result<IEnumerable<AccountModel>>), 400)]
+    [ProducesResponseType(typeof(Result<IEnumerable<AccountModel>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAccounts(CancellationToken cancellationToken)
     {
         var query = new GetAccountsQuery();
@@ -34,6 +35,11 @@ public sealed class AccountsController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(Result<AccountModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(AddAccountRequest), "application/json")]
     public async Task<IActionResult> AddAccount(
         [FromBody] AddAccountRequest request,
         CancellationToken cancellationToken)
@@ -48,6 +54,11 @@ public sealed class AccountsController : ControllerBase
     }
 
     [HttpPut("{accountId}")]
+    [ProducesResponseType(typeof(Result<AccountModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateAccountRequest), "application/json")]
     public async Task<IActionResult> UpdateAccount(
         [FromRoute] Guid accountId,
         [FromBody] UpdateAccountRequest request,
@@ -63,6 +74,11 @@ public sealed class AccountsController : ControllerBase
     }
 
     [HttpDelete("{accountId}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [EndpointDescription("Deletes account and all related transactions")]
     public async Task<IActionResult> RemoveAccount(
         [FromRoute] Guid accountId,
         CancellationToken cancellationToken)

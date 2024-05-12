@@ -1,13 +1,8 @@
-﻿using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Abstractions.DomainBaseTypes;
-using Azure;
-using Budget.Domain.Subcategories;
 using Budget.Infrastructure.Data;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 using Models.Responses;
-using Newtonsoft.Json;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 namespace Budget.Infrastructure.Repositories;

@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Budget.Domain.Transactions;
-using Models.DataTypes;
 
 namespace Budget.Application.Transactions.GetTransactions;
 
@@ -13,7 +12,7 @@ internal static class GetTransactionFilters
     private static Expression<Func<Transaction, bool>> GetSubcategoryFilter(Guid subcategoryId) =>
         transaction => transaction.SubcategoryId != null && transaction.SubcategoryId.Value == subcategoryId;
     private static Expression<Func<Transaction, bool>> GetCounterpartyFilter(Guid counterpartyId) =>
-        transaction => transaction.CounterpartyId.Value == counterpartyId;
+        transaction => transaction.CounterpartyId != null && transaction.CounterpartyId.Value == counterpartyId;
 
     internal static Expression<Func<Transaction, bool>> GetFilter(
         GetTransactionQueryRequest query,
@@ -22,12 +21,12 @@ internal static class GetTransactionFilters
         {
             _ when query == GetTransactionQueryRequest.All ||
                    query == GetTransactionQueryRequest.Empty =>
-                GetTransactionFilters.GetAllFilter(),
+                GetAllFilter(),
             _ when query == GetTransactionQueryRequest.Account =>
-                GetTransactionFilters.GetAccountFilter(request.AccountId!.Value),
+                GetAccountFilter(request.AccountId!.Value),
             _ when query == GetTransactionQueryRequest.Subcategory =>
-                GetTransactionFilters.GetSubcategoryFilter(request.SubcategoryId!.Value),
+                GetSubcategoryFilter(request.SubcategoryId!.Value),
             _ when query == GetTransactionQueryRequest.Counterparty =>
-                GetTransactionFilters.GetCounterpartyFilter(request.CounterpartyId!.Value)
+                GetCounterpartyFilter(request.CounterpartyId!.Value)
         };
 }

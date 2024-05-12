@@ -1,15 +1,12 @@
-﻿using Budget.API.Controllers.Accounts.Requests;
-using Budget.API.Controllers.Categories.Requests;
-using Budget.Application.Accounts.AddAccount;
-using Budget.Application.Accounts.GetAccounts;
-using Budget.Application.Accounts.RemoveAccount;
-using Budget.Application.Accounts.UpdateAccount;
+﻿using Budget.API.Controllers.Categories.Requests;
 using Budget.Application.Categories.AddCategory;
 using Budget.Application.Categories.GetCategories;
+using Budget.Application.Categories.Models;
 using Budget.Application.Categories.RemoveCategory;
 using Budget.Application.Categories.UpdateCategory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Models.Responses;
 
 namespace Budget.API.Controllers.Categories;
 
@@ -22,6 +19,10 @@ public sealed class CategoriesController : ControllerBase
     public CategoriesController(ISender sender) => _sender = sender;
 
     [HttpGet]
+    [ProducesResponseType(typeof(Result<IEnumerable<CategoryModel>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
     {
         var query = new GetCategoriesQuery();
@@ -34,6 +35,11 @@ public sealed class CategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(Result<CategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(AddCategoryRequest), "application/json")]
     public async Task<IActionResult> AddCategory(
         [FromBody] AddCategoryRequest request,
         CancellationToken cancellationToken)
@@ -48,6 +54,11 @@ public sealed class CategoriesController : ControllerBase
     }
 
     [HttpPut("{categoryId}")]
+    [ProducesResponseType(typeof(Result<CategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateCategoryRequest), "application/json")]
     public async Task<IActionResult> UpdateCategory(
         [FromRoute] Guid categoryId,
         [FromBody] UpdateCategoryRequest request,
@@ -63,6 +74,11 @@ public sealed class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{categoryId}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [EndpointDescription("Deletes category and all related subcategories (not removes transactions)")]
     public async Task<IActionResult> RemoveCategory(
         [FromRoute] Guid categoryId,
         CancellationToken cancellationToken)

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Models.Exceptions;
 using Newtonsoft.Json;
 
 namespace Models.Responses;
@@ -48,7 +47,7 @@ public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    [Newtonsoft.Json.JsonConstructor]
+    [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
     protected internal Result(TValue? value, bool isSuccess, Error error)
         : base(isSuccess, error)

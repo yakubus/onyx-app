@@ -17,7 +17,7 @@ public abstract class Entity<TEntityId> : IEntity where TEntityId : EntityId
 
     protected Entity(TEntityId id)
     {
-        this.Id = id;
+        Id = id;
         _domainEvents = new();
     }
 

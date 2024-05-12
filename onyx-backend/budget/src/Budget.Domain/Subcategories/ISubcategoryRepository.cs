@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Abstractions.DomainBaseTypes;
 using Models.Responses;
 
 namespace Budget.Domain.Subcategories;

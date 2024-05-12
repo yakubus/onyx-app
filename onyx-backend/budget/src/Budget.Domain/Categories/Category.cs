@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Subcategories;
 using Models.Responses;
-using Newtonsoft.Json;
 
 namespace Budget.Domain.Categories;
 

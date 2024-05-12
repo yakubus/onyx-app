@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Transactions;
 using Budget.Domain.Transactions;
 using Newtonsoft.Json;
 

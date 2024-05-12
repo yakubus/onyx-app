@@ -3,7 +3,6 @@ using Budget.Application.Categories.Models;
 using Budget.Domain.Categories;
 using Budget.Domain.Subcategories;
 using Models.Responses;
-using MongoDB.Bson;
 
 namespace Budget.Application.Categories.AddCategory;
 

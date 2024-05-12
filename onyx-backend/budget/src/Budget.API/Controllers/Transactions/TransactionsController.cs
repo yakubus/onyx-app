@@ -1,11 +1,10 @@
 ﻿using Budget.API.Controllers.Transactions.Requests;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.GetTransactions;
+using Budget.Application.Transactions.Models;
 using Budget.Application.Transactions.RemoveTransaction;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
-using Models.DataTypes;
 using Models.Responses;
 using Result = Models.Responses.Result;
 
@@ -23,6 +22,12 @@ public sealed class TransactionsController : ControllerBase
     public TransactionsController(ISender sender) => _sender = sender;
 
     [HttpGet]
+    [ProducesResponseType(typeof(Result<IEnumerable<TransactionModel>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [EndpointDescription(
+        "Returns all transactions for a given query (all, counterparty, account, subcategory)")]
     public async Task<IActionResult> GetTransactions(
         [FromQuery] string? query,
         [FromQuery] Guid? counterpartyId,
@@ -44,6 +49,11 @@ public sealed class TransactionsController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(Result<TransactionModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(AddTransactionRequest), "application/json")]
     public async Task<IActionResult> AddTransaction(
         [FromBody] AddTransactionRequest request,
         CancellationToken cancellationToken)
@@ -63,6 +73,10 @@ public sealed class TransactionsController : ControllerBase
     }
 
     [HttpDelete("{transactionId}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveTransaction(
         [FromRoute] Guid transactionId,
         CancellationToken cancellationToken)

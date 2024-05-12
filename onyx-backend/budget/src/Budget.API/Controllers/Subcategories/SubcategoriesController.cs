@@ -1,5 +1,6 @@
 ﻿using Budget.API.Controllers.Subcategories.Requests;
 using Budget.Application.Subcategories.AddSubcategory;
+using Budget.Application.Subcategories.Models;
 using Budget.Application.Subcategories.RemoveAssignment;
 using Budget.Application.Subcategories.RemoveSubcategory;
 using Budget.Application.Subcategories.RemoveTarget;
@@ -8,6 +9,7 @@ using Budget.Application.Subcategories.UpdateSubcategory;
 using Budget.Application.Subcategories.UpdateTarget;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Models.Responses;
 
 namespace Budget.API.Controllers.Subcategories;
 
@@ -20,6 +22,11 @@ public sealed class SubcategoriesController : ControllerBase
     public SubcategoriesController(ISender sender) => _sender = sender;
 
     [HttpPost]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(AddSubcategoryRequest), "application/json")]
     public async Task<IActionResult> AddSubcategory(
         [FromBody] AddSubcategoryRequest request,
         CancellationToken cancellationToken)
@@ -34,6 +41,11 @@ public sealed class SubcategoriesController : ControllerBase
     }
 
     [HttpPut("{subcategoryId}")]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateSubcategoryRequest), "application/json")]
     public async Task<IActionResult> UpdateSubcategory(
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateSubcategoryRequest request,
@@ -49,6 +61,10 @@ public sealed class SubcategoriesController : ControllerBase
     }
 
     [HttpDelete("{subcategoryId}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveSubcategory(
         [FromRoute] Guid subcategoryId,
         CancellationToken cancellationToken)
@@ -64,6 +80,11 @@ public sealed class SubcategoriesController : ControllerBase
 
 
     [HttpPut("{subcategoryId}/assignment")]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateAssignmentRequest), "application/json")]
     public async Task<IActionResult> UpdateAssignment(
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateAssignmentRequest request,
@@ -79,6 +100,11 @@ public sealed class SubcategoriesController : ControllerBase
     }
 
     [HttpPut("{subcategoryId}/assignment/remove")]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(RemoveAssignmentRequest), "application/json")]
     public async Task<IActionResult> RemoveAssignment(
         [FromRoute] Guid subcategoryId,
         [FromBody] RemoveAssignmentRequest request,
@@ -94,6 +120,11 @@ public sealed class SubcategoriesController : ControllerBase
     }
 
     [HttpPut("{subcategoryId}/target")]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateTargetRequest), "application/json")]
     public async Task<IActionResult> UpdateTarget(
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateTargetRequest request,
@@ -109,6 +140,10 @@ public sealed class SubcategoriesController : ControllerBase
     }
 
     [HttpPut("{subcategoryId}/target/remove")]
+    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveTarget(
         [FromRoute] Guid subcategoryId,
         CancellationToken cancellationToken)

@@ -1,5 +1,4 @@
 ﻿using Abstractions.Messaging;
-using Budget.Application.Counterparties.AddCounterparty;
 using Budget.Application.Counterparties.Models;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Transactions;

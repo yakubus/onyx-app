@@ -1,6 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Abstractions.DomainBaseTypes;
-using Budget.Domain.Subcategories;
 using Models.Responses;
 
 namespace Budget.Domain.Transactions;
@@ -27,4 +25,6 @@ public interface ITransactionRepository
     Task<Result<Transaction>> GetByIdAsync(TransactionId requestTransactionId, CancellationToken cancellationToken = default);
 
     Task<Result> RemoveAsync(TransactionId transactionId, CancellationToken cancellationToken = default);
+
+    Task<Result> UpdateRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default);
 }

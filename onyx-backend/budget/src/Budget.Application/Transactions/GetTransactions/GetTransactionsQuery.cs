@@ -1,6 +1,5 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Transactions.Models;
-using Models.DataTypes;
 
 namespace Budget.Application.Transactions.GetTransactions;
 

@@ -14,7 +14,7 @@ public sealed class Transaction : Entity<TransactionId>
     public Money? OriginalAmount { get; init; }
     public DateTime TransactedAt { get; init; }
     public SubcategoryId? SubcategoryId { get; private set; }
-    public CounterpartyId CounterpartyId { get; private set; }
+    public CounterpartyId? CounterpartyId { get; private set; }
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
@@ -24,7 +24,7 @@ public sealed class Transaction : Entity<TransactionId>
         Money? originalAmount,
         DateTime transactedAt,
         SubcategoryId? subcategoryId,
-        CounterpartyId counterpartyId,
+        CounterpartyId? counterpartyId,
         TransactionId? id) : base(id ?? new TransactionId())
     {
         AccountId = accountId;
@@ -198,4 +198,8 @@ public sealed class Transaction : Entity<TransactionId>
 
         return transaction;
     }
+
+    public void RemoveCounterparty() => CounterpartyId = null;
+
+    public void RemoveSubcategory() => SubcategoryId = null;
 }
