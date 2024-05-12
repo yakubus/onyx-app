@@ -5,6 +5,7 @@ using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Budget.Infrastructure.CurrencyServices;
+using Budget.Infrastructure.CurrencyServices.NbpClient;
 using Budget.Infrastructure.Data;
 using Budget.Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -42,6 +43,12 @@ public static class DependencyInjection
 
     private static void AddCurrencyConverter(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHttpClient<NbpClient>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["CurrencyConverter:BaseUrl"] 
+                                         ?? throw new MissingFieldException("Currency converter base url is missing"));
+        });
+
         services.AddTransient<ICurrencyConverter, CurrencyConverter>();
     }
 }
