@@ -17,7 +17,6 @@ internal sealed record GetTransactionQueryRequest
     internal static readonly GetTransactionQueryRequest Counterparty = new(nameof(Counterparty));
     internal static readonly GetTransactionQueryRequest Account = new(nameof(Account));
     internal static readonly GetTransactionQueryRequest Subcategory = new(nameof(Subcategory));
-    internal static readonly GetTransactionQueryRequest Assignment = new(nameof(Assignment));
 
     internal static readonly IReadOnlyCollection<GetTransactionQueryRequest> AllValues =
         new List<GetTransactionQueryRequest>
@@ -26,8 +25,7 @@ internal sealed record GetTransactionQueryRequest
             All,
             Counterparty,
             Account,
-            Subcategory,
-            Assignment
+            Subcategory
         };
 
     internal static Result<GetTransactionQueryRequest> FromString(string value) =>

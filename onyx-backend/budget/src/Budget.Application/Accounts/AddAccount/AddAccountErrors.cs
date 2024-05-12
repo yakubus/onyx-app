@@ -2,7 +2,7 @@
 
 namespace Budget.Application.Accounts.AddAccount;
 
-internal static class AddCounterpartyErrors
+internal static class AddAccountErrors
 {
     internal static readonly Error AccountAlreadyExists = new (
         "AccountId.AlreadyExists",

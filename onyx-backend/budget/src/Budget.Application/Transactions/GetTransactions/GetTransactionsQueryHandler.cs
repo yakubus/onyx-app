@@ -133,10 +133,6 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
                 request.SubcategoryId is not null,
             _ when query == GetTransactionQueryRequest.Counterparty =>
                 request.CounterpartyId is not null,
-            _ when query == GetTransactionQueryRequest.Assignment =>
-                request.SubcategoryId is not null &&
-                request.AssignmentMonth is not null &&
-                request.AssignmentYear is not null,
             _ => false
         };
 }

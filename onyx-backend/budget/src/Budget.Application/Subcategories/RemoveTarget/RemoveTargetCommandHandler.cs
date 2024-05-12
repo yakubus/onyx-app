@@ -1,10 +1,11 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Subcategories.Models;
 using Budget.Domain.Subcategories;
 using Models.Responses;
 
 namespace Budget.Application.Subcategories.RemoveTarget;
 
-internal sealed class RemoveTargetCommandHandler : ICommandHandler<RemoveTargetCommand>
+internal sealed class RemoveTargetCommandHandler : ICommandHandler<RemoveTargetCommand, SubcategoryModel>
 {
     private readonly ISubcategoryRepository _subcategoryRepository;
 
@@ -13,7 +14,7 @@ internal sealed class RemoveTargetCommandHandler : ICommandHandler<RemoveTargetC
         _subcategoryRepository = subcategoryRepository;
     }
 
-    public async Task<Result> Handle(RemoveTargetCommand request, CancellationToken cancellationToken)
+    public async Task<Result<SubcategoryModel>> Handle(RemoveTargetCommand request, CancellationToken cancellationToken)
     {
         var subcategoryId = new SubcategoryId(request.SubcategoryId);
 
@@ -21,7 +22,7 @@ internal sealed class RemoveTargetCommandHandler : ICommandHandler<RemoveTargetC
 
         if (subcategoryGetResult.IsFailure)
         {
-            return Result.Failure(subcategoryGetResult.Error);
+            return Result.Failure<SubcategoryModel>(subcategoryGetResult.Error);
         }
 
         var subcategory = subcategoryGetResult.Value;
@@ -30,16 +31,18 @@ internal sealed class RemoveTargetCommandHandler : ICommandHandler<RemoveTargetC
 
         if (unsetTargetResult.IsFailure)
         {
-            return Result.Failure(unsetTargetResult.Error);
+            return Result.Failure<SubcategoryModel>(unsetTargetResult.Error);
         }
 
         var subcategoryUpdateResult = await _subcategoryRepository.UpdateAsync(subcategory, cancellationToken);
 
         if (subcategoryUpdateResult.IsFailure)
         {
-            return Result.Failure(subcategoryUpdateResult.Error);
+            return Result.Failure<SubcategoryModel>(subcategoryUpdateResult.Error);
         }
 
-        return Result.Success();
+        subcategory = subcategoryUpdateResult.Value;
+
+        return SubcategoryModel.FromDomainModel(subcategory);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using Models.Exceptions;
+using Newtonsoft.Json;
 
 namespace Models.Responses;
 
@@ -48,17 +48,17 @@ public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     protected internal Result(TValue? value, bool isSuccess, Error error)
         : base(isSuccess, error)
     {
         _value = value;
     }
 
-    [NotNull]
+    [NotNullIfNotNull("_value")]
     public TValue Value => IsSuccess
-        ? _value!
-        : throw new DomainException<Result<TValue>>("The value of a failure result can not be accessed.");
+        ? _value! : default;
 
     public static implicit operator Result<TValue>(TValue? value) => Create(value);
 

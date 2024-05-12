@@ -20,7 +20,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         SubcategoryName name,
         SubcategoryDescription? description,
         List<Assignment> assignments,
-        Target? target) : base(new SubcategoryId())
+        Target? target,
+        SubcategoryId? id = null) : base(id ?? new SubcategoryId())
     {
         Name = name;
         Description = description;

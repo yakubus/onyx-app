@@ -8,7 +8,6 @@ public sealed record GetTransactionsQuery(
     string? Query,
     Guid? CounterpartyId,
     Guid? AccountId,
-    Guid? SubcategoryId,
-    MonthDate? AssignmentPeriod) : IQuery<IEnumerable<TransactionModel>>
+    Guid? SubcategoryId) : IQuery<IEnumerable<TransactionModel>>
 {
 }

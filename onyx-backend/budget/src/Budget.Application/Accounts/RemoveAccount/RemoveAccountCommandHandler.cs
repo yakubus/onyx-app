@@ -35,11 +35,15 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
             return Result.Failure(relatedTransactionsGetResult.Error);
         }
 
-        var relatedTransactions = relatedTransactionsGetResult.Value;
+        var relatedTransactions = relatedTransactionsGetResult.Value.ToList();
+        
+        if (relatedTransactions.Count == 0)
+        {
+            return await RemoveAccounts(cancellationToken, accountId);
+        }
 
-        var relatedSubcategoriesGetResult = await _subcategoryRepository.GetWhereAsync(
-            subcategory => relatedTransactions.Any(
-                transaction => transaction.SubcategoryId != null && transaction.SubcategoryId == subcategory.Id),
+        var relatedSubcategoriesGetResult = await _subcategoryRepository.GetManyByIdAsync(
+            relatedTransactions.Select(t => t.SubcategoryId).Where(s => s is not null)!,
             cancellationToken);
 
         if (relatedSubcategoriesGetResult.IsFailure)
@@ -59,6 +63,13 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
             cancellationToken);
     }
 
+    private async Task<Result> RemoveAccounts(CancellationToken cancellationToken, AccountId accountId)
+    {
+        var removeResult = await _accountRepository.RemoveAsync(accountId, cancellationToken);
+
+        return removeResult.IsFailure ? Result.Failure(removeResult.Error) : Result.Success();
+    }
+
     private async Task<Result> RemoveAccountSafely(
         IEnumerable<Transaction> relatedTransactions,
         IEnumerable<Subcategory> relatedSubcategories,
@@ -66,7 +77,7 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
         CancellationToken cancellationToken)
     {
         var relatedTransactionsRemoveTask = _transactionRepository.RemoveRangeAsync(
-            relatedTransactions,
+            relatedTransactions.Select(t => t.Id),
             cancellationToken);
         var relatedSubcategoriesUpdateTask = _subcategoryRepository.UpdateRangeAsync(
             relatedSubcategories,

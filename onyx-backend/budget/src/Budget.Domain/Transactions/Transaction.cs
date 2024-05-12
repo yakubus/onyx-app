@@ -24,8 +24,9 @@ public sealed class Transaction : Entity<TransactionId>
         Money amount,
         Money? originalAmount,
         DateTime transactedAt,
-        Counterparty counterparty) 
-        : base(new TransactionId())
+        Counterparty counterparty,
+        TransactionId? id = null) 
+        : base(id ?? new TransactionId())
     {
         AccountId = account.Id;
         Amount = amount;

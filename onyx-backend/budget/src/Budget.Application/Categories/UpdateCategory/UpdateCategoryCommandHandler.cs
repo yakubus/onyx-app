@@ -1,6 +1,7 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Categories.Models;
 using Budget.Domain.Categories;
+using Budget.Domain.Subcategories;
 using Models.Responses;
 
 namespace Budget.Application.Categories.UpdateCategory;
@@ -8,10 +9,12 @@ namespace Budget.Application.Categories.UpdateCategory;
 internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryCommand, CategoryModel>
 {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly ISubcategoryRepository _subcategoryRepository;
 
-    public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository)
+    public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, ISubcategoryRepository subcategoryRepository)
     {
         _categoryRepository = categoryRepository;
+        _subcategoryRepository = subcategoryRepository;
     }
 
     public async Task<Result<CategoryModel>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -32,6 +35,13 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
             return Result.Failure<CategoryModel>(categoryChangeNameResult.Error);
         }
 
+        var categoryIsNotUniqueResult = await _categoryRepository.GetByNameAsync(category.Name, cancellationToken);
+
+        if (categoryIsNotUniqueResult.IsSuccess)
+        {
+            return Result.Failure<CategoryModel>(UpdateCategoryErrors.CategoryAlreadyExistsError);
+        }
+
         var categoryUpdateResult = await _categoryRepository.UpdateAsync(category, cancellationToken);
 
         if (categoryUpdateResult.IsFailure)
@@ -41,6 +51,17 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
 
         category = categoryUpdateResult.Value;
 
-        return CategoryModel.FromDomainModel(category);
+        var subcategoriesGetResult = await _subcategoryRepository.GetManyByIdAsync(
+            category.SubcategoriesId,
+            cancellationToken);
+
+        if (subcategoriesGetResult.IsFailure)
+        {
+            return Result.Failure<CategoryModel>(subcategoriesGetResult.Error);
+        }
+
+        var subcategories = subcategoriesGetResult.Value;
+
+        return CategoryModel.FromDomainModel(category, subcategories);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Counterparties.AddCounterparty;
 using Budget.Application.Counterparties.Models;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Transactions;
@@ -35,6 +36,15 @@ internal sealed class UpdateCounterpartyCommandHandler : ICommandHandler<UpdateC
         if (changeNameResult.IsFailure)
         {
             return Result.Failure<CounterpartyModel>(changeNameResult.Error);
+        }
+
+        var isCounterpartyExistsResult = await _counterpartyRepository.GetSingleAsync(
+            c => c.Name == counterparty.Name && c.Type == counterparty.Type,
+            cancellationToken);
+
+        if (isCounterpartyExistsResult.IsSuccess)
+        {
+            return Result.Failure<CounterpartyModel>(UpdateCounterpartyErrors.CounterpartyAlreadyExists);
         }
 
         var counterpartyUpdateResult = await _counterpartyRepository.UpdateAsync(counterparty, cancellationToken);

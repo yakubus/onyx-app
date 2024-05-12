@@ -7,13 +7,15 @@ namespace Budget.Domain.Accounts;
 
 public sealed class Account : Entity<AccountId>
 {
+
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
     public AccountType Type { get; init; }
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Account(AccountName name, Money balance, AccountType type) : base(new AccountId())
+    private Account(AccountName name, Money balance, AccountType type, AccountId? id = null) 
+        : base(id ?? new AccountId())
     {
         Name = name;
         Balance = balance;

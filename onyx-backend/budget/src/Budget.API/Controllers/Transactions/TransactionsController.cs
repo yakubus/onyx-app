@@ -28,25 +28,13 @@ public sealed class TransactionsController : ControllerBase
         [FromQuery] Guid? counterpartyId,
         [FromQuery] Guid? accountId,
         [FromQuery] Guid? subcategoryId,
-        [FromQuery] int? assignmentMonth,
-        [FromQuery] int? assignmentYear,
         CancellationToken cancellationToken)
     {
-        var assignmentPeriodCreateResult = assignmentMonth is null || assignmentYear is null ?
-            null :
-            MonthDate.Create(assignmentMonth.Value, assignmentYear.Value);
-
-        if (assignmentPeriodCreateResult is not null && assignmentPeriodCreateResult.IsFailure)
-        {
-            return BadRequest(Result.Failure(_invalidPeriodError));
-        }
-
         var transactionsQuery = new GetTransactionsQuery(
             query, 
             counterpartyId,
             accountId,
-            subcategoryId,
-            assignmentPeriodCreateResult?.Value);
+            subcategoryId);
 
         var result = await _sender.Send(transactionsQuery, cancellationToken);
 

@@ -14,11 +14,6 @@ internal static class GetTransactionFilters
         transaction => transaction.SubcategoryId != null && transaction.SubcategoryId.Value == subcategoryId;
     private static Expression<Func<Transaction, bool>> GetCounterpartyFilter(Guid counterpartyId) =>
         transaction => transaction.CounterpartyId.Value == counterpartyId;
-    private static Expression<Func<Transaction, bool>> GetAssignmentFilter(Guid subcategoryId, MonthDate assignmentPeriod) =>
-        transaction =>
-            transaction.SubcategoryId != null &&
-            transaction.SubcategoryId.Value == subcategoryId &&
-            assignmentPeriod.ContainsDate(transaction.TransactedAt);
 
     internal static Expression<Func<Transaction, bool>> GetFilter(
         GetTransactionQueryRequest query,
@@ -33,8 +28,6 @@ internal static class GetTransactionFilters
             _ when query == GetTransactionQueryRequest.Subcategory =>
                 GetTransactionFilters.GetSubcategoryFilter(request.SubcategoryId!.Value),
             _ when query == GetTransactionQueryRequest.Counterparty =>
-                GetTransactionFilters.GetCounterpartyFilter(request.CounterpartyId!.Value),
-            _ when query == GetTransactionQueryRequest.Assignment =>
-                GetTransactionFilters.GetAssignmentFilter(request.SubcategoryId!.Value, request.AssignmentPeriod!),
+                GetTransactionFilters.GetCounterpartyFilter(request.CounterpartyId!.Value)
         };
 }

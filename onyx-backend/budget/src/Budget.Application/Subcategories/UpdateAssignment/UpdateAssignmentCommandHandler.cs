@@ -55,6 +55,8 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
             return Result.Failure<SubcategoryModel>(subcategoryUpdateResult.Error);
         }
 
+        subcategory = subcategoryUpdateResult.Value;
+
         return SubcategoryModel.FromDomainModel(subcategory);
     }
 }

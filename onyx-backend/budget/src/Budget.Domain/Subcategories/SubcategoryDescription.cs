@@ -16,7 +16,7 @@ public sealed record SubcategoryDescription : ValueObject
     {
         value = value.Trim();
 
-        return valueMaxLength < value.Length ?
+        return valueMaxLength > value.Length ?
             new SubcategoryDescription(value) :
             Result.Failure<SubcategoryDescription>(SubcategoryErrors.DescriptionTooLong);
     }

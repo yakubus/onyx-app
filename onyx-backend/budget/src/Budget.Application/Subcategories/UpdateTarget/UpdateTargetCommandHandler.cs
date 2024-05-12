@@ -37,11 +37,6 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
         var targetAmount = targetAmountCreateResult.Value;
         var currentTarget = subcategory.Target;
 
-        if (currentTarget is null)
-        {
-            subcategory.SetTarget(targetAmount, request.TargetUpToMonth);
-        }
-
         var targetUpdateResult = currentTarget switch
         {
             null => subcategory.SetTarget(targetAmount, request.TargetUpToMonth),

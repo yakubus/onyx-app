@@ -5,12 +5,14 @@ namespace Budget.Domain.Counterparties;
 
 public sealed class Counterparty : Entity<CounterpartyId>
 {
+
     public CounterpartyName Name { get; private set; }
     public CounterpartyType Type { get; init; }
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Counterparty(CounterpartyName name, CounterpartyType type) : base(new CounterpartyId())
+    private Counterparty(CounterpartyName name, CounterpartyType type, CounterpartyId? id = null) 
+        : base(id ?? new CounterpartyId())
     {
         Name = name;
         Type = type;

@@ -2,6 +2,7 @@
 using Abstractions.Messaging;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Categories;
+using Budget.Domain.Subcategories;
 
 namespace Budget.Application.Categories.Models;
 
@@ -9,13 +10,13 @@ public sealed record CategoryModel : EntityBusinessModel
 {
     public Guid Id { get; init; }
     public string Name { get; init; }
-    public List<SubcategoryModel> Subcategories { get; init; }
+    public IEnumerable<SubcategoryModel> Subcategories { get; init; }
 
     [JsonConstructor]
     public CategoryModel(
         Guid id,
         string name,
-        List<SubcategoryModel> subcategories,
+        IEnumerable<SubcategoryModel> subcategories,
         IEnumerable<IDomainEvent> domainEvents) 
         : base(domainEvents)
     {
@@ -25,11 +26,9 @@ public sealed record CategoryModel : EntityBusinessModel
     }
 
 
-    internal static CategoryModel FromDomainModel(Category domainModel) =>
+    internal static CategoryModel FromDomainModel(Category domainModel, IEnumerable<Subcategory> subcategories) =>
         new(domainModel.Id.Value,
             domainModel.Name.Value,
-            domainModel.Subcategories
-                .Select(SubcategoryModel.FromDomainModel)
-                .ToList(),
+            subcategories.Select(SubcategoryModel.FromDomainModel),
             domainModel.GetDomainEvents());
 }

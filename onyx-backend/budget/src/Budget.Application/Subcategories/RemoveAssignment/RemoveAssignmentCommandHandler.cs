@@ -1,10 +1,11 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Subcategories.Models;
 using Budget.Domain.Subcategories;
 using Models.Responses;
 
 namespace Budget.Application.Subcategories.RemoveAssignment;
 
-internal sealed class RemoveAssignmentCommandHandler : ICommandHandler<RemoveAssignmentCommand>
+internal sealed class RemoveAssignmentCommandHandler : ICommandHandler<RemoveAssignmentCommand, SubcategoryModel>
 {
     private readonly ISubcategoryRepository _subcategoryRepository;
 
@@ -13,7 +14,7 @@ internal sealed class RemoveAssignmentCommandHandler : ICommandHandler<RemoveAss
         _subcategoryRepository = subcategoryRepository;
     }
 
-    public async Task<Result> Handle(RemoveAssignmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<SubcategoryModel>> Handle(RemoveAssignmentCommand request, CancellationToken cancellationToken)
     {
         var subcategoryId = new SubcategoryId(request.SubcategoryId);
 
@@ -21,25 +22,27 @@ internal sealed class RemoveAssignmentCommandHandler : ICommandHandler<RemoveAss
 
         if (subcategoryGetResult.IsFailure)
         {
-            return Result.Failure(subcategoryGetResult.Error);
+            return Result.Failure<SubcategoryModel>(subcategoryGetResult.Error);
         }
 
         var subcategory = subcategoryGetResult.Value;
 
-        var unassignResult = subcategory.Unassign(request.AssignmentMonth.Month, request.AssignmentMonth.Month);
+        var unassignResult = subcategory.Unassign(request.AssignmentMonth.Month, request.AssignmentMonth.Year);
 
         if (unassignResult.IsFailure)
         {
-            return Result.Failure(unassignResult.Error);
+            return Result.Failure<SubcategoryModel>(unassignResult.Error);
         }
 
         var updateResult = await _subcategoryRepository.UpdateAsync(subcategory, cancellationToken);
 
         if (updateResult.IsFailure)
         {
-            return Result.Failure(updateResult.Error);
+            return Result.Failure<SubcategoryModel>(updateResult.Error);
         }
 
-        return Result.Success();
+        subcategory = updateResult.Value;
+
+        return SubcategoryModel.FromDomainModel(subcategory);
     }
 }

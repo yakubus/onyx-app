@@ -1,17 +1,21 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Categories.Models;
 using Budget.Domain.Categories;
+using Budget.Domain.Subcategories;
 using Models.Responses;
+using MongoDB.Bson;
 
 namespace Budget.Application.Categories.AddCategory;
 
 internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCommand, CategoryModel>
 {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly ISubcategoryRepository _subcategoryRepository;
 
-    public AddCategoryCommandHandler(ICategoryRepository categoryRepository)
+    public AddCategoryCommandHandler(ICategoryRepository categoryRepository, ISubcategoryRepository subcategoryRepository)
     {
         _categoryRepository = categoryRepository;
+        _subcategoryRepository = subcategoryRepository;
     }
 
     // TODO: Add max categories validation (10 per budget (increased by 3 for each budget member))
@@ -31,7 +35,6 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
         {
             return Result.Failure<CategoryModel>(AddCategoryErrors.CategoryAlreadyExistsError);
         }
-
         var categoryAddResult = await _categoryRepository.AddAsync(category, cancellationToken);
 
         if (categoryAddResult.IsFailure)
@@ -41,6 +44,6 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
 
         category = categoryAddResult.Value;
 
-        return CategoryModel.FromDomainModel(category);
+        return CategoryModel.FromDomainModel(category, Array.Empty<Subcategory>());
     }
 }

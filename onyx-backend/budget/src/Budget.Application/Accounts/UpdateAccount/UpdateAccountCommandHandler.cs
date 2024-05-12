@@ -1,4 +1,5 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Accounts.AddAccount;
 using Budget.Application.Accounts.Models;
 using Budget.Application.Shared.Models;
 using Budget.Domain.Accounts;
@@ -40,6 +41,13 @@ internal sealed class UpdateAccountCommandHandler : ICommandHandler<UpdateAccoun
         if (updateAccountBalanceResult.IsFailure)
         {
             return Result.Failure<AccountModel>(updateAccountBalanceResult.Error);
+        }
+
+        var accountIsNotUniqueResult = await _accountRepository.GetByNameAsync(account.Name, cancellationToken);
+
+        if (accountIsNotUniqueResult.IsSuccess && request.NewName is not null)
+        {
+            return Result.Failure<AccountModel>(AddAccountErrors.AccountAlreadyExists);
         }
 
         var accountUpdateResult = await _accountRepository.UpdateAsync(account, cancellationToken);
