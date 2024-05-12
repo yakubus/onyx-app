@@ -166,6 +166,21 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         return Result.Success();
     }
+    public Result TransactForAssignment(Transaction transaction)
+    {
+        var assignment = _assignments.FirstOrDefault(a => a.Month.ContainsDate(transaction.TransactedAt));
+
+        assignment?.Transact(transaction);
+
+        return Result.Success();
+    }
+
+    public Result TransactForTarget(Transaction transaction)
+    {
+        Target?.Transact(transaction);
+
+        return Result.Success();
+    }
 
     public Result RemoveTransaction(Transaction transaction)
     {
@@ -235,8 +250,6 @@ public sealed class Subcategory : Entity<SubcategoryId>
         }
 
         var monthMoveResult = Target.MoveTargetEndMonth(newEndMonth);
-
-        RaiseDomainEvent(new TargetMoveDomainEvent(Id));
 
         return monthMoveResult;
     }

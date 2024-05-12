@@ -11,6 +11,8 @@ public sealed record Target : ValueObject
     public MonthDate StartedAt { get; init; }
     public Money TargetAmount { get; private set; }
     public Money CollectedAmount { get; private set; }
+    public bool IsActive => MonthDate.Current < UpToMonth;
+    public bool IsCompleted => CollectedAmount >= TargetAmount;
     public Money AmountAssignedEveryMonth =>
         MonthDate.MonthsInterval(UpToMonth, MonthDate.Current) is var monthsInterval && monthsInterval <= 0 ?
             TargetAmount with { Amount = 0 } :
