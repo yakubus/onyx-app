@@ -156,30 +156,15 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return assignment;
     }
 
-    internal Result<Assignment> Transact(Transaction transaction)
+    internal Result Transact(Transaction transaction)
     {
-        var transactionMonthDateCreateResult = MonthDate.Create(
-            transaction.TransactedAt.Month,
-            transaction.TransactedAt.Year);
+        var assignment = _assignments.FirstOrDefault(a => a.Month.ContainsDate(transaction.TransactedAt));
 
-        if (transactionMonthDateCreateResult.IsFailure)
-        {
-            return Result.Failure<Assignment>(transactionMonthDateCreateResult.Error);
-        }
-
-        var transactionMonthDate = transactionMonthDateCreateResult.Value;
-        var assignment = _assignments.FirstOrDefault(a => a.Month == transactionMonthDate);
-
-        if (assignment is null)
-        {
-            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
-        }
-
-        assignment.Transact(transaction);
+        assignment?.Transact(transaction);
 
         Target?.Transact(transaction);
 
-        return Result.Success(assignment);
+        return Result.Success();
     }
 
     public Result RemoveTransaction(Transaction transaction)

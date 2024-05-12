@@ -138,7 +138,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         }
 
         var counterpartyName = counterpartyNameCreateResult.Value;
-        var isPayee = request.Amount.Amount > 0;
+        var isPayee = request.Amount.Amount < 0;
         var counterpartyType = isPayee ? CounterpartyType.Payee : CounterpartyType.Payer;
         var counterpartyGetResult = await _counterpartyRepository.GetSingleAsync(
             c => c.Name == counterpartyName && c.Type == counterpartyType, cancellationToken);

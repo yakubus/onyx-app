@@ -19,6 +19,23 @@ public sealed class Transaction : Entity<TransactionId>
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
     private Transaction(
+        AccountId accountId,
+        Money amount,
+        Money? originalAmount,
+        DateTime transactedAt,
+        SubcategoryId? subcategoryId,
+        CounterpartyId counterpartyId,
+        TransactionId? id) : base(id ?? new TransactionId())
+    {
+        AccountId = accountId;
+        Amount = amount;
+        OriginalAmount = originalAmount;
+        TransactedAt = transactedAt;
+        SubcategoryId = subcategoryId;
+        CounterpartyId = counterpartyId;
+    }
+
+    private Transaction(
         Account account,
         Subcategory? subcategory,
         Money amount,
