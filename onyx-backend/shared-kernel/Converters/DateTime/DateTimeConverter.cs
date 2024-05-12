@@ -11,7 +11,12 @@ public sealed class DateTimeConverter : JsonConverter<System.DateTime>
         if (reader.TokenType == JsonTokenType.String)
         {
             var dateString = reader.GetString();
-            if (System.DateTime.TryParseExact(dateString, "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out System.DateTime result))
+            if (System.DateTime.TryParseExact(
+                    dateString,
+                    "dd-MM-yyyyTHH:mm:ss",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out System.DateTime result))
             {
                 return result.ToUniversalTime();
             }

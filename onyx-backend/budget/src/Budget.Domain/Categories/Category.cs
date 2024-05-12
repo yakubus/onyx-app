@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Subcategories;
 using Models.Responses;
 
@@ -8,14 +7,17 @@ namespace Budget.Domain.Categories;
 public sealed class Category : Entity<CategoryId>
 {
     public CategoryName Name { get; private set; }
-    private readonly List<Subcategory> _subcategories;
-    public IReadOnlyCollection<Subcategory> Subcategories => _subcategories;
+    private readonly List<SubcategoryId> _subcategoriesId;
+    public IReadOnlyCollection<SubcategoryId> SubcategoriesId => _subcategoriesId;
     private const int maxSubcategoriesCount = 10;
 
-    private Category(CategoryName name, List<Subcategory> subcategories)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Category(CategoryName name, List<SubcategoryId> subcategoriesId, CategoryId? id = null) 
+        : base(id ?? new CategoryId())
     {
         Name = name;
-        _subcategories = subcategories;
+        _subcategoriesId = subcategoriesId;
     }
 
     public static Result<Category> Create(string name)
@@ -50,7 +52,7 @@ public sealed class Category : Entity<CategoryId>
 
     public Result<Subcategory> NewSubcategory(string subcategoryName)
     {
-        if (_subcategories.Count >= maxSubcategoriesCount)
+        if (_subcategoriesId.Count >= maxSubcategoriesCount)
         {
             return Result.Failure<Subcategory>(CategoryErrors.MaxSubcategoriesCountReached);
         }
@@ -63,17 +65,17 @@ public sealed class Category : Entity<CategoryId>
         }
 
         var subcategory = subcategoryCreateResult.Value;
-        _subcategories.Add(subcategory);
+
+        _subcategoriesId.Add(subcategory.Id);
 
         return Result.Success(subcategory);
     }
 
     public Result RemoveSubcategory(Subcategory subcategory)
     {
-        return _subcategories.Remove(subcategory) ?
+        return _subcategoriesId.Remove(subcategory.Id) ?
             Result.Success() :
             Result.Failure<Category>(CategoryErrors.SubcategoryNotFound);
     }
 
-    public Result 
 }

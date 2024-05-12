@@ -1,4 +1,7 @@
-﻿namespace Abstractions.Messaging;
+﻿using MediatR;
+using Models.Responses;
+
+namespace Abstractions.Messaging;
 
 public interface ICommand : IRequest<Result>, IBaseCommand
 {

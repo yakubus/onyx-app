@@ -3,74 +3,75 @@ using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
 
-namespace Budget.Domain.Subcategories
+namespace Budget.Domain.Subcategories;
+
+// TODO: make two gets detailed with transactions, simple wihout transactions
+public sealed record Assignment : ValueObject
 {
-    // TODO: make two gets detailed with transactions, simple wihout transactions
-    public sealed record Assignment : ValueObject
+    public MonthDate Month { get; init; }
+    public Money AssignedAmount { get; private set; }
+    public Money ActualAmount { get; private set; }
+
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Assignment(MonthDate month, Money assignedAmount, Money actualAmount)
     {
-        public MonthDate Month { get; init; }
-        public Money AssignedAmount { get; private set; }
-        public Money ActualAmount { get; private set; }
+        Month = month;
+        AssignedAmount = assignedAmount;
+        ActualAmount = actualAmount;
+    }
 
-        private Assignment(MonthDate month, Money assignedAmount, Money actualAmount)
+    internal static Result<Assignment> Create(MonthDate month, Money assignedAmount)
+    {
+        if (assignedAmount <= 0)
         {
-            Month = month;
-            AssignedAmount = assignedAmount;
-            ActualAmount = actualAmount;
+            return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
         }
 
-        internal static Result<Assignment> Create(MonthDate month, Money assignedAmount)
+        if (MonthDate.Current > month || MonthDate.Current + 1 < month)
         {
-            if (assignedAmount <= 0)
-            {
-                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
-            }
-
-            if (MonthDate.Current > month || MonthDate.Current + 1 < month)
-            {
-                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentDateMustBeInNextOrCurrentMonth);
-            }
-
-            return new Assignment(
-                month,
-                assignedAmount,
-                assignedAmount with { Amount = 0 });
+            return Result.Failure<Assignment>(SubcategoryErrors.AssignmentDateMustBeInNextOrCurrentMonth);
         }
 
-        internal Result ChangeAssignedAmount(Money amount)
+        return new Assignment(
+            month,
+            assignedAmount,
+            assignedAmount with { Amount = 0 });
+    }
+
+    internal Result ChangeAssignedAmount(Money amount)
+    {
+        if (amount <= 0)
         {
-            if (amount <= 0)
-            {
-                return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
-            }
-
-            AssignedAmount = amount;
-
-            return Result.Success();
+            return Result.Failure<Assignment>(SubcategoryErrors.AssignmentAmountMustBePositive);
         }
 
-        internal Result Transact(Transaction transaction)
+        AssignedAmount = amount;
+
+        return Result.Success();
+    }
+
+    internal Result Transact(Transaction transaction)
+    {
+        if (!Month.ContainsDate(transaction.TransactedAt))
         {
-            if (!Month.ContainsDate(transaction.TransactedAt))
-            {
-                return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
-            }
-
-            ActualAmount += transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
-
-            return Result.Success();
+            return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
         }
 
-        internal Result RemoveTransaction(Transaction transaction)
+        ActualAmount += transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+
+        return Result.Success();
+    }
+
+    internal Result RemoveTransaction(Transaction transaction)
+    {
+        if (!Month.ContainsDate(transaction.TransactedAt))
         {
-            if (!Month.ContainsDate(transaction.TransactedAt))
-            {
-                return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
-            }
-
-            ActualAmount -= transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
-
-            return Result.Success();
+            return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
         }
+
+        ActualAmount -= transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+
+        return Result.Success();
     }
 }

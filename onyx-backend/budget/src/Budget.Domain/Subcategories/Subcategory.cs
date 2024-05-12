@@ -1,9 +1,7 @@
 ﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Transactions;
+using Budget.Domain.Subcategories.DomainEvents;
 using Models.DataTypes;
 using Models.Responses;
-using System.Transactions;
-using Models.DataTypes;
 using Transaction = Budget.Domain.Transactions.Transaction;
 
 namespace Budget.Domain.Subcategories;
@@ -16,7 +14,14 @@ public sealed class Subcategory : Entity<SubcategoryId>
     public IReadOnlyCollection<Assignment> Assignments => _assignments;
     public Target? Target { get; private set; }
 
-    private Subcategory(SubcategoryName name, SubcategoryDescription? description, List<Assignment> assignments, Target? target)
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    private Subcategory(
+        SubcategoryName name,
+        SubcategoryDescription? description,
+        List<Assignment> assignments,
+        Target? target,
+        SubcategoryId? id = null) : base(id ?? new SubcategoryId())
     {
         Name = name;
         Description = description;
@@ -97,6 +102,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         var assignment = assignmentCreateResult.Value;
         _assignments.Add(assignment);
 
+        RaiseDomainEvent(new SubcategoryAssignedForMonthDomainEvent(Id, assignment.Month));
+
         return Result.Success(assignment);
     }
 
@@ -149,30 +156,15 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return assignment;
     }
 
-    public Result<Assignment> Transact(Transaction transaction)
+    internal Result Transact(Transaction transaction)
     {
-        var transactionMonthDateCreateResult = MonthDate.Create(
-            transaction.TransactedAt.Month,
-            transaction.TransactedAt.Year);
+        var assignment = _assignments.FirstOrDefault(a => a.Month.ContainsDate(transaction.TransactedAt));
 
-        if (transactionMonthDateCreateResult.IsFailure)
-        {
-            return Result.Failure<Assignment>(transactionMonthDateCreateResult.Error);
-        }
-
-        var transactionMonthDate = transactionMonthDateCreateResult.Value;
-        var assignment = _assignments.FirstOrDefault(a => a.Month == transactionMonthDate);
-
-        if (assignment is null)
-        {
-            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
-        }
-
-        assignment.Transact(transaction);
+        assignment?.Transact(transaction);
 
         Target?.Transact(transaction);
 
-        return Result.Success(assignment);
+        return Result.Success();
     }
 
     public Result RemoveTransaction(Transaction transaction)
@@ -199,5 +191,65 @@ public sealed class Subcategory : Entity<SubcategoryId>
         Target?.RemoveTransaction(transaction);
 
         return Result.Success(assignment);
+    }
+
+    public Result<Target> SetTarget(Money targetAmount, MonthDate upToMonth)
+    {
+        if (Target is not null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetAlreadySet);
+        }
+
+        var targetCreateResult = Target.Create(upToMonth, targetAmount);
+
+        if (targetCreateResult.IsFailure)
+        {
+            return Result.Failure<Target>(targetCreateResult.Error);
+        }
+
+        var target = targetCreateResult.Value;
+        Target = target;
+
+        RaiseDomainEvent(new TargetSetDomainEvent(Id));
+
+        return target;
+    }
+
+    public Result UnsetTarget()
+    {
+        if(Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        Target = null;
+
+        return Result.Success();
+    }
+
+    public Result MoveTargetEndMonth(MonthDate newEndMonth)
+    {
+        if (Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        var monthMoveResult = Target.MoveTargetEndMonth(newEndMonth);
+
+        RaiseDomainEvent(new TargetMoveDomainEvent(Id));
+
+        return monthMoveResult;
+    }
+
+    public Result UpdateTargetAmount(Money amount)
+    {
+        if (Target is null)
+        {
+            return Result.Failure<Target>(SubcategoryErrors.TargetNotSet);
+        }
+
+        var targetAmountUpdateResult = Target.UpdateTargetAmount(amount);
+
+        return targetAmountUpdateResult;
     }
 }
