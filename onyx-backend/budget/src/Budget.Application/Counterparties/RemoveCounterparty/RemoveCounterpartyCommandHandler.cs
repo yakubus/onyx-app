@@ -1,6 +1,5 @@
 ﻿using Abstractions.Messaging;
 using Budget.Domain.Counterparties;
-using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Models.Responses;
 
