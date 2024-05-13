@@ -1,4 +1,4 @@
-$dockerImage = "onyx-budget-api:latest"
+$dockerImage = "dbrdak/onyx-budget-api:latest"
 $dockerRegistryUrl = "docker.io"
 $containerName = "onyx-budget"
 $cosmosdbAccountUri = "https://onyx-cosmos-db.documents.azure.com:443/"

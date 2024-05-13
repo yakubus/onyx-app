@@ -24,7 +24,7 @@ Temporary solution, won't be supported after migration to Azure Functions
 #### Clone the project
 
 ```bash
-    git clone https://github.com/dbrdak
+    git clone https://github.com/dbrdak/onyx-app
 ```
 
 #### Go to the project directory
