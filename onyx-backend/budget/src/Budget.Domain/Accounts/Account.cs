@@ -79,7 +79,7 @@ public sealed class Account : Entity<AccountId>
         return Result.Success();
     }
 
-    public Result RemoveTransaction(Transaction transaction)
+    internal Result RemoveTransaction(Transaction transaction)
     {
         if (transaction.Amount.Currency != Balance.Currency)
         {

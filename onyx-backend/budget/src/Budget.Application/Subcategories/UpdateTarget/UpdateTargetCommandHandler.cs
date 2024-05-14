@@ -37,14 +37,11 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
         var targetAmount = targetAmountCreateResult.Value;
         var currentTarget = subcategory.Target;
 
-        var targetUpdateResult = currentTarget switch
-        {
-            null => subcategory.SetTarget(targetAmount, request.TargetUpToMonth),
-            _ when currentTarget.TargetAmount != targetAmount => subcategory.UpdateTargetAmount(targetAmount),
-            _ when currentTarget.UpToMonth != request.TargetUpToMonth => subcategory.MoveTargetEndMonth(
-                request.TargetUpToMonth),
-            _ => Result.Failure(Error.InvalidValue)
-        };
+        var targetUpdateResult = SubcategoryService.UpdateTarget(
+            subcategory,
+            currentTarget,
+            targetAmount,
+            request.TargetUpToMonth);
 
         if (targetUpdateResult.IsFailure)
         {

@@ -26,18 +26,14 @@ internal sealed class UpdateSubcategoryCommandHandler : ICommandHandler<UpdateSu
 
         var subcategory = subcategoryGetResult.Value;
 
-        var updateNameResult = UpdateName(subcategory, request.NewName);
+        var updateSubcategoryServiceResult = SubcategoryService.UpdateSubcategory(
+            subcategory,
+            request.NewName,
+            request.NewDescription);
 
-        if (updateNameResult.IsFailure)
+        if (updateSubcategoryServiceResult.IsFailure)
         {
-            return Result.Failure<SubcategoryModel>(updateNameResult.Error);
-        }
-
-        var updateDescriptionResult = UpdateDescription(subcategory, request.NewDescription);
-
-        if (updateDescriptionResult.IsFailure)
-        {
-            return Result.Failure<SubcategoryModel>(updateDescriptionResult.Error);
+            return Result.Failure<SubcategoryModel>(updateSubcategoryServiceResult.Error);
         }
 
         var subcategoryUpdateResult = await _subcategoryRepository.UpdateAsync(subcategory, cancellationToken);
@@ -50,33 +46,5 @@ internal sealed class UpdateSubcategoryCommandHandler : ICommandHandler<UpdateSu
         subcategory = subcategoryUpdateResult.Value;
 
         return SubcategoryModel.FromDomainModel(subcategory);
-    }
-
-    private Result<Subcategory> UpdateName(Subcategory subcategory, string? newName)
-    {
-        if (newName is null)
-        {
-            return Result.Success(subcategory);
-        }
-
-        var changeNameResult = subcategory.ChangeName(newName);
-
-        return changeNameResult.IsFailure ?
-            Result.Failure<Subcategory>(changeNameResult.Error) :
-            Result.Success(subcategory);
-    }
-
-    private Result<Subcategory> UpdateDescription(Subcategory subcategory, string? newDescription)
-    {
-        if (newDescription is null)
-        {
-            return Result.Success(subcategory);
-        }
-
-        var changeDescriptionResult = subcategory.ChangeDescription(newDescription);
-
-        return changeDescriptionResult.IsFailure ?
-            Result.Failure<Subcategory>(changeDescriptionResult.Error) :
-            Result.Success(subcategory);
     }
 }

@@ -50,19 +50,6 @@ internal sealed class RemoveTransactionCommandHandler : ICommandHandler<RemoveTr
         var subcategory = subcategoryGetResult?.Value;
         var account = accountGetResult.Value;
 
-        var subcategoryRemoveTransactionResult = subcategory?.RemoveTransaction(transaction);
-
-        if(subcategoryRemoveTransactionResult is { IsFailure: true })
-        {
-            return Result.Failure(subcategoryRemoveTransactionResult.Error);
-        }
-
-        var accountRemoveTransactionResult = account.RemoveTransaction(transaction);
-
-        if (accountRemoveTransactionResult.IsFailure)
-        {
-            return Result.Failure(accountRemoveTransactionResult.Error);
-        }
 
         var transactionRemoveResult = await _transactionRepository.RemoveAsync(transaction.Id, cancellationToken);
 

@@ -43,7 +43,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return new Subcategory(subcategoryName, null, new List<Assignment>(), null);
     }
 
-    public Result ChangeName(string name)
+    internal Result ChangeName(string name)
     {
         var subcategoryNameCreateResult = SubcategoryName.Create(name);
 
@@ -59,7 +59,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result ChangeDescription(string description)
+    internal Result ChangeDescription(string description)
     {
         var descriptionCreateResult = SubcategoryDescription.Create(description);
 
@@ -75,7 +75,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result<Assignment> Assign(int month, int year, Money amount)
+    internal Result<Assignment> Assign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
 
@@ -129,7 +129,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result<Assignment> Reassign(int month, int year, Money amount)
+    internal Result<Assignment> Reassign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
 
@@ -182,7 +182,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result RemoveTransaction(Transaction transaction)
+    internal Result RemoveTransaction(Transaction transaction)
     {
         var transactionMonthDateCreateResult = MonthDate.Create(
             transaction.TransactedAt.Month,
@@ -242,7 +242,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result MoveTargetEndMonth(MonthDate newEndMonth)
+    internal Result MoveTargetEndMonth(MonthDate newEndMonth)
     {
         if (Target is null)
         {
@@ -254,7 +254,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return monthMoveResult;
     }
 
-    public Result UpdateTargetAmount(Money amount)
+    internal Result UpdateTargetAmount(Money amount)
     {
         if (Target is null)
         {

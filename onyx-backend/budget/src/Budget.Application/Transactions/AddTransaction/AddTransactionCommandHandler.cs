@@ -81,17 +81,15 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         var convertedAmount = convertAmountResult?.Value;
 
-        var isOutflow = subcategory is not null;
-
-        _transactionCreateMatchmaker.TryGetValue((isForeignTransaction, isOutflow), out var transactionCreator);
-
-        var transactionCreateResult = transactionCreator!.Invoke(
+        var transactionFactory = new TransactionFactory(
             account,
+            counterparty,
             subcategory,
-            convertedAmount,
-            amount,
             request.TransactedAt,
-            counterparty);
+            amount,
+            convertedAmount);
+
+        var transactionCreateResult = transactionFactory.CreateTransaction();
 
         if (transactionCreateResult.IsFailure)
         {
@@ -161,59 +159,4 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         return counterpartyGetResult;
     }
-
-    private readonly
-        Dictionary<(bool IsForeignTransaction, bool IsOutflow),
-            Func<Account, Subcategory?, Money?, Money, DateTime, Counterparty, Result<Transaction>>>
-        _transactionCreateMatchmaker = new()
-        {
-            {
-                (true, true), Transaction.CreateForeignOutflow!
-            },
-            {
-                (true, false),
-                (
-                    account,
-                    subcategory,
-                    convertedMoney,
-                    originalMoney,
-                    transactedAt,
-                    counterparty) => Transaction.CreateForeignInflow(
-                    account,
-                    convertedMoney!,
-                    originalMoney,
-                    transactedAt,
-                    counterparty)
-
-            },
-            {
-                (false, true),
-                (
-                    account,
-                    subcategory,
-                    convertedMoney,
-                    originalMoney,
-                    transactedAt,
-                    counterparty) => Transaction.CreatePrincipalOutflow(
-                    account,
-                    subcategory!,
-                    originalMoney,
-                    transactedAt,
-                    counterparty)
-            },
-            {
-                (false, false),
-                (
-                    account,
-                    subcategory,
-                    convertedMoney,
-                    originalMoney,
-                    transactedAt,
-                    counterparty) => Transaction.CreatePrincipalInflow(
-                    account,
-                    originalMoney,
-                    transactedAt,
-                    counterparty)
-            },
-        };
 }

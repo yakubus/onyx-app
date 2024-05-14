@@ -36,12 +36,10 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
 
         var assignedAmountMoney = assignedAmountMoneyCreateResult.Value;
 
-        var assignmentResult = subcategory.Assign(request.AssignmentMonth.Month, request.AssignmentMonth.Year, assignedAmountMoney);
-
-        if (assignmentResult.IsFailure)
-        {
-            assignmentResult = subcategory.Reassign(request.AssignmentMonth.Month, request.AssignmentMonth.Year, assignedAmountMoney);
-        }
+        var assignmentResult = SubcategoryService.UpdateAssignment(
+            subcategory,
+            request.AssignmentMonth,
+            assignedAmountMoney);
 
         if (assignmentResult.IsFailure)
         {

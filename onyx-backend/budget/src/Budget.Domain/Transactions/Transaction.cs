@@ -53,7 +53,7 @@ public sealed class Transaction : Entity<TransactionId>
         CounterpartyId = counterparty.Id;
     }
 
-    public static Result<Transaction> CreatePrincipalOutflow(
+    internal static Result<Transaction> CreatePrincipalOutflow(
         Account account,
         Subcategory subcategory,
         Money amount,
@@ -89,7 +89,7 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreateForeignOutflow(
+    internal static Result<Transaction> CreateForeignOutflow(
         Account account,
         Subcategory subcategory,
         Money convertedAmount,
@@ -137,7 +137,7 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreatePrincipalInflow(
+    internal static Result<Transaction> CreatePrincipalInflow(
         Account account,
         Money amount,
         DateTime transactedAt,
@@ -165,7 +165,7 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreateForeignInflow(
+    internal static Result<Transaction> CreateForeignInflow(
         Account account,
         Money convertedAmount,
         Money originalAmount,
@@ -199,7 +199,17 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public void RemoveCounterparty() => CounterpartyId = null;
+    public Result RemoveCounterparty()
+    {
+        CounterpartyId = null;
 
-    public void RemoveSubcategory() => SubcategoryId = null;
+        return Result.Success();
+    }
+
+    public Result RemoveSubcategory()
+    {
+        SubcategoryId = null;
+
+        return Result.Success();
+    }
 }
