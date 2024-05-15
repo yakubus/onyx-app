@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Budget.Domain.Budgets;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
@@ -7,7 +8,6 @@ namespace Budget.Domain.Accounts;
 
 public sealed class Account : Entity<AccountId>
 {
-
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
     public AccountType Type { get; init; }

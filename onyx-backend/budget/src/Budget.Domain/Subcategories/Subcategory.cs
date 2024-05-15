@@ -182,7 +182,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    internal Result RemoveTransaction(Transaction transaction)
+    public Result RemoveTransaction(Transaction transaction)
     {
         var transactionMonthDateCreateResult = MonthDate.Create(
             transaction.TransactedAt.Month,

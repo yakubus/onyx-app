@@ -27,7 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions", "shared-kernel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Functions", "budget\src\Budget.Functions\Budget.Functions.csproj", "{5A44BD97-938A-44D4-BD97-3360D9D5B114}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.API", "budget\src\Budget.API\Budget.API.csproj", "{070A01F3-97B8-493C-9E6D-ADD9AD1A3999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.API", "budget\src\Budget.API\Budget.API.csproj", "{070A01F3-97B8-493C-9E6D-ADD9AD1A3999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onyx.Identity", "identity\src\Onyx.Identity\Onyx.Identity.csproj", "{80233331-52CB-45C0-9E16-1B94414CFFBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{ADD20C9F-331C-4800-A500-E6FAC95A5D16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{82F02935-DD11-48AC-AB03-6B1C545BB661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +77,10 @@ Global
 		{070A01F3-97B8-493C-9E6D-ADD9AD1A3999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{070A01F3-97B8-493C-9E6D-ADD9AD1A3999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{070A01F3-97B8-493C-9E6D-ADD9AD1A3999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80233331-52CB-45C0-9E16-1B94414CFFBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80233331-52CB-45C0-9E16-1B94414CFFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80233331-52CB-45C0-9E16-1B94414CFFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80233331-52CB-45C0-9E16-1B94414CFFBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +97,8 @@ Global
 		{8B0B4CE0-12F8-4138-88FB-8D86DD56AF6F} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 		{5A44BD97-938A-44D4-BD97-3360D9D5B114} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
 		{070A01F3-97B8-493C-9E6D-ADD9AD1A3999} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
+		{80233331-52CB-45C0-9E16-1B94414CFFBA} = {82F02935-DD11-48AC-AB03-6B1C545BB661}
+		{82F02935-DD11-48AC-AB03-6B1C545BB661} = {ADD20C9F-331C-4800-A500-E6FAC95A5D16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {515E49A0-2D84-477F-A6B4-623EDA0F5216}
