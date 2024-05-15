@@ -6,8 +6,8 @@ namespace Budget.Domain.Budgets;
 public sealed class Budget : Entity<BudgetId>
 {
     public BudgetName Name { get; private set; }
-    private List<string> userIds { get; init; }
-    public IReadOnlyCollection<string> UserIdsReadOnly => UserIds.AsReadOnly();
+    private readonly List<string> _userIds;
+    public IReadOnlyCollection<string> UserIdsReadOnly => _userIds.AsReadOnly();
     private const int maxUsers = 10;
 
     [Newtonsoft.Json.JsonConstructor]
@@ -15,7 +15,7 @@ public sealed class Budget : Entity<BudgetId>
     private Budget(BudgetName name, List<string> userIds)
     {
         Name = name;
-        this.userIds = userIds;
+        _userIds = userIds;
     }
 
     public static Result<Budget> Create(string budgetName, string userId)
@@ -32,19 +32,19 @@ public sealed class Budget : Entity<BudgetId>
 
     public Result AddUser(string userId)
     {
-        if (userIds.Count >= maxUsers)
+        if (_userIds.Count >= maxUsers)
         {
             return Result.Failure(BudgetErrors.MaxUserNumberReached);
         }
 
-        userIds.Add(userId);
+        _userIds.Add(userId);
 
         return Result.Success();
     }
 
     public Result ExcludeUser(string userId)
     {
-        userIds.Remove(userId);
+        _userIds.Remove(userId);
 
         return Result.Success();
     }
