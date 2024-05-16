@@ -21,18 +21,16 @@ internal sealed class GetAccessTokenQueryHandler : IQueryHandler<GetAccessTokenQ
 
     public async Task<Result<AuthorizationToken>> Handle(GetAccessTokenQuery request, CancellationToken cancellationToken)
     {
-        if (request.UserId is null && request.Email is null && request.Username is null)
+        var userIdGetResult = _jwtService.GetUserIdFromString(request.Token);
+
+        if (userIdGetResult.IsFailure)
         {
-            return Result.Failure<AuthorizationToken>(BusinessErrors.InvalidUserQueryRequest);
+            return Result.Failure<AuthorizationToken>(userIdGetResult.Error);
         }
 
-        var userGetService = new UserQueryService(_userRepository);
+        var userId = new UserId(userIdGetResult.Value);
 
-        var userGetResult = await userGetService.GetUser(
-            request.UserId,
-            request.Email,
-            request.Username,
-            cancellationToken);
+        var userGetResult = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
         if (userGetResult.IsFailure)
         {

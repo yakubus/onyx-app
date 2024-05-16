@@ -3,7 +3,7 @@ using Identity.Application.Models;
 
 namespace Identity.Application.GetAccessToken;
 
-public sealed record GetAccessTokenQuery(Guid? UserId, string? Username, string? Email) 
+public sealed record GetAccessTokenQuery(string Token) 
     : IQuery<AuthorizationToken>
 {
 }

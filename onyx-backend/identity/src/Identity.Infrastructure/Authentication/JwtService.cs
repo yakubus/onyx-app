@@ -4,6 +4,7 @@ using Identity.Application.Abstractions.Authentication;
 using Identity.Domain;
 using Identity.Infrastructure.Authentication.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Models.Responses;
 
@@ -49,5 +50,21 @@ internal sealed class JwtService : IJwtService
         return tokenValue is null ?
                 Result.Failure<string>(AuthenticationFailedError) :
                 Result.Success(tokenValue);
+    }
+
+    public Result<string> GetUserIdFromString(string encodedToken)
+    {
+        try
+        {
+            var jwt = new JsonWebToken(encodedToken);
+
+            jwt.TryGetPayloadValue(UserRepresentationModel.IdClaimName, out string userId);
+
+            return userId ?? Result.Failure<string>(TokenCreationFailedError);
+        }
+        catch (Exception)
+        {
+            return Result.Failure<string>(TokenCreationFailedError);
+        }
     }
 }
