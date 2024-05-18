@@ -8,6 +8,14 @@ public static class DependencyInjection
 {
     public static IFunctionsHostBuilder InjectApplication(this IFunctionsHostBuilder builder)
     {
+        builder.Services.AddMediatR(
+            config =>
+            {
+                config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
+                config.AddOpenBehavior(typeof(DomainEventPublishBehavior<,>));
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            });
+
         return builder;
     }
 

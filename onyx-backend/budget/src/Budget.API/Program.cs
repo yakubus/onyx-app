@@ -14,22 +14,21 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+        //builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+        //    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
-        builder.Services.AddTokenAcquisition().AddInMemoryTokenCaches();
+        //builder.Services.AddTokenAcquisition().AddInMemoryTokenCaches();
 
-        builder.Services.AddAuthorization(options =>
-        {
-            options.FallbackPolicy = options.DefaultPolicy;
-        });
+        //builder.Services.AddAuthorization(options =>
+        //{
+        //    options.FallbackPolicy = options.DefaultPolicy;
+        //});
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.InjectApplication();
         builder.Services.InjectInfrastructure(builder.Configuration);
-        builder.Services.AddControllersWithViews()
-            .AddMicrosoftIdentityUI();
+        builder.Services.AddControllers();
 
         builder.Services.AddCors(options =>
         {

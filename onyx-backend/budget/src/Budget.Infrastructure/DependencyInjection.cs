@@ -19,6 +19,7 @@ public static class DependencyInjection
     public static void InjectInfrastructure(this IFunctionsHostBuilder builder)
     {
         builder.Services.AddPersistence(builder.GetContext().Configuration);
+        builder.Services.AddCurrencyConverter(builder.GetContext().Configuration);
     }
 
     //TODO Temporary solution

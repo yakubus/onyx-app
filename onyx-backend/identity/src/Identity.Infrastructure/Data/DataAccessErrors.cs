@@ -1,4 +1,7 @@
-﻿namespace Identity.Infrastructure.Data;
+﻿using Abstractions.DomainBaseTypes;
+using Models.Responses;
+
+namespace Identity.Infrastructure.Data;
 
 internal static class DataAccessErrors<TEntity> where TEntity : IEntity
 {
