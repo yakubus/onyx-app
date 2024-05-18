@@ -11,7 +11,7 @@ internal static class BusinessErrors
 {
     internal static readonly Error InvalidUserQueryRequest = new(
         "Application.InvalidUserQueryRequest",
-        "Neither username, email nor id was provided");
+        "Neither username nor email was provided");
     internal static readonly Error UserIsLoggedOut = new (
         "Application.UserIsLoggedOut",
         "User is logged out");

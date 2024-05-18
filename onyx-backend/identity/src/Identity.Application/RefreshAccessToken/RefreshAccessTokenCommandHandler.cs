@@ -2,24 +2,23 @@
 using Identity.Application.Abstractions.Authentication;
 using Identity.Application.Errors;
 using Identity.Application.Models;
-using Identity.Application.Shared;
 using Identity.Domain;
 using Models.Responses;
 
-namespace Identity.Application.GetAccessToken;
+namespace Identity.Application.RefreshAccessToken;
 
-internal sealed class GetAccessTokenQueryHandler : IQueryHandler<GetAccessTokenQuery, AuthorizationToken>
+internal sealed class RefreshAccessTokenCommandHandler : IQueryHandler<RefreshAccessTokenCommand, AuthorizationToken>
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
 
-    public GetAccessTokenQueryHandler(IUserRepository userRepository, IJwtService jwtService)
+    public RefreshAccessTokenCommandHandler(IUserRepository userRepository, IJwtService jwtService)
     {
         _userRepository = userRepository;
         _jwtService = jwtService;
     }
 
-    public async Task<Result<AuthorizationToken>> Handle(GetAccessTokenQuery request, CancellationToken cancellationToken)
+    public async Task<Result<AuthorizationToken>> Handle(RefreshAccessTokenCommand request, CancellationToken cancellationToken)
     {
         var userIdGetResult = _jwtService.GetUserIdFromString(request.Token);
 

@@ -9,6 +9,6 @@ using Identity.Application.Models;
 namespace Identity.Application.LoginUser;
 
 public sealed record LoginUserCommand(string? Username, string? Email, string Password)
-    : ICommand<UserModel>
+    : ICommand<AuthorizationToken>
 {
 }

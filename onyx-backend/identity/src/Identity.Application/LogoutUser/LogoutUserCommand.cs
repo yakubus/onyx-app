@@ -8,7 +8,6 @@ using Identity.Application.Models;
 
 namespace Identity.Application.LogoutUser;
 
-public sealed record LogoutUserCommand(Guid? UserId, string? Username, string? Email)
-    : ICommand
+public sealed record LogoutUserCommand(Guid UserId) : ICommand
 {
 }
