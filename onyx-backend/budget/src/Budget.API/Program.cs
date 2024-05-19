@@ -15,7 +15,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         //builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-        //    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+        //    .AddMicrosoftIdentityWebApp(builder.Configuration.GetFunctionSection("AzureAd"));
 
         //builder.Services.AddTokenAcquisition().AddInMemoryTokenCaches();
 
