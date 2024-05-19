@@ -6,5 +6,12 @@
     "goals": "cele",
     "statistic":  "statystyki",
     "language": "język",
-    "dark_mode": "ciemny motyw"
+    "dark_mode": "ciemny motyw",
+    "account_name": "nazwa konta",
+    "account_type": "rodzaj konta",
+    "balance": "saldo",
+    "currency": "waluta",
+    "checking": "płatnicze",
+    "saving": "oszczędościowe",
+    "add": "dodaj"
   }

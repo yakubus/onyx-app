@@ -9,13 +9,13 @@ import 'package:onyx_app/views/accounts/account_repo.dart';
 enum AccountType { checking, savings }
 
 class Account {
-  String id;
+  String? id;
   String name;
   Money balance;
   String type;
 
   Account({
-    required this.id,
+    this.id,
     required this.name,
     required this.balance,
     required this.type,
