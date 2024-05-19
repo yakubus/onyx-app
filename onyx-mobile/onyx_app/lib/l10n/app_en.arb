@@ -6,5 +6,12 @@
     "goals": "goals",
     "statistic":  "statistic",
     "language": "language",
-    "dark_mode": "dark mode"
+    "dark_mode": "dark mode",
+    "account_name": "account name",
+    "account_type": "account type",
+    "balance": "balance",
+    "currency": "currency",
+    "checking": "checking",
+    "saving": "saving",
+    "add": "add"
   }

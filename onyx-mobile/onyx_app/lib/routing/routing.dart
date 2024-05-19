@@ -1,4 +1,5 @@
 import 'package:onyx_app/views/accounts/accounts_view.dart';
+import 'package:onyx_app/views/accounts/add_account_view.dart';
 import 'package:onyx_app/views/budget_palns/budget_palns_view.dart';
 import 'package:onyx_app/views/goals/goals_view.dart';
 import 'package:onyx_app/views/home/home_view.dart';
@@ -49,6 +50,11 @@ final GoRouter goRouter = GoRouter(
             path: 'goals',
             builder: (BuildContext context, GoRouterState state) {
               return const GoalsView();
+            }),
+        GoRoute(
+            path: 'add_account',
+            builder: (BuildContext context, GoRouterState state) {
+              return const AddAccountView();
             }),
       ],
     ),
