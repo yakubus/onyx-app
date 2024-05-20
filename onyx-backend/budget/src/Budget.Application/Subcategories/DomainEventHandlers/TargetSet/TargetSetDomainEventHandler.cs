@@ -15,7 +15,7 @@ internal sealed class TargetSetDomainEventHandler : IDomainEventHandler<TargetSe
         _subcategoryRepository = subcategoryRepository;
         _transactionRepository = transactionRepository;
     }
-
+    //TODO Money Exchange & Convert into serivce
     public async Task Handle(TargetSetDomainEvent notification, CancellationToken cancellationToken)
     {
         var subcategoryGetResult = await _subcategoryRepository.GetByIdAsync(notification.SubcategoryId, cancellationToken);

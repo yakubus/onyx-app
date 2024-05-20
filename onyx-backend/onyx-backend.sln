@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Domain", "identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Infrastructure", "identity\src\Identity.Infrastructure\Identity.Infrastructure.csproj", "{BF77B608-7DE9-41AC-972D-16BE968E42C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Application", "identity\src\Identity.Application\Identity.Application.csproj", "{7FEF4B5C-DE47-4CE4-887E-0BAD6D1E91D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Application", "identity\src\Identity.Application\Identity.Application.csproj", "{7FEF4B5C-DE47-4CE4-887E-0BAD6D1E91D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

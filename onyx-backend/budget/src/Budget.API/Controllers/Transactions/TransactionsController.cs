@@ -4,9 +4,7 @@ using Budget.Application.Transactions.GetTransactions;
 using Budget.Application.Transactions.Models;
 using Budget.Application.Transactions.RemoveTransaction;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Models.Responses;
 using Result = Models.Responses.Result;
 

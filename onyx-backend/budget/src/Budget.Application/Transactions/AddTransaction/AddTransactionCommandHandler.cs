@@ -1,10 +1,11 @@
 ﻿using Abstractions.Messaging;
-using Budget.Application.Abstractions.Services;
+using Budget.Application.Abstractions.Currency;
 using Budget.Application.Transactions.Models;
 using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
+using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Transactions.AddTransaction;
@@ -26,6 +27,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         _currencyConverter = currencyConverter;
     }
 
+    // TODO Money Echange
     public async Task<Result<TransactionModel>> Handle(AddTransactionCommand request, CancellationToken cancellationToken)
     {
         var amountCreateResult = request.Amount.ToDomainModel();
@@ -80,13 +82,28 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         var convertedAmount = convertAmountResult?.Value;
 
+        var assignmentTargetAmountConvertResult = await ConvertAmountForAssignmentAndTarget(
+            subcategory,
+            amount,
+            request.TransactedAt,
+            cancellationToken);
+
+        if (assignmentTargetAmountConvertResult.IsFailure)
+        {
+            return assignmentTargetAmountConvertResult.Error;
+        }
+
+        var (assignmentAmount, targetAmount) = assignmentTargetAmountConvertResult.Value;
+
         var transactionFactory = new TransactionFactory(
             account,
             counterparty,
             subcategory,
             request.TransactedAt,
             amount,
-            convertedAmount);
+            convertedAmount,
+            assignmentAmount,
+            targetAmount);
 
         var transactionCreateResult = transactionFactory.CreateTransaction();
 
@@ -123,6 +140,56 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         transaction = addTransactionResult.Value;
 
         return TransactionModel.FromDomainModel(transaction, counterparty, account, subcategory);
+    }
+
+    private async Task<Result<(Money assignmentAmount, Money targetAmount)>> ConvertAmountForAssignmentAndTarget(
+        Subcategory? subcategory,
+        Money amount,
+        DateTime transactedAt,
+        CancellationToken cancellationToken)
+    {
+        var (assignmentAmount, targetAmount) = (amount, amount);
+
+        if (subcategory is null)
+        {
+            return Result.Success((assignmentAmount, targetAmount));
+        }
+
+        var assignmentCurrency = subcategory.GetAssignmentForDate(transactedAt)?.ActualAmount.Currency;
+
+        var targetCurrency = subcategory.Target?.CollectedAmount.Currency;
+
+        if (assignmentCurrency is not null && assignmentCurrency != amount.Currency)
+        {
+            var assignmentAmountConvertResult = await _currencyConverter.ConvertMoney(
+                amount,
+                assignmentCurrency,
+                cancellationToken);
+
+            if (assignmentAmountConvertResult.IsFailure)
+            {
+                return assignmentAmountConvertResult.Error;
+            }
+
+            assignmentAmount = assignmentAmountConvertResult.Value;
+        }
+
+        if (targetCurrency is not null && targetCurrency != amount.Currency)
+        {
+            var targetAmountConvertResult = await _currencyConverter.ConvertMoney(
+                amount,
+                targetCurrency,
+                cancellationToken);
+
+            if (targetAmountConvertResult.IsFailure)
+            {
+                return targetAmountConvertResult.Error;
+            }
+
+            targetAmount = targetAmountConvertResult.Value;
+        }
+
+        return (assignmentAmount, targetAmount);
     }
 
     private async Task<Result<Counterparty>> GetOrCreateCounterparty(AddTransactionCommand request, CancellationToken cancellationToken)

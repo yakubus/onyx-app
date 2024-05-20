@@ -61,6 +61,8 @@ public sealed class SubcategoryService
         currentTarget switch
         {
             null => subcategory.SetTarget(targetAmount, targetUpToMonth),
+            _ when currentTarget.TargetAmount != targetAmount && currentTarget.UpToMonth != targetUpToMonth => 
+                Result.Aggregate([subcategory.UpdateTargetAmount(targetAmount), subcategory.MoveTargetEndMonth(targetUpToMonth)]),
             _ when currentTarget.TargetAmount != targetAmount => subcategory.UpdateTargetAmount(targetAmount),
             _ when currentTarget.UpToMonth != targetUpToMonth => subcategory.MoveTargetEndMonth(targetUpToMonth),
             _ => Result.Failure(Error.InvalidValue)

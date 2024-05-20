@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Budget.Domain.Accounts;
 using Budget.Domain.Subcategories;
 using Newtonsoft.Json;
 
@@ -12,12 +13,11 @@ public class SubcategoryIdConverter : JsonConverter
         serializer.Serialize(writer, id.Value.ToString());
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        var guid = serializer.Deserialize<string>(reader) ??
-                   throw new SerializationException($"Missing property {nameof(SubcategoryId.Value)} in {nameof(SubcategoryId)}"); ;
+        var guid = serializer.Deserialize<string>(reader);
 
-        return new SubcategoryId(guid);
+        return guid is null ? null : new SubcategoryId(guid);
     }
 
     public override bool CanConvert(Type objectType)

@@ -58,6 +58,11 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
             category, 
             relatedTransactions);
 
+        if (subcategoryServiceRemoveResult.IsFailure)
+        {
+            return subcategoryServiceRemoveResult.Error;
+        }
+
         var categoryUpdateResult = await _categoryRepository.UpdateAsync(category, cancellationToken);
 
         if (categoryUpdateResult.IsFailure)

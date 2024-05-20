@@ -1,4 +1,4 @@
-﻿using Budget.Application.Abstractions.Services;
+﻿using Budget.Application.Abstractions.Currency;
 using Budget.Domain.Accounts;
 using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
@@ -8,7 +8,6 @@ using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
 using Budget.Infrastructure.Data;
 using Budget.Infrastructure.Repositories;
-using Extensions.CofigExtensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -6,7 +6,6 @@ using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Budget.Infrastructure.Data;

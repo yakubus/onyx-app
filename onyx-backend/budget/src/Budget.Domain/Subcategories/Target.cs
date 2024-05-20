@@ -78,7 +78,9 @@ public sealed record Target : ValueObject
             return Result.Failure(SubcategoryErrors.TargetDateHasPassed);
         }
 
-        CollectedAmount += transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        CollectedAmount += transaction.TargetAmount is not null ?
+            transaction.TargetAmount with { Amount = Math.Abs(transaction.TargetAmount.Amount) } :
+            transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
 
         return Result.Success();
     }
@@ -106,7 +108,9 @@ public sealed record Target : ValueObject
             return Result.Failure(SubcategoryErrors.TargetStartedAfterTransactionDate);
         }
 
-        CollectedAmount -= transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        CollectedAmount -= transaction.TargetAmount is not null ?
+            transaction.TargetAmount with { Amount = Math.Abs(transaction.TargetAmount.Amount) } :
+            transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
 
         return Result.Success();
     }

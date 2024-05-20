@@ -31,7 +31,7 @@ public sealed class SubcategoriesController : ControllerBase
         [FromBody] AddSubcategoryRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddSubcategoryCommand(request.ParentSubcategoryId, request.SubcategoryName);
+        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName);
 
         var result = await _sender.Send(command, cancellationToken);
 

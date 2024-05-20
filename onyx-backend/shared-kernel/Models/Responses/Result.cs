@@ -43,6 +43,11 @@ public class Result
     public static Result<TValue?> CreateNullable<TValue>(TValue? value) => Success(value);
 
     public static implicit operator Result(Error error) => Failure(error);
+
+    public static Result Aggregate(IEnumerable<Result> results)
+    {
+        return results.FirstOrDefault(x => x.IsFailure) ?? Success();
+    }
 }
 
 public class Result<TValue> : Result

@@ -1,17 +1,12 @@
-using System.IO;
 using System.Threading.Tasks;
-using Budget.Functions.Middlewares;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Budget.Application.Transactions.GetTransactions;
 using System.Threading;
 using System;
-using Microsoft.Extensions.Primitives;
 
 namespace Budget.Functions.Functions.Transactions;
 

@@ -1,10 +1,5 @@
 using Budget.Application;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Budget.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.UI;
-using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 
 namespace Budget.API;
 

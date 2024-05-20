@@ -265,4 +265,14 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         return targetAmountUpdateResult;
     }
+
+    public Assignment? GetAssignmentForDate(DateTime transactedAt)
+    {
+        var monthDateCreateResult = MonthDate.FromDateTime(transactedAt);
+
+        return monthDateCreateResult.IsFailure ? null : GetAssignmentForMonth(monthDateCreateResult.Value);
+    }
+
+    public Assignment? GetAssignmentForMonth(MonthDate month) =>
+        _assignments.Find(a => a.Month == month);
 }

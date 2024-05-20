@@ -47,7 +47,6 @@ public sealed record MonthDate
 
     public static Result<MonthDate> FromDateTime(DateTime dateTime) => Create(dateTime.Month, dateTime.Year);
 
-
     public static MonthDate Current => new (DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 
     public static int MonthsInterval(MonthDate later, MonthDate earlier)

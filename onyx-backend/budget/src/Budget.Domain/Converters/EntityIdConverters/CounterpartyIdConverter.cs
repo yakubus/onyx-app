@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
 using Newtonsoft.Json;
 
@@ -12,12 +13,11 @@ public class CounterpartyIdConverter : JsonConverter
         serializer.Serialize(writer, id.Value.ToString());
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        var guid = serializer.Deserialize<string>(reader) ??
-                   throw new SerializationException($"Missing property {nameof(CounterpartyId.Value)} in {nameof(CounterpartyId)}"); ;
+        var guid = serializer.Deserialize<string>(reader);
 
-        return new CounterpartyId(guid);
+        return guid is null ? null : new CounterpartyId(guid);
     }
 
     public override bool CanConvert(Type objectType)

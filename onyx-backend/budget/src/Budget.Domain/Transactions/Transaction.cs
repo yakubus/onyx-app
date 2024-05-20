@@ -12,6 +12,8 @@ public sealed class Transaction : Entity<TransactionId>
     public AccountId AccountId { get; init; }
     public Money Amount { get; init; }
     public Money? OriginalAmount { get; init; }
+    public Money? AssignmentAmount { get; private set; }
+    public Money? TargetAmount { get; private set; }
     public DateTime TransactedAt { get; init; }
     public SubcategoryId? SubcategoryId { get; private set; }
     public CounterpartyId? CounterpartyId { get; private set; }
@@ -25,6 +27,8 @@ public sealed class Transaction : Entity<TransactionId>
         DateTime transactedAt,
         SubcategoryId? subcategoryId,
         CounterpartyId? counterpartyId,
+        Money? assignmentAmount,
+        Money? targetAmount,
         TransactionId? id) : base(id ?? new TransactionId())
     {
         AccountId = accountId;
@@ -33,6 +37,8 @@ public sealed class Transaction : Entity<TransactionId>
         TransactedAt = transactedAt;
         SubcategoryId = subcategoryId;
         CounterpartyId = counterpartyId;
+        AssignmentAmount = assignmentAmount;
+        TargetAmount = targetAmount;
     }
 
     private Transaction(
@@ -42,6 +48,8 @@ public sealed class Transaction : Entity<TransactionId>
         Money? originalAmount,
         DateTime transactedAt,
         Counterparty counterparty,
+        Money? assignmentAmount,
+        Money? targetAmount,
         TransactionId? id = null) 
         : base(id ?? new TransactionId())
     {
@@ -49,6 +57,8 @@ public sealed class Transaction : Entity<TransactionId>
         Amount = amount;
         OriginalAmount = originalAmount;
         TransactedAt = transactedAt;
+        AssignmentAmount = assignmentAmount;
+        TargetAmount = targetAmount;
         SubcategoryId = subcategory?.Id;
         CounterpartyId = counterparty.Id;
     }
@@ -58,7 +68,9 @@ public sealed class Transaction : Entity<TransactionId>
         Subcategory subcategory,
         Money amount,
         DateTime transactedAt,
-        Counterparty payee)
+        Counterparty payee,
+        Money assignmentAmount,
+        Money targetAmount)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -70,7 +82,15 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, subcategory, amount, null, transactedAt, payee);
+        var transaction = new Transaction(
+            account,
+            subcategory,
+            amount,
+            null,
+            transactedAt,
+            payee,
+            assignmentAmount,
+            targetAmount);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -95,7 +115,9 @@ public sealed class Transaction : Entity<TransactionId>
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
-        Counterparty payee)
+        Counterparty payee,
+        Money assignmentAmount,
+        Money targetAmount)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -118,7 +140,9 @@ public sealed class Transaction : Entity<TransactionId>
             convertedAmount,
             originalAmount,
             transactedAt,
-            payee);
+            payee,
+            assignmentAmount,
+            targetAmount);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -153,7 +177,15 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, null, amount, null, transactedAt, payer);
+        var transaction = new Transaction(
+            account,
+            null,
+            amount,
+            null,
+            transactedAt,
+            payer,
+            null,
+            null);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -187,7 +219,15 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, null, convertedAmount, originalAmount, transactedAt, payer);
+        var transaction = new Transaction(
+            account,
+            null,
+            convertedAmount,
+            originalAmount,
+            transactedAt,
+            payer,
+            null,
+            null);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -209,6 +249,30 @@ public sealed class Transaction : Entity<TransactionId>
     public Result RemoveSubcategory()
     {
         SubcategoryId = null;
+
+        return Result.Success();
+    }
+
+
+    public Result SetAssignmentAmount(Money amount)
+    {
+        if (amount > 0)
+        {
+            return TransactionErrors.AssignmentAmountMustBeNegative;
+        }
+
+        AssignmentAmount = amount;
+
+        return Result.Success();
+    }
+    public Result SetTargetAmount(Money amount)
+    {
+        if (amount > 0)
+        {
+            return TransactionErrors.TargetAmountMustBeNegative;
+        }
+
+        TargetAmount = amount;
 
         return Result.Success();
     }

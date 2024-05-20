@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
 using Newtonsoft.Json;
 
@@ -12,13 +13,11 @@ public sealed class BudgetIdConverter : JsonConverter
         serializer.Serialize(writer, id.Value.ToString());
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        var guid = serializer.Deserialize<string>(reader) ??
-                   throw new SerializationException($"Missing property {nameof(BudgetId.Value)} in {nameof(BudgetId)}");
-        ;
+        var guid = serializer.Deserialize<string>(reader);
 
-        return new BudgetId(guid);
+        return guid is null ? null : new BudgetId(guid);
     }
 
     public override bool CanConvert(Type objectType)
