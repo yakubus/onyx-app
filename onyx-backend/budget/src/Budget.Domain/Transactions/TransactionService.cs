@@ -6,7 +6,7 @@ namespace Budget.Domain.Transactions;
 
 public sealed class TransactionService
 {
-    public Result RemoveTransaction(
+    public static Result RemoveTransaction(
         Transaction transaction, 
         Account account, 
         Subcategory? subcategory)

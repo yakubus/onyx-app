@@ -34,7 +34,7 @@ public static class DependencyInjection
 
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<CosmosDbOptions>(configuration.GetFunctionSection("CosmosDb"));
+        services.Configure<CosmosDbOptions>(options => configuration.GetSection("CosmosDb").Bind(options));
         services.AddScoped<CosmosDbContext>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
@@ -47,7 +47,7 @@ public static class DependencyInjection
     {
         services.AddHttpClient<NbpClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration["CurrencyConverter:BaseUrl"] 
+            client.BaseAddress = new Uri(configuration["CurrencyConverterBaseUrl"] 
                                          ?? throw new MissingFieldException("Currency converter base url is missing"));
         });
 

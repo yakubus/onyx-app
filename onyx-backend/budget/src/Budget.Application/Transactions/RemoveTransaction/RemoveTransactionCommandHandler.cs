@@ -1,4 +1,5 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Accounts.Models;
 using Budget.Domain.Accounts;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
@@ -50,6 +51,7 @@ internal sealed class RemoveTransactionCommandHandler : ICommandHandler<RemoveTr
         var subcategory = subcategoryGetResult?.Value;
         var account = accountGetResult.Value;
 
+        TransactionService.RemoveTransaction(transaction, account, subcategory);
 
         var transactionRemoveResult = await _transactionRepository.RemoveAsync(transaction.Id, cancellationToken);
 

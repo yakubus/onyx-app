@@ -41,6 +41,8 @@ public class Result
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
 
     public static Result<TValue?> CreateNullable<TValue>(TValue? value) => Success(value);
+
+    public static implicit operator Result(Error error) => Failure(error);
 }
 
 public class Result<TValue> : Result
@@ -60,5 +62,7 @@ public class Result<TValue> : Result
         ? _value! : default;
 
     public static implicit operator Result<TValue>(TValue? value) => Create(value);
+
+    public static implicit operator Result<TValue>(Error error) => Failure<TValue>(error);
 
 }
