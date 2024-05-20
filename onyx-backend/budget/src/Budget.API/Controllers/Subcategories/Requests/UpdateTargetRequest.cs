@@ -6,5 +6,5 @@ namespace Budget.API.Controllers.Subcategories.Requests;
 public sealed record UpdateTargetRequest
 {
     public MonthDate TargetUpToMonth { get; set; }
-    public MoneyModel TargetAmount { get; set; }
+    public decimal TargetAmount { get; set; }
 }

@@ -5,7 +5,7 @@ using Models.DataTypes;
 
 namespace Budget.Application.Subcategories.UpdateTarget;
 
-public sealed record UpdateTargetCommand(Guid SubcategoryId, MonthDate TargetUpToMonth, MoneyModel TargetAmount) 
+public sealed record UpdateTargetCommand(Guid SubcategoryId, MonthDate TargetUpToMonth, decimal TargetAmount) 
     : ICommand<SubcategoryModel>
 {
 }

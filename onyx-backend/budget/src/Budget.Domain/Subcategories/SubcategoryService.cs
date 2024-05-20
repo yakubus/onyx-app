@@ -21,19 +21,19 @@ public sealed class SubcategoryService
         return results.FirstOrDefault(r => r.IsFailure) ?? Result.Success();
     }
 
-    public static Result UpdateAssignment(
+    public static Result<Assignment> UpdateAssignment(
         Subcategory subcategory,
         MonthDate assignmentMonth,
         Money assignedAmount) =>
         subcategory.Assign(
             assignmentMonth.Month, 
             assignmentMonth.Year, 
-            assignedAmount).IsFailure ?
+            assignedAmount) is var assignmentResult && assignmentResult.IsFailure ?
             subcategory.Reassign(
                 assignmentMonth.Month,
                 assignmentMonth.Year,
                 assignedAmount) :
-            Result.Success();
+            Result.Success(assignmentResult.Value);
 
     public static Result UpdateSubcategory(
         Subcategory subcategory,

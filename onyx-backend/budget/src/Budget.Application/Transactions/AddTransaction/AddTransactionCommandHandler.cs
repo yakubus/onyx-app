@@ -68,6 +68,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         var counterparty = counterpartyGetResult.Value;
         var account = accountGetResult.Value;
         var amount = amountCreateResult.Value;
+        var budgetCurrency = Currency.Usd; //TODO Fix when authentication implemented
 
         var isForeignTransaction = account.Balance.Currency != amount.Currency;
 
@@ -82,18 +83,15 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
 
         var convertedAmount = convertAmountResult?.Value;
 
-        var assignmentTargetAmountConvertResult = await ConvertAmountForAssignmentAndTarget(
-            subcategory,
-            amount,
-            request.TransactedAt,
-            cancellationToken);
+        var budgetAmountConvertResult =
+            await _currencyConverter.ConvertMoney(amount, budgetCurrency, cancellationToken);
 
-        if (assignmentTargetAmountConvertResult.IsFailure)
+        if (budgetAmountConvertResult.IsFailure)
         {
-            return assignmentTargetAmountConvertResult.Error;
+            return budgetAmountConvertResult.Error;
         }
 
-        var (assignmentAmount, targetAmount) = assignmentTargetAmountConvertResult.Value;
+        var budgetAmount = budgetAmountConvertResult.Value;
 
         var transactionFactory = new TransactionFactory(
             account,
@@ -102,8 +100,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
             request.TransactedAt,
             amount,
             convertedAmount,
-            assignmentAmount,
-            targetAmount);
+            budgetAmount);
 
         var transactionCreateResult = transactionFactory.CreateTransaction();
 
@@ -140,56 +137,6 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         transaction = addTransactionResult.Value;
 
         return TransactionModel.FromDomainModel(transaction, counterparty, account, subcategory);
-    }
-
-    private async Task<Result<(Money assignmentAmount, Money targetAmount)>> ConvertAmountForAssignmentAndTarget(
-        Subcategory? subcategory,
-        Money amount,
-        DateTime transactedAt,
-        CancellationToken cancellationToken)
-    {
-        var (assignmentAmount, targetAmount) = (amount, amount);
-
-        if (subcategory is null)
-        {
-            return Result.Success((assignmentAmount, targetAmount));
-        }
-
-        var assignmentCurrency = subcategory.GetAssignmentForDate(transactedAt)?.ActualAmount.Currency;
-
-        var targetCurrency = subcategory.Target?.CollectedAmount.Currency;
-
-        if (assignmentCurrency is not null && assignmentCurrency != amount.Currency)
-        {
-            var assignmentAmountConvertResult = await _currencyConverter.ConvertMoney(
-                amount,
-                assignmentCurrency,
-                cancellationToken);
-
-            if (assignmentAmountConvertResult.IsFailure)
-            {
-                return assignmentAmountConvertResult.Error;
-            }
-
-            assignmentAmount = assignmentAmountConvertResult.Value;
-        }
-
-        if (targetCurrency is not null && targetCurrency != amount.Currency)
-        {
-            var targetAmountConvertResult = await _currencyConverter.ConvertMoney(
-                amount,
-                targetCurrency,
-                cancellationToken);
-
-            if (targetAmountConvertResult.IsFailure)
-            {
-                return targetAmountConvertResult.Error;
-            }
-
-            targetAmount = targetAmountConvertResult.Value;
-        }
-
-        return (assignmentAmount, targetAmount);
     }
 
     private async Task<Result<Counterparty>> GetOrCreateCounterparty(AddTransactionCommand request, CancellationToken cancellationToken)

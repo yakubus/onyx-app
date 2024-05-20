@@ -14,12 +14,18 @@ public sealed class TransactionFactory
     private readonly DateTime _transactedAt;
     private readonly Money _originalAmount;
     private readonly Money? _convertedAmount;
-    private readonly Money? _assignmentAmount;
-    private readonly Money? _targetAmount;
+    private readonly Money? _budgetAmount;
     private bool IsForeignTransaction => _convertedAmount is not null;
     private bool IsOutflow => _originalAmount < 0;
 
-    public TransactionFactory(Account account, Counterparty counterparty, Subcategory? subcategory, DateTime transactedAt, Money originalAmount, Money? convertedAmount, Money? assignmentAmount, Money? targetAmount)
+    public TransactionFactory(
+        Account account,
+        Counterparty counterparty,
+        Subcategory? subcategory,
+        DateTime transactedAt,
+        Money originalAmount,
+        Money? convertedAmount,
+        Money? budgetAmount)
     {
         _account = account;
         _counterparty = counterparty;
@@ -27,8 +33,7 @@ public sealed class TransactionFactory
         _transactedAt = transactedAt;
         _originalAmount = originalAmount;
         _convertedAmount = convertedAmount;
-        _assignmentAmount = assignmentAmount;
-        _targetAmount = targetAmount;
+        _budgetAmount = budgetAmount;
     }
 
     public Result<Transaction> CreateTransaction() => 
@@ -45,26 +50,26 @@ public sealed class TransactionFactory
                 _originalAmount,
                 _transactedAt,
                 _counterparty,
-                _assignmentAmount ?? _originalAmount,
-                _targetAmount ?? _originalAmount),
+                _budgetAmount),
             (true, false) => Transaction.CreateForeignInflow(
                 _account,
                 _convertedAmount!,
                 _originalAmount,
                 _transactedAt,
-                _counterparty),
+                _counterparty,
+                _budgetAmount),
             (false, true) => Transaction.CreatePrincipalOutflow(
                 _account,
                 _subcategory!,
                 _originalAmount,
                 _transactedAt,
                 _counterparty,
-                _assignmentAmount ?? _originalAmount,
-                _targetAmount ?? _originalAmount),
+                _budgetAmount),
             (false, false) => Transaction.CreatePrincipalInflow(
                 _account,
                 _originalAmount,
                 _transactedAt,
-                _counterparty)
+                _counterparty,
+                _budgetAmount)
         };
 }

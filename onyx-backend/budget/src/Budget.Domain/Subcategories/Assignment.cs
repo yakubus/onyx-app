@@ -58,9 +58,7 @@ public sealed record Assignment : ValueObject
             return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
         }
 
-        ActualAmount += transaction.AssignmentAmount is not null ?
-            transaction.AssignmentAmount with { Amount = Math.Abs(transaction.AssignmentAmount.Amount) } :
-            transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        ActualAmount += transaction.BudgetAmount with { Amount = Math.Abs(transaction.BudgetAmount.Amount) };
 
         return Result.Success();
     }
@@ -72,9 +70,7 @@ public sealed record Assignment : ValueObject
             return Result.Failure(SubcategoryErrors.WrongTransactionDateTimeForAssignment);
         }
 
-        ActualAmount -= transaction.AssignmentAmount is not null ?
-            transaction.AssignmentAmount with { Amount = Math.Abs(transaction.TargetAmount.Amount) } :
-            transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        ActualAmount -= transaction.BudgetAmount with { Amount = Math.Abs(transaction.BudgetAmount.Amount) };
 
         return Result.Success();
     }

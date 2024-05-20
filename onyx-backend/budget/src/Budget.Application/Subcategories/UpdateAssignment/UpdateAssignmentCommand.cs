@@ -8,6 +8,6 @@ namespace Budget.Application.Subcategories.UpdateAssignment;
 public sealed record UpdateAssignmentCommand(
     Guid SubcategoryId,
     MonthDate AssignmentMonth,
-    MoneyModel AssignedAmount) : ICommand<SubcategoryModel>
+    decimal AssignedAmount) : ICommand<SubcategoryModel>
 {
 }
