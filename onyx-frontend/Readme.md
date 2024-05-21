@@ -1,30 +1,96 @@
-# React + TypeScript + Vite
+# ONYX Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Table of Contents
+1. [Technologies](#technologies)
+3. [Setup](#setup)
+4. [Usage](#usage)
+5. [Folder Structure](#folder-structure)
+6. [Contributing](#contributing)
 
-Currently, two official plugins are available:
+## Technologies
+List of the major technologies and frameworks used in the project.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React**: Version 18.2.0
+- **TypeScript**
+- **Tailwindcss**
+- **Shadcn/ui**
+- **tanstack/react-router**
+- **tanstack/react-query**
+- **zod**
+- ...
 
-## Expanding the ESLint configuration
+## Setup
+Instructions to set up the project on a local machine.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/dbrdak/onyx-app
+    cd <ProjectPath>/onyx-frontend
+    ```
 
-- Configure the top-level `parserOptions` property like this:
+2. **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Usage
+Instructions on how to run the project.
+
+**Since the frontend part needs an ONYX backend connection to fetch necessary data, and the backend has to be run locally (temporarily), the frontend part contains a server proxy in `vite.config.ts` (to satisfy CORS), configured to run with the backend API opened as a Docker container.**
+
+To set up the backend as Docker container, follow the ONYX-backend README or use the following steps:
+
+#### Download the file for running the API with Docker
+[run-script.ps1](https://github.com/DBrdak/onyx-app/blob/penny-migration/onyx-backend/run-script.ps1)
+
+#### Run the file
+You'll need to log in to `docker.io` and provide the Azure CosmosDB instance key that has the 'budget' database created.
+
+####Then:
+
+1. **Start the development server:**
+    ```bash
+    npm start
+    ```
+   This will run the app in development mode. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+
+2. **Build for production:**
+    ```bash
+    npm run build
+    ```
+   This will create an optimized production build in the `build` folder.
+
+## Folder Structure
+Explanation of the project's folder structure and what each folder/file represents.
+
+```plaintext
+onyx-frontend/
+├── public
+│   └── fonts
+├── src/
+│   ├── assets/
+│   ├── components/
+│       ├── ui (reusable components only)
+│       └── ...
+│   ├── lib/
+│   ├── routes/
+│   ├── index.css
+│   ├── main.tsx
+│   └── ...
+├── index.html
+├── .gitignore
+├── package.json
+├── vite.config.ts
+├── README.md
+└── ...
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Contributing
+Guidelines for contributing to the project.
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch-name`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature-branch-name`).
+6. Open a pull request.
