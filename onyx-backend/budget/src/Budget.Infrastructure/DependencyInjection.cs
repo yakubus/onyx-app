@@ -7,6 +7,7 @@ using Budget.Domain.Transactions;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
 using Budget.Infrastructure.Data;
+using Budget.Infrastructure.Data.DataSettings;
 using Budget.Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ public static class DependencyInjection
 
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<CosmosDbOptions>(options => configuration.GetSection("CosmosDb").Bind(options));
+        services.ConfigureOptions<CosmosDbOptions>();
         services.AddScoped<CosmosDbContext>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();

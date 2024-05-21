@@ -7,5 +7,10 @@
         "excludedTypes": "Request"
       }
     }
-  }
+  },
+  "CosmosDb": {
+    "AccountUri": "https://onyx-cosmos-db.documents.azure.com:443/",
+    "Database": "budget"
+  },
+  "KeyVaultUri": "https://onyx-secrets.vault.azure.net"
 }

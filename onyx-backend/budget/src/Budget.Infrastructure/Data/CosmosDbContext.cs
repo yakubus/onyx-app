@@ -5,6 +5,7 @@ using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
+using Budget.Infrastructure.Data.DataSettings;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 
