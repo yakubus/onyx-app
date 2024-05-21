@@ -14,7 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as HomeLayoutImport } from './routes/_home-layout'
 import { Route as DashboardLayoutImport } from './routes/_dashboard-layout'
 import { Route as HomeLayoutIndexImport } from './routes/_home-layout/index'
-import { Route as DashboardLayoutDashboardImport } from './routes/_dashboard-layout/dashboard'
+import { Route as DashboardLayoutBudgetImport } from './routes/_dashboard-layout/budget'
 
 // Create/Update Routes
 
@@ -33,8 +33,8 @@ const HomeLayoutIndexRoute = HomeLayoutIndexImport.update({
   getParentRoute: () => HomeLayoutRoute,
 } as any)
 
-const DashboardLayoutDashboardRoute = DashboardLayoutDashboardImport.update({
-  path: '/dashboard',
+const DashboardLayoutBudgetRoute = DashboardLayoutBudgetImport.update({
+  path: '/budget',
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
 
@@ -56,11 +56,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeLayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_dashboard-layout/dashboard': {
-      id: '/_dashboard-layout/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardLayoutDashboardImport
+    '/_dashboard-layout/budget': {
+      id: '/_dashboard-layout/budget'
+      path: '/budget'
+      fullPath: '/budget'
+      preLoaderRoute: typeof DashboardLayoutBudgetImport
       parentRoute: typeof DashboardLayoutImport
     }
     '/_home-layout/': {
@@ -77,7 +77,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   DashboardLayoutRoute: DashboardLayoutRoute.addChildren({
-    DashboardLayoutDashboardRoute,
+    DashboardLayoutBudgetRoute,
   }),
   HomeLayoutRoute: HomeLayoutRoute.addChildren({ HomeLayoutIndexRoute }),
 })
