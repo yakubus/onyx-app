@@ -34,7 +34,7 @@ public static class DependencyInjection
 
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.ConfigureOptions<CosmosDbOptions>();
+        services.ConfigureOptions<CosmosDbOptionsSetup>();
         services.AddScoped<CosmosDbContext>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();

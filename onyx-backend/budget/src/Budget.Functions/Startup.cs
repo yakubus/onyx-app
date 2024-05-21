@@ -39,8 +39,8 @@ public sealed class Startup : FunctionsStartup
     private static IConfigurationBuilder AddSecrets(IFunctionsConfigurationBuilder builder) =>
         builder.GetContext().EnvironmentName switch
         {
-            var envName when envName == EnvironmentName.Production => AddDevelopmentSecrets(builder),
-            var envName when envName == EnvironmentName.Development => AddProductionSecrets(builder),
+            var envName when envName == EnvironmentName.Development => AddDevelopmentSecrets(builder),
+            var envName when envName == EnvironmentName.Production => AddProductionSecrets(builder)
         };
 
     private static IConfigurationBuilder AddProductionSecrets(
@@ -50,7 +50,7 @@ public sealed class Startup : FunctionsStartup
                                throw new ConfigurationErrorsException("Missing KeyVaultUri"));
 
         return builder.ConfigurationBuilder
-            .AddAzureKeyVault(vaultUri, new AzureCliCredential())
+            .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
             .AddEnvironmentVariables();
     }
 
