@@ -3,7 +3,6 @@ using Budget.Application.Abstractions.Currency;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
-using MediatR;
 using Models.DataTypes;
 using Models.Responses;
 

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Budget.Application;
 using Budget.Functions;
 using Budget.Infrastructure;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

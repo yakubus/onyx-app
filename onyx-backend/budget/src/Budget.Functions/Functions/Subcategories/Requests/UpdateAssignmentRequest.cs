@@ -1,6 +1,6 @@
 ﻿using Models.DataTypes;
 
-namespace Budget.API.Controllers.Subcategories.Requests;
+namespace Budget.Functions.Functions.Subcategories.Requests;
 
 public sealed record UpdateAssignmentRequest
 {

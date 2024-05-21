@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Budget.Domain.Accounts;
-using Budget.Domain.Categories;
+﻿using Budget.Domain.Categories;
 using Newtonsoft.Json;
 
 namespace Budget.Domain.Converters.EntityIdConverters;
