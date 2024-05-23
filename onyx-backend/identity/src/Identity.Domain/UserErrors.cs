@@ -17,4 +17,14 @@ internal static class UserErrors
     public static readonly Error PasswordChangeNotRequested = new (
         "User.Password.ChangeNotRequested",
         "Password change not requested");
+    internal static readonly Error VerificationCodeInvalid = new (
+        "User.VerificationCode.Invalid",
+        "Invalid verification code");
+    internal static readonly Error NotLoggedIn = new (
+        "User.NotLoggedIn",
+        "User is not logged in");
+
+    internal static Error UserLocked(int seconds) => new (
+        "User.Locked",
+        $"User is locked for {seconds} seconds");
 }

@@ -8,6 +8,7 @@ public sealed record UpdateUserCommand(
     string? NewEmail,
     string? NewUsername,
     string? NewPassword,
-    string? NewCurrency) : ICommand<UserModel>
+    string? NewCurrency,
+    string? VerificationCode) : ICommand<UserModel>
 {
 }

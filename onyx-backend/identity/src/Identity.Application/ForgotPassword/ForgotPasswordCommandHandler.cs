@@ -1,4 +1,5 @@
 ﻿using Abstractions.Messaging;
+using Identity.Application.Messaging.Emails;
 using Identity.Domain;
 using Models.Responses;
 
@@ -32,6 +33,14 @@ internal sealed record ForgotPasswordCommandHandler : ICommandHandler<ForgotPass
         {
             return forgotPasswordRequestResult.Error;
         }
+
+        var verificationCode = forgotPasswordRequestResult.Value;
+
+        var emailWriter = new EmailWriter(user.Email.Value);
+
+        await _emailService.SendEmailAsync(
+            emailWriter.WriteVerificationCode(verificationCode.Code),
+            cancellationToken);
 
         var userUpdateResult = await _userRepository.UpdateAsync(user, cancellationToken);
 

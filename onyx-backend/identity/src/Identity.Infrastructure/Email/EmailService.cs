@@ -22,4 +22,7 @@ internal sealed class EmailService : IEmailService
 
         return Result.Success();
     }
+
+    public async Task<Result> SendEmailAsync((string recipient, string subject, string body) request, CancellationToken cancellationToken) =>
+        await SendEmailAsync(request.recipient, request.subject, request.body);
 }

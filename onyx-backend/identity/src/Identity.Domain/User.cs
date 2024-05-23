@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Converters.DateTime;
 using Models.DataTypes;
 using Models.Responses;
 using Newtonsoft.Json;
@@ -10,14 +11,17 @@ public sealed class User : Entity<UserId>
     public Email Email { get; private set; }
     public Username Username { get; private set; }
     public Password PasswordHash { get; private set; }
+    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime? LastLoggedInAt { get; private set; }
+    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime RegisteredAt { get; init; }
     public bool IsAuthenticated { get; private set; }
     public Currency Currency { get; private set; }
     public bool IsEmailVerified { get; private set; }
-    public int LoginAttempts { get; private set; }
+    public LoggingGuard Guard { get; init; }
     public bool IsPasswordForgotten { get; private set; }
     public bool IsEmailChangeRequested { get; private set; }
+    public VerificationCode? VerificationCode { get; private set; }
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
@@ -30,9 +34,10 @@ public sealed class User : Entity<UserId>
         bool isAuthenticated,
         Currency currency,
         bool isEmailVerified,
-        int loginAttempts,
         bool isPasswordForgotten,
         bool isEmailChangeRequested,
+        VerificationCode? verificationCode,
+        LoggingGuard guard,
         UserId? userId = null) : base(userId ?? new UserId())
     {
         Email = email;
@@ -43,9 +48,10 @@ public sealed class User : Entity<UserId>
         IsAuthenticated = isAuthenticated;
         Currency = currency;
         IsEmailVerified = isEmailVerified;
-        LoginAttempts = loginAttempts;
         IsPasswordForgotten = isPasswordForgotten;
         IsEmailChangeRequested = isEmailChangeRequested;
+        VerificationCode = verificationCode;
+        Guard = guard;
     }
 
     public static Result<User> Register(
@@ -91,24 +97,30 @@ public sealed class User : Entity<UserId>
             false,
             currencyCreateResult.Value,
             false,
-            0,
             false,
-            false);
+            false,
+            null,
+            LoggingGuard.Create());
     }
 
     public Result LogIn(string passwordPlainText)
     {
+        if (Guard.IsLocked)
+        {
+            return UserErrors.UserLocked(Guard.RemainingLockSeconds);
+        }
+
         var passwordVerifyResult = PasswordHash.VerifyPassword(passwordPlainText);
 
         if (passwordVerifyResult.IsFailure)
         {
-            LoginAttempts++;
+            Guard.LogInFailed();
             return Result.Failure(passwordVerifyResult.Error);
         }
 
         IsAuthenticated = true;
         LastLoggedInAt = DateTime.UtcNow;
-        LoginAttempts = 0;
+        Guard.LoginSucceeded();
 
         return Result.Success();
     }
@@ -148,8 +160,15 @@ public sealed class User : Entity<UserId>
         return Result.Success();
     }
 
-    public Result ChangePassword(string passwordPlainText)
+    public Result ChangePassword(string passwordPlainText, string verificationCode)
     {
+        var verificationCodeResult = VerifyCode(verificationCode);
+
+        if (verificationCodeResult.IsFailure)
+        {
+            return verificationCodeResult.Error;
+        }
+
         if (!IsPasswordForgotten)
         {
             return UserErrors.PasswordChangeNotRequested;
@@ -164,11 +183,20 @@ public sealed class User : Entity<UserId>
 
         PasswordHash = passwordCreateResult.Value;
 
+        IsPasswordForgotten = false;
+
         return Result.Success();
     }
 
-    public Result ChangeEmail(string newEmail)
+    public Result ChangeEmail(string newEmail, string verificationCode)
     {
+        var codeVerificationResult = VerifyCode(verificationCode);
+
+        if (codeVerificationResult.IsFailure)
+        {
+            return codeVerificationResult.Error;
+        }
+
         if (!IsEmailVerified)
         {
             return UserErrors.EmailNotVerified;
@@ -188,10 +216,12 @@ public sealed class User : Entity<UserId>
 
         Email = emailCreateResult.Value;
 
+        IsEmailChangeRequested = false;
+
         return Result.Success();
     }
 
-    public Result RequestEmailChange()
+    public Result<VerificationCode> RequestEmailChange()
     {
         if (!IsEmailVerified)
         {
@@ -200,12 +230,26 @@ public sealed class User : Entity<UserId>
 
         IsEmailChangeRequested = true;
 
+        var verificationCode = GenerateVerificationCode();
+
+        return Result.Success(verificationCode);
+    }
+
+    public Result VerifyEmail(string verificationCode)
+    {
+        var verificationCodeResult = VerifyCode(verificationCode);
+
+        if (verificationCodeResult.IsFailure)
+        {
+            return verificationCodeResult.Error;
+        }
+
+        IsEmailVerified = true;
+
         return Result.Success();
     }
 
-    public void VerifyEmail() => IsEmailVerified = true;
-
-    public Result ForgotPassword()
+    public Result<VerificationCode> ForgotPassword()
     {
         if (!IsEmailVerified)
         {
@@ -214,6 +258,48 @@ public sealed class User : Entity<UserId>
 
         IsPasswordForgotten = true;
 
+        var verificationCode = GenerateVerificationCode();
+
+        return Result.Success(verificationCode);
+    }
+
+    public Result Remove(string passwordPlainText)
+    {
+        if (!IsAuthenticated)
+        {
+            return UserErrors.NotLoggedIn;
+        }
+
+        var passwordVerifyResult = PasswordHash.VerifyPassword(passwordPlainText);
+
+        if (passwordVerifyResult.IsFailure)
+        {
+            return passwordVerifyResult.Error;
+        }
+
         return Result.Success();
+    }
+
+    private VerificationCode GenerateVerificationCode()
+    {
+        var code = VerificationCode.Generate();
+
+        VerificationCode = code;
+
+        return code;
+    }
+
+    private Result VerifyCode(string code)
+    {
+        var isSuccess = VerificationCode?.Verify(code) ?? false;
+
+        if (isSuccess)
+        {
+            VerificationCode = null;
+        }
+
+        return isSuccess ?
+            Result.Success() :
+            Result.Failure(UserErrors.VerificationCodeInvalid);
     }
 }

@@ -2,6 +2,6 @@
 
 namespace Identity.Application.RequestEmailChange;
 
-public sealed record RequestEmailChangeCommand(string Email, string Token) : ICommand
+public sealed record RequestEmailChangeCommand(string Token) : ICommand
 {
 }

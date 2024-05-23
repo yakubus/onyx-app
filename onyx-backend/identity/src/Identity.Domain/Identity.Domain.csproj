@@ -7,6 +7,7 @@
   </PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\shared-kernel\Abstractions\Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\shared-kernel\Converters\Converters.csproj" />
 	</ItemGroup>
 
 </Project>

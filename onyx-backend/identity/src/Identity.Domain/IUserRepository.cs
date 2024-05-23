@@ -6,7 +6,6 @@ public interface IUserRepository
 {
     Task<Result<User>> GetByIdAsync(UserId id, CancellationToken cancellationToken);
     Task<Result<User>> GetByEmailAsync(Email email, CancellationToken cancellationToken);
-    Task<Result<User>> GetByUsernameAsync(Username username, CancellationToken cancellationToken);
     Task<Result<User>> AddAsync(User user, CancellationToken cancellationToken);
     Task<Result<User>> UpdateAsync(User user, CancellationToken cancellationToken);
     Task<Result> DeleteAsync(UserId id, CancellationToken cancellationToken);
