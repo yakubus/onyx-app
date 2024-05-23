@@ -24,7 +24,7 @@ public sealed class CategoriesHttpTrigger
         _sender = sender;
     }
 
-    [FunctionName(nameof(UpdateCategory))]
+    [FunctionName(nameof(GetCategories))]
     public async Task<IActionResult> GetCategories(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "categories")] HttpRequest req,
         CancellationToken cancellationToken)

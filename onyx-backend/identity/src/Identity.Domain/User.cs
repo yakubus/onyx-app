@@ -15,6 +15,9 @@ public sealed class User : Entity<UserId>
     public bool IsAuthenticated { get; private set; }
     public Currency Currency { get; private set; }
     public bool IsEmailVerified { get; private set; }
+    public int LoginAttempts { get; private set; }
+    public bool IsPasswordForgotten { get; private set; }
+    public bool IsEmailChangeRequested { get; private set; }
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
@@ -27,6 +30,9 @@ public sealed class User : Entity<UserId>
         bool isAuthenticated,
         Currency currency,
         bool isEmailVerified,
+        int loginAttempts,
+        bool isPasswordForgotten,
+        bool isEmailChangeRequested,
         UserId? userId = null) : base(userId ?? new UserId())
     {
         Email = email;
@@ -37,6 +43,9 @@ public sealed class User : Entity<UserId>
         IsAuthenticated = isAuthenticated;
         Currency = currency;
         IsEmailVerified = isEmailVerified;
+        LoginAttempts = loginAttempts;
+        IsPasswordForgotten = isPasswordForgotten;
+        IsEmailChangeRequested = isEmailChangeRequested;
     }
 
     public static Result<User> Register(
@@ -81,6 +90,9 @@ public sealed class User : Entity<UserId>
             DateTime.UtcNow,
             false,
             currencyCreateResult.Value,
+            false,
+            0,
+            false,
             false);
     }
 
@@ -90,11 +102,13 @@ public sealed class User : Entity<UserId>
 
         if (passwordVerifyResult.IsFailure)
         {
+            LoginAttempts++;
             return Result.Failure(passwordVerifyResult.Error);
         }
 
         IsAuthenticated = true;
         LastLoggedInAt = DateTime.UtcNow;
+        LoginAttempts = 0;
 
         return Result.Success();
     }
@@ -136,6 +150,11 @@ public sealed class User : Entity<UserId>
 
     public Result ChangePassword(string passwordPlainText)
     {
+        if (!IsPasswordForgotten)
+        {
+            return UserErrors.PasswordChangeNotRequested;
+        }
+
         var passwordCreateResult = Password.Create(passwordPlainText);
 
         if (passwordCreateResult.IsFailure)
@@ -150,6 +169,16 @@ public sealed class User : Entity<UserId>
 
     public Result ChangeEmail(string newEmail)
     {
+        if (!IsEmailVerified)
+        {
+            return UserErrors.EmailNotVerified;
+        }
+
+        if (!IsEmailChangeRequested)
+        {
+            return UserErrors.EmailChangeNotRequested;
+        }
+
         var emailCreateResult = Email.Create(newEmail);
 
         if (emailCreateResult.IsFailure)
@@ -158,6 +187,32 @@ public sealed class User : Entity<UserId>
         }
 
         Email = emailCreateResult.Value;
+
+        return Result.Success();
+    }
+
+    public Result RequestEmailChange()
+    {
+        if (!IsEmailVerified)
+        {
+            return UserErrors.EmailNotVerified;
+        }
+
+        IsEmailChangeRequested = true;
+
+        return Result.Success();
+    }
+
+    public void VerifyEmail() => IsEmailVerified = true;
+
+    public Result ForgotPassword()
+    {
+        if (!IsEmailVerified)
+        {
+            return UserErrors.EmailNotVerified;
+        }
+
+        IsPasswordForgotten = true;
 
         return Result.Success();
     }

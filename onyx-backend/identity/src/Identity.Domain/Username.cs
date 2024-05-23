@@ -13,13 +13,8 @@ public sealed record Username
         Value = value;
     }
 
-    public static Result<Username> Create(string value)
-    {
-        if (!Regex.IsMatch(value, usernamePattern))
-        {
-            return Result.Failure<Username>(UserErrors.InvalidUsername);
-        }
-
-        return new Username(value);
-    }
+    public static Result<Username> Create(string value) =>
+        Regex.IsMatch(value, usernamePattern) ?
+            new Username(value) :
+            Result.Failure<Username>(UserErrors.InvalidUsername);
 }

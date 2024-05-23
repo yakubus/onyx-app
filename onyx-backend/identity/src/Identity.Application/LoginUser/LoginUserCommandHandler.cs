@@ -8,30 +8,28 @@ using Models.Responses;
 
 namespace Identity.Application.LoginUser;
 
+//TODO implement event grid, to reset LoginAttempts after given time
 internal sealed class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, AuthorizationToken>
 {
     private readonly IJwtService _jwtService;
-    private readonly IUserRepository _userRepository;
     private readonly UserQueryService _userQueryService;
 
     public LoginUserCommandHandler(IJwtService jwtService, IUserRepository userRepository)
     {
         _jwtService = jwtService;
-        _userRepository = userRepository;
-        _userQueryService = new UserQueryService(_userRepository);
+        _userQueryService = new UserQueryService(userRepository);
     }
 
     public async Task<Result<AuthorizationToken>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Email) && string.IsNullOrWhiteSpace(request.Username))
+        if (string.IsNullOrWhiteSpace(request.Email))
         {
             return Result.Failure<AuthorizationToken>(BusinessErrors.InvalidUserQueryRequest);
         }
 
         var userGetResult = await _userQueryService.GetUser(
             null, 
-            request.Email, 
-            request.Username, 
+            request.Email,
             cancellationToken);
 
         if (userGetResult.IsFailure)

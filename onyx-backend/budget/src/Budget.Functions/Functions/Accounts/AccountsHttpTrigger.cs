@@ -29,6 +29,8 @@ public sealed class AccountsHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "accounts")] HttpRequest req,
         CancellationToken cancellationToken)
     {
+
+
         var query = new GetAccountsQuery();
 
         var result = await _sender.Send(query, cancellationToken);

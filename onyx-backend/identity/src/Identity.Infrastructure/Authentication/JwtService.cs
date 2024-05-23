@@ -52,7 +52,7 @@ internal sealed class JwtService : IJwtService
                 Result.Success(tokenValue);
     }
 
-    public Result<string> GetUserIdFromString(string encodedToken)
+    public Result<string> GetUserIdFromToken(string encodedToken)
     {
         try
         {

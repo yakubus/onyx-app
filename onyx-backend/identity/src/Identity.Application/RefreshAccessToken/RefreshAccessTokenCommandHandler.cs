@@ -20,7 +20,7 @@ internal sealed class RefreshAccessTokenCommandHandler : IQueryHandler<RefreshAc
 
     public async Task<Result<AuthorizationToken>> Handle(RefreshAccessTokenCommand request, CancellationToken cancellationToken)
     {
-        var userIdGetResult = _jwtService.GetUserIdFromString(request.Token);
+        var userIdGetResult = _jwtService.GetUserIdFromToken(request.Token);
 
         if (userIdGetResult.IsFailure)
         {

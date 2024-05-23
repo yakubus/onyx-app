@@ -9,21 +9,24 @@ public sealed record UserModel
     public string Email { get; init; }
     public string Username { get; init; }
     public string Currency { get; init; }
+    public AuthorizationToken? AuthorizationToken { get; init; }
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private UserModel(Guid id, string email, string username, string currency)
+    private UserModel(Guid id, string email, string username, string currency, AuthorizationToken? authorizationToken)
     {
         Id = id;
         Email = email;
         Username = username;
         Currency = currency;
+        AuthorizationToken = authorizationToken;
     }
 
-    internal static UserModel FromDomainModel(User domainModel) =>
+    internal static UserModel FromDomainModel(User domainModel, AuthorizationToken? authorizationToken = null) =>
         new(
             domainModel.Id.Value,
             domainModel.Email.Value,
             domainModel.Username.Value,
-            domainModel.Currency.Code);
+            domainModel.Currency.Code,
+            authorizationToken);
 }

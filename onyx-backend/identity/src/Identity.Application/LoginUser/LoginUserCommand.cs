@@ -3,7 +3,7 @@ using Identity.Application.Models;
 
 namespace Identity.Application.LoginUser;
 
-public sealed record LoginUserCommand(string? Username, string? Email, string Password)
+public sealed record LoginUserCommand(string? Email, string Password)
     : ICommand<AuthorizationToken>
 {
 }

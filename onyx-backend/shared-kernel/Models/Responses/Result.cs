@@ -56,7 +56,7 @@ public class Result<TValue> : Result
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    protected internal Result(TValue? value, bool isSuccess, Error error)
+    public Result(TValue? value, bool isSuccess, Error error)
         : base(isSuccess, error)
     {
         _value = value;
