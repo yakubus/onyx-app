@@ -49,7 +49,7 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
 
         var filter = GetTransactionFilters.GetFilter(query, request);
 
-        var transactionsGetResult = await _transactionRepository.GetWhereAsync(filter, cancellationToken);
+        var transactionsGetResult = _transactionRepository.GetWhere(filter, cancellationToken);
 
         if (transactionsGetResult.IsFailure)
         {
@@ -99,17 +99,20 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
                     return Result.Failure<TransactionModel>(subcategoryGetResult.Error);
                 }
 
-                var counterpartyGetResult =
-                    await _counterpartyRepository.GetByIdAsync(t.CounterpartyId, cancellationToken);
+                var counterpartyGetResult = t.CounterpartyId is null ?
+                    null :
+                    await _counterpartyRepository.GetByIdAsync(
+                        t.CounterpartyId,
+                        cancellationToken);
 
-                if (counterpartyGetResult.IsFailure)
+                if (counterpartyGetResult is not null && counterpartyGetResult.IsFailure)
                 {
                     return Result.Failure<TransactionModel>(counterpartyGetResult.Error);
                 }
 
                 var account = accountGetResult.Value;
                 var subcategory = subcategoryGetResult?.Value;
-                var counterparty = counterpartyGetResult.Value;
+                var counterparty = counterpartyGetResult?.Value;
 
                 return Result.Create(TransactionModel.FromDomainModel(t, counterparty, account, subcategory));
             };

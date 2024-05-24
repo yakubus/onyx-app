@@ -19,20 +19,11 @@ public static class DependencyInjection
 {
     public static void InjectInfrastructure(this IFunctionsHostBuilder builder)
     {
-        builder.Services.AddPersistence(builder.GetContext().Configuration);
+        builder.Services.AddPersistence();
         builder.Services.AddCurrencyConverter(builder.GetContext().Configuration);
     }
 
-    //TODO Temporary solution
-    public static IServiceCollection InjectInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddPersistence(configuration);
-        services.AddCurrencyConverter(configuration);
-
-        return services;
-    }
-
-    private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    private static void AddPersistence(this IServiceCollection services)
     {
         services.ConfigureOptions<CosmosDbOptionsSetup>();
         services.AddScoped<CosmosDbContext>();

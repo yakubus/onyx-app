@@ -51,7 +51,7 @@ public sealed class TransactionsHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "transactions")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<AddTransactionRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<AddTransactionRequest>(cancellationToken);
 
         var command = new AddTransactionCommand(
             request.AccountId,

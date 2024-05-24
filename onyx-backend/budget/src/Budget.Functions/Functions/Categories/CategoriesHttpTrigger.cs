@@ -43,7 +43,7 @@ public sealed class CategoriesHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "categories")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<AddCategoryRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<AddCategoryRequest>(cancellationToken);
 
         var command = new AddCategoryCommand(request.Name);
 
@@ -60,7 +60,7 @@ public sealed class CategoriesHttpTrigger
         Guid categoryId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<UpdateCategoryRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<UpdateCategoryRequest>(cancellationToken);
 
         var command = new UpdateCategoryCommand(categoryId, request.NewName);
 

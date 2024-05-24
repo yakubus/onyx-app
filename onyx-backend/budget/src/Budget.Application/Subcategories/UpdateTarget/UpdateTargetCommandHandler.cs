@@ -58,7 +58,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
 
         var newTarget = subcategory.Target!;
 
-        var targetTransactResult = await AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
+        var targetTransactResult = AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
 
         if (targetTransactResult.IsFailure)
         {
@@ -76,12 +76,12 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
     }
 
 
-    private async Task<Result> AddExistingTransactionsForTarget(
+    private Result AddExistingTransactionsForTarget(
         Subcategory subcategory,
         Target target,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
+        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
             t => t.SubcategoryId != null &&
                  t.SubcategoryId == subcategory.Id &&
                  t.TransactedAt.Month >= target.StartedAt.Month &&

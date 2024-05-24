@@ -20,9 +20,6 @@ public class Result
         }
     }
 
-    protected Result()
-    { }
-
     public bool IsSuccess { get; }
 
     public bool IsFailure => !IsSuccess;

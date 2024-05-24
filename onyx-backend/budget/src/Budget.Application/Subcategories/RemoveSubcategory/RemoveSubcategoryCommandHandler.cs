@@ -41,7 +41,7 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
             return Result.Failure(categoryGetResult.Error);
         }
 
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
+        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
             t => t.SubcategoryId == subcategoryId,
             cancellationToken);
 

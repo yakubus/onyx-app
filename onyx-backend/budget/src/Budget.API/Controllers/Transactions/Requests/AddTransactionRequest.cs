@@ -9,4 +9,13 @@ public sealed record AddTransactionRequest
     public DateTime TransactedAt { get; set; }
     public string CounterpartyName { get; set; }
     public Guid? SubcategoryId { get; set; }
+
+    private AddTransactionRequest(Guid accountId, MoneyModel amount, DateTime transactedAt, string counterpartyName, Guid? subcategoryId)
+    {
+        AccountId = accountId;
+        Amount = amount;
+        TransactedAt = transactedAt;
+        CounterpartyName = counterpartyName;
+        SubcategoryId = subcategoryId;
+    }
 }

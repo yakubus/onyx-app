@@ -14,9 +14,11 @@ public sealed class Budget : Entity<BudgetId>
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Budget(BudgetName name, Currency baseCurrency, List<string> userIds)
+    private Budget(BudgetName name, Currency baseCurrency, List<string> userIds) 
+        : base()
     {
         Name = name;
+        BaseCurrency = baseCurrency;
         _userIds = userIds;
     }
 

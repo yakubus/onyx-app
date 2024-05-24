@@ -15,6 +15,7 @@ public sealed class User : Entity<UserId>
     public DateTime? LastLoggedInAt { get; private set; }
     [JsonConverter(typeof(DateTimeConverter))]
     public DateTime RegisteredAt { get; init; }
+    //TODO Convert to Refresh Tokens
     public bool IsAuthenticated { get; private set; }
     public Currency Currency { get; private set; }
     public bool IsEmailVerified { get; private set; }

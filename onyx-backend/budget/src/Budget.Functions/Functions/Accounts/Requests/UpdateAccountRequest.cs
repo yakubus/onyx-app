@@ -1,4 +1,5 @@
-﻿using Budget.Application.Shared.Models;
+﻿#nullable enable
+using Budget.Application.Shared.Models;
 
 namespace Budget.Functions.Functions.Accounts.Requests;
 

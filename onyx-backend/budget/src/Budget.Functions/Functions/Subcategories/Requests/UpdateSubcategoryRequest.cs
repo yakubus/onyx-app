@@ -1,4 +1,5 @@
-﻿namespace Budget.Functions.Functions.Subcategories.Requests;
+﻿#nullable enable
+namespace Budget.Functions.Functions.Subcategories.Requests;
 
 public sealed record UpdateSubcategoryRequest
 {

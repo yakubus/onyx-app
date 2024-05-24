@@ -32,7 +32,7 @@ public sealed class SubcategoriesHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subcategories")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<AddSubcategoryRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<AddSubcategoryRequest>(cancellationToken);
 
         var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName);
 
@@ -49,7 +49,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<UpdateSubcategoryRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<UpdateSubcategoryRequest>(cancellationToken);
 
         var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription);
 
@@ -86,7 +86,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<UpdateAssignmentRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<UpdateAssignmentRequest>(cancellationToken);
 
         var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount);
 
@@ -107,7 +107,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<RemoveAssignmentRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<RemoveAssignmentRequest>(cancellationToken);
 
         var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth);
 
@@ -128,7 +128,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<UpdateTargetRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<UpdateTargetRequest>(cancellationToken);
 
         var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount);
 

@@ -45,7 +45,7 @@ public sealed class CounterpartiesHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "counterparties")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<AddCounterpartyRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<AddCounterpartyRequest>(cancellationToken);
 
         var command = new AddCounterpartyCommand(request.CounterpartyName, request.CounterpartyType);
 
@@ -62,7 +62,7 @@ public sealed class CounterpartiesHttpTrigger
         Guid counterpartyId,
         CancellationToken cancellationToken)
     {
-        var request = await req.ConvertBodyToAsync<UpdateCounterpartyRequest>(cancellationToken);
+        var request = await req.Body.ConvertBodyToAsync<UpdateCounterpartyRequest>(cancellationToken);
 
         var command = new UpdateCounterpartyCommand(counterpartyId, request.NewName);
 

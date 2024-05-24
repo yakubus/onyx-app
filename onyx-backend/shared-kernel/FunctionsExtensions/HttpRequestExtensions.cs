@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace FunctionsExtensions;
 
 public static class HttpRequestExtensions
 {
-    public static async Task<T> ConvertBodyToAsync<T>(this HttpRequest request, CancellationToken cancellationToken = default)
+    public static async Task<TDestination> ConvertBodyToAsync<TDestination>(
+        this Stream requestBody,
+        CancellationToken cancellationToken = default)
     {
-        var body = await new StreamReader(request.Body).ReadToEndAsync(cancellationToken);
+        var body = await new StreamReader(requestBody).ReadToEndAsync(cancellationToken);
 
-        return JsonConvert.DeserializeObject<T>(body) ?? default;
+        return JsonConvert.DeserializeObject<TDestination>(body) ?? default;
     }
 }

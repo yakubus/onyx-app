@@ -17,17 +17,4 @@ public static class DependencyInjection
 
         return builder;
     }
-
-    //TODO Temporary solution
-    public static IServiceCollection InjectApplication(this IServiceCollection services)
-    {
-        services.AddMediatR(
-            config =>
-            {
-                config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
-                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            });
-
-        return services;
-    }
 }

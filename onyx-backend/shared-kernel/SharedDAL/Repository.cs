@@ -10,7 +10,7 @@ namespace SharedDAL;
 // TODO Add safety adding items by using batch
 public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
-    where TEntityId : EntityId
+    where TEntityId : EntityId, new()
 {
     protected readonly Container Container;
     protected readonly TransactionalBatch CurrentBatch;
@@ -51,7 +51,7 @@ public abstract class Repository<TEntity, TEntityId>
         }
     }
 
-    public async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
+    public Result<IEnumerable<TEntity>> GetWhere(
         Expression<Func<TEntity, bool>> filterPredicate,
         CancellationToken cancellationToken = default)
     {

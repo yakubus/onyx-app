@@ -16,9 +16,9 @@ public sealed record TransactionModel : EntityBusinessModel
     public Guid Id { get; init; }
     public AccountModel Account { get; init; }
     public MoneyModel Amount { get; init; }
-    public MoneyModel? OriginalAmount { get; init; }
+    public MoneyModel OriginalAmount { get; init; }
     public SubcategoryModel? Subcategory { get; init; }
-    public CounterpartyModel Counterparty { get; init; }
+    public CounterpartyModel? Counterparty { get; init; }
     public DateTime TransactedAt { get; init; }
 
     [JsonConstructor]
@@ -26,9 +26,9 @@ public sealed record TransactionModel : EntityBusinessModel
         Guid id,
         AccountModel account,
         MoneyModel amount,
-        MoneyModel? originalAmount,
+        MoneyModel originalAmount,
         SubcategoryModel? subcategory,
-        CounterpartyModel counterparty,
+        CounterpartyModel? counterparty,
         DateTime transactedAt,
         IEnumerable<IDomainEvent> domainEvents) : base(domainEvents)
     {
@@ -43,20 +43,18 @@ public sealed record TransactionModel : EntityBusinessModel
 
     public static TransactionModel FromDomainModel(
         Transaction domainModel,
-        Counterparty counterparty,
+        Counterparty? counterparty,
         Account account,
         Subcategory? subcategory) =>
         new (
             domainModel.Id.Value,
             AccountModel.FromDomainModel(account),
             MoneyModel.FromDomainModel(domainModel.Amount),
-            domainModel.OriginalAmount == null ? 
-                null : 
-                MoneyModel.FromDomainModel(domainModel.OriginalAmount),
+            MoneyModel.FromDomainModel(domainModel.OriginalAmount),
             subcategory == null ? 
                 null : 
                 SubcategoryModel.FromDomainModel(subcategory),
-            CounterpartyModel.FromDomainModel(counterparty),
+            counterparty is null ? null : CounterpartyModel.FromDomainModel(counterparty),
             domainModel.TransactedAt,
             domainModel.GetDomainEvents());
 }

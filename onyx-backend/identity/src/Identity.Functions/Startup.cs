@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
-using Azure.Identity;
 using Identity.Application;
 using Identity.Functions;
 using Identity.Infrastructure;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -38,20 +35,20 @@ public sealed class Startup : FunctionsStartup
         builder.GetContext().EnvironmentName switch
         {
             var envName when envName == Environments.Development => AddDevelopmentSecrets(builder),
-            var envName when envName == Environments.Production => AddProductionSecrets(builder),
-            var envName => throw new ArgumentException($"Invalid environment name - {envName}")
+            //var envName when envName == Environments.Production => AddProductionSecrets(builder),
+            var envName => throw new ArgumentException($"Invalid environment - {envName}")
         };
+    // No need for now
+    //private static IConfigurationBuilder AddProductionSecrets(
+    //    IFunctionsConfigurationBuilder builder)
+    //{
+    //    var vaultUri = new Uri(builder.ConfigurationBuilder.Build()["KeyVaultUri"] ??
+    //                           throw new ConfigurationErrorsException("Missing KeyVaultUri"));
 
-    private static IConfigurationBuilder AddProductionSecrets(
-        IFunctionsConfigurationBuilder builder)
-    {
-        var vaultUri = new Uri(builder.ConfigurationBuilder.Build()["KeyVaultUri"] ??
-                               throw new ConfigurationErrorsException("Missing KeyVaultUri"));
-
-        return builder.ConfigurationBuilder
-            .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
-            .AddEnvironmentVariables();
-    }
+    //    return builder.ConfigurationBuilder
+    //        .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
+    //        .AddEnvironmentVariables();
+    //}
 
     private static IConfigurationBuilder AddDevelopmentSecrets(
         IFunctionsConfigurationBuilder builder) =>

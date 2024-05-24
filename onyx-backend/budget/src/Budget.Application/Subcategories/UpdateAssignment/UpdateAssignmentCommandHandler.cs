@@ -58,7 +58,7 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
                 SubcategoryModel.FromDomainModel(result.Value);
         }
 
-        var assignmentTransactionsAddResult = await AddExistingTransactionsForAssignment(
+        var assignmentTransactionsAddResult = AddExistingTransactionsForAssignment(
             subcategory,
             assignmentResult.Value,
             cancellationToken);
@@ -80,12 +80,12 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
         return Result.Success(SubcategoryModel.FromDomainModel(subcategory));
     }
 
-    private async Task<Result> AddExistingTransactionsForAssignment(
+    private Result AddExistingTransactionsForAssignment(
         Subcategory subcategory,
         Assignment assignment,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
+        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
             t => t.SubcategoryId != null &&
                  t.SubcategoryId == subcategory.Id &&
                  t.TransactedAt.Month == assignment.Month.Month &&

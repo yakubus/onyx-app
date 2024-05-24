@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Web;
 using SharedDAL;
 using SharedDAL.DataSettings;
 
@@ -42,20 +41,9 @@ public static class DependencyInjection
         services.ConfigureOptions<AuthenticationOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
-        //services
-        //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //    .AddJwtBearer();
-
         services
-            .AddFunctionAuthentication(
-                options =>
-                {
-                    var jwtSchema = "CustomJwtBearerSchema";
-                    options.DefaultScheme = jwtSchema;
-                    options.DefaultSignInScheme = jwtSchema;
-                    options.DefaultChallengeScheme = jwtSchema;
-                    options.DefaultAuthenticateScheme = jwtSchema;
-                });
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
 
         services.AddFunctionAuthorization(options => { });
 

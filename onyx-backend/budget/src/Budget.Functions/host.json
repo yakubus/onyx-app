@@ -8,4 +8,14 @@
       }
     }
   },
+  "CosmosDb": {
+    "AccountUri": "https://onyx-cosmos-db.documents.azure.com:443/",
+    "Database": "budget"
+  },
+  "KeyVaultUri": "https://onyx-secrets.vault.azure.net",
+
+  "AzureAd": {
+    "ClientId": "3cb36586-7856-4353-85b9-210ec5d017da",
+    "TenantId": "d5d520bb-bf4d-4a80-9ab9-6ff7e83e37b5"
+  }
 }

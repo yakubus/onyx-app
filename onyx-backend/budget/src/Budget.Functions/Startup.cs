@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
-using Azure.Identity;
 using Budget.Application;
 using Budget.Functions;
 using Budget.Infrastructure;
@@ -37,19 +35,21 @@ public sealed class Startup : FunctionsStartup
         builder.GetContext().EnvironmentName switch
         {
             var envName when envName == EnvironmentName.Development => AddDevelopmentSecrets(builder),
-            var envName when envName == EnvironmentName.Production => AddProductionSecrets(builder)
+            //var envName when envName == EnvironmentName.Production => AddProductionSecrets(builder),
+            _ => builder.ConfigurationBuilder,
         };
 
-    private static IConfigurationBuilder AddProductionSecrets(
-        IFunctionsConfigurationBuilder builder)
-    {
-        var vaultUri = new Uri(builder.ConfigurationBuilder.Build()["KeyVaultUri"] ??
-                               throw new ConfigurationErrorsException("Missing KeyVaultUri"));
+    // No need for now
+    //private static IConfigurationBuilder AddProductionSecrets(
+    //    IFunctionsConfigurationBuilder builder)
+    //{
+    //    var vaultUri = new Uri(builder.ConfigurationBuilder.Build()["KeyVaultUri"] ??
+    //                           throw new ConfigurationErrorsException("Missing KeyVaultUri"));
 
-        return builder.ConfigurationBuilder
-            .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
-            .AddEnvironmentVariables();
-    }
+    //    return builder.ConfigurationBuilder
+    //        .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
+    //        .AddEnvironmentVariables();
+    //}
 
     private static IConfigurationBuilder AddDevelopmentSecrets(
         IFunctionsConfigurationBuilder builder) =>
