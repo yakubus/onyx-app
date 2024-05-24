@@ -1,12 +1,9 @@
-﻿using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace Budget.Functions.Extensions;
+namespace FunctionsExtensions;
 
-internal static class HttpRequestExtensions
+public static class HttpRequestExtensions
 {
     public static async Task<T> ConvertBodyToAsync<T>(this HttpRequest request, CancellationToken cancellationToken = default)
     {

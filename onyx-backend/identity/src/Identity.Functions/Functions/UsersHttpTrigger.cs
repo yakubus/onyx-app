@@ -4,6 +4,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity.Functions.Functions;
 
@@ -19,7 +20,7 @@ public sealed class UsersHttpTrigger
 
     [FunctionName("GetUser")]
     public static async Task<IActionResult> GetUser(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "/users")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "users")] HttpRequest req)
     {
         var userId = req.Query["id"];
         var email = req.Query["email"];

@@ -12,7 +12,6 @@ public static class DependencyInjection
             config =>
             {
                 config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
-                config.AddOpenBehavior(typeof(DomainEventPublishBehavior<,>));
                 config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
 
@@ -26,7 +25,6 @@ public static class DependencyInjection
             config =>
             {
                 config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
-                config.AddOpenBehavior(typeof(DomainEventPublishBehavior<,>));
                 config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
 

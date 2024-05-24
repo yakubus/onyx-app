@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Messanger.Functions.Services.Emails;
 
-namespace Messanger.Functions.Services.Emails
+internal class EmailService
 {
-    internal class EmailService
-    {
-    }
 }

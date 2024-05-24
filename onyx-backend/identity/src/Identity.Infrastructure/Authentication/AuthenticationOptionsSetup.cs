@@ -16,5 +16,5 @@ public sealed class AuthenticationOptionsSetup : IConfigureOptions<Authenticatio
     public void Configure(AuthenticationOptions options)
     {
             _configuration.GetSection(sectionName).Bind(options);
-        }
+    }
 }

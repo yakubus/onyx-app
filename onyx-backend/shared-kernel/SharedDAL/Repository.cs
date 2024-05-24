@@ -1,15 +1,14 @@
 ﻿using System.Linq.Expressions;
 using Abstractions.DomainBaseTypes;
-using Budget.Infrastructure.Data;
 using Microsoft.Azure.Cosmos;
 using Models.Responses;
 using Container = Microsoft.Azure.Cosmos.Container;
 
-namespace Budget.Infrastructure.Repositories;
+namespace SharedDAL;
 
 // TODO Add fetching only records for current budget
 // TODO Add safety adding items by using batch
-internal abstract class Repository<TEntity, TEntityId>
+public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId
 {

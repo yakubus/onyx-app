@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Budget.Infrastructure.Data.DataSettings;
+namespace SharedDAL.DataSettings;
 
-internal sealed class CosmosDbOptionsSetup : IConfigureOptions<CosmosDbOptions>
+public sealed class CosmosDbOptionsSetup : IConfigureOptions<CosmosDbOptions>
 {
     private const string primaryKeyFieldName = "CosmosDb-PrimaryKey";
     private readonly IConfiguration _configuration;

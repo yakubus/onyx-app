@@ -1,17 +1,12 @@
 ﻿using System.Net;
 using Abstractions.DomainBaseTypes;
-using Budget.Domain.Accounts;
-using Budget.Domain.Categories;
-using Budget.Domain.Counterparties;
-using Budget.Domain.Subcategories;
-using Budget.Domain.Transactions;
-using Budget.Infrastructure.Data.DataSettings;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using SharedDAL.DataSettings;
 
-namespace Budget.Infrastructure.Data;
+namespace SharedDAL;
 
-internal sealed class CosmosDbContext
+public sealed class CosmosDbContext
 {
     private readonly Database _database;
 
@@ -40,16 +35,19 @@ internal sealed class CosmosDbContext
                                     ?? throw _connectionException;
     private Container Transactions => _database.GetContainer(nameof(Transactions)) 
                                       ?? throw _connectionException;
+    private Container Users => _database.GetContainer(nameof(Users)) 
+                                      ?? throw _connectionException;
 
     internal Container Set<T>() where T : IEntity
     {
         return typeof(T) switch
         {
-            var type when type == typeof(Category) => Categories,
-            var type when type == typeof(Subcategory) => Subcategories,
-            var type when type == typeof(Transaction) => Transactions,
-            var type when type == typeof(Account) => Accounts,
-            var type when type == typeof(Counterparty) => Counterparties,
+            { Name: "Category" } => Categories,
+            { Name: "Subcategory" } => Subcategories,
+            { Name: "Transaction" } => Transactions,
+            { Name: "Account" } => Accounts,
+            { Name: "Counterparty" } => Counterparties,
+            { Name: "User" } => Users,
             _ => throw new ArgumentException("Unknown entity type")
         };
     }

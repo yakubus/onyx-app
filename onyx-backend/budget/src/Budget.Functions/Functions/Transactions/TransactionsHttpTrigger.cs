@@ -9,8 +9,8 @@ using System.Threading;
 using System;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.RemoveTransaction;
-using Budget.Functions.Extensions;
 using Budget.Functions.Functions.Transactions.Requests;
+using FunctionsExtensions;
 
 namespace Budget.Functions.Functions.Transactions;
 

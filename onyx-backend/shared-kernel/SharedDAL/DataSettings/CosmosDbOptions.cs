@@ -1,4 +1,4 @@
-﻿namespace Budget.Infrastructure.Data.DataSettings;
+﻿namespace SharedDAL.DataSettings;
 
 public sealed class CosmosDbOptions
 {

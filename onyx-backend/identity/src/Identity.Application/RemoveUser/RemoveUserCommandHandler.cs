@@ -1,5 +1,4 @@
-﻿using System.Security.AccessControl;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Identity.Application.Abstractions.UserEvents;
 using Identity.Domain;
 using Models.Responses;
@@ -42,7 +41,7 @@ internal sealed class RemoveUserCommandHandler : ICommandHandler<RemoveUserComma
             return publishResult.Error;
         }
 
-        var removeResult = await _userRepository.DeleteAsync(user.Id, cancellationToken);
+        var removeResult = await _userRepository.RemoveAsync(user.Id, cancellationToken);
 
         if (removeResult.IsFailure)
         {

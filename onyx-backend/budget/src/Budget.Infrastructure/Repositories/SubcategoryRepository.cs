@@ -1,5 +1,5 @@
 ﻿using Budget.Domain.Subcategories;
-using Budget.Infrastructure.Data;
+using SharedDAL;
 
 namespace Budget.Infrastructure.Repositories;
 

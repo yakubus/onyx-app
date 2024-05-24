@@ -11,14 +11,14 @@ internal class JwtBearerOptionsSetup : IPostConfigureOptions<JwtBearerOptions>
 
     public JwtBearerOptionsSetup(IOptions<AuthenticationOptions> jwtOptions)
     {
-            _options = jwtOptions.Value;
-        }
+        _options = jwtOptions.Value;
+    }
 
     public void PostConfigure(string? name, JwtBearerOptions options)
     {
-            options.TokenValidationParameters.ValidIssuer = _options.Issuer;
-            options.TokenValidationParameters.ValidAudience = _options.Audience;
-            options.TokenValidationParameters.IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
-        }
+        options.TokenValidationParameters.ValidIssuer = _options.Issuer;
+        options.TokenValidationParameters.ValidAudience = _options.Audience;
+        options.TokenValidationParameters.IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
+    }
 }

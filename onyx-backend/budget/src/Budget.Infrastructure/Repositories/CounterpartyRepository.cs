@@ -1,5 +1,5 @@
 ﻿using Budget.Domain.Counterparties;
-using Budget.Infrastructure.Data;
+using SharedDAL;
 
 namespace Budget.Infrastructure.Repositories;
 

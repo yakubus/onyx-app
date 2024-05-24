@@ -6,12 +6,12 @@ using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
-using Budget.Infrastructure.Data;
-using Budget.Infrastructure.Data.DataSettings;
 using Budget.Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharedDAL;
+using SharedDAL.DataSettings;
 
 namespace Budget.Infrastructure;
 

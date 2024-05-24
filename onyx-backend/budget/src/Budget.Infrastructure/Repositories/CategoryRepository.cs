@@ -1,6 +1,6 @@
 ﻿using Budget.Domain.Categories;
-using Budget.Infrastructure.Data;
 using Models.Responses;
+using SharedDAL;
 
 namespace Budget.Infrastructure.Repositories;
 

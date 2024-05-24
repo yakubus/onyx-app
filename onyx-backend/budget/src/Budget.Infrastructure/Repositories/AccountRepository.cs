@@ -1,7 +1,8 @@
 ﻿using Budget.Domain.Accounts;
 using Budget.Domain.Categories;
-using Budget.Infrastructure.Data;
 using Models.Responses;
+using SharedDAL;
+using CosmosDbContext = SharedDAL.CosmosDbContext;
 
 namespace Budget.Infrastructure.Repositories;
 
