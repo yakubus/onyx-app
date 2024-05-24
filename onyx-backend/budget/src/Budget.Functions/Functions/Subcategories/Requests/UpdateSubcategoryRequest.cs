@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿using System;
+
 namespace Budget.Functions.Functions.Subcategories.Requests;
 
 public sealed record UpdateSubcategoryRequest

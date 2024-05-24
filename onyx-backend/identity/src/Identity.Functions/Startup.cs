@@ -36,7 +36,7 @@ public sealed class Startup : FunctionsStartup
         {
             var envName when envName == Environments.Development => AddDevelopmentSecrets(builder),
             //var envName when envName == Environments.Production => AddProductionSecrets(builder),
-            var envName => throw new ArgumentException($"Invalid environment - {envName}")
+            _ => builder.ConfigurationBuilder
         };
     // No need for now
     //private static IConfigurationBuilder AddProductionSecrets(

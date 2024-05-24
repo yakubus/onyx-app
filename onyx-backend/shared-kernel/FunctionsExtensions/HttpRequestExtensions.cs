@@ -8,7 +8,7 @@ public static class HttpRequestExtensions
         this Stream requestBody,
         CancellationToken cancellationToken = default)
     {
-        var body = await new StreamReader(requestBody).ReadToEndAsync(cancellationToken);
+        var body = await new StreamReader(requestBody).ReadToEndAsync();
 
         return JsonConvert.DeserializeObject<TDestination>(body) ?? default;
     }
