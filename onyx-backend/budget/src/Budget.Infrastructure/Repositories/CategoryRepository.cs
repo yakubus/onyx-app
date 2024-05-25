@@ -1,10 +1,11 @@
-﻿using Budget.Domain.Categories;
+﻿using Abstractions;
+using Budget.Domain.Categories;
 using Models.Responses;
 using SharedDAL;
 
 namespace Budget.Infrastructure.Repositories;
 
-internal sealed class CategoryRepository : Repository<Category, CategoryId>, ICategoryRepository
+internal sealed class CategoryRepository : Repository<Category, CategoryId>, ICategoryRepository, IUnitOfWork
 {
     public CategoryRepository(CosmosDbContext context) : base(context)
     {

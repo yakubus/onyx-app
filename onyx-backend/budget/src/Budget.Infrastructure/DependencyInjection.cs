@@ -1,4 +1,5 @@
-﻿using Budget.Application.Abstractions.Currency;
+﻿using Abstractions;
+using Budget.Application.Abstractions.Currency;
 using Budget.Domain.Accounts;
 using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
@@ -32,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
         services.AddScoped<ICounterpartyRepository, CounterpartyRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IUnitOfWork, CategoryRepository>();
     }
 
     private static void AddCurrencyConverter(this IServiceCollection services, IConfiguration configuration)
