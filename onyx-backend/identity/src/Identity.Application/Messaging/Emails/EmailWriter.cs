@@ -9,10 +9,10 @@ internal sealed class EmailWriter
         _recipientEmail = recipientEmail;
     }
 
-    internal (string recipient, string subject, string body) WriteVerificationCode(string code)
+    internal (string recipient, string subject, string htmlBody, string plainTextBody) WriteVerificationCode(string code)
     {
-        var (subject, body) = EmailTemplates.VerificationCodeBodyTemplate(code);
+        var (subject, htmlBody, plainTextBody) = EmailTemplates.VerificationCodeBodyTemplate(code);
 
-        return (_recipientEmail, subject, body);
+        return (_recipientEmail, subject, htmlBody, plainTextBody);
     }
 }

@@ -11,7 +11,12 @@ internal sealed record EmailMessageBody
         Value = value;
     }
 
-    public static Result<EmailMessageBody> Create(string body)
+    public static Result<EmailMessageBody> CreateHtml(string body)
+    {
+        return new EmailMessageBody(body);
+    }
+
+    public static Result<EmailMessageBody> CreatePlainText(string body)
     {
         return new EmailMessageBody(body);
     }

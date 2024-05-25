@@ -5,7 +5,7 @@ using SharedDAL;
 
 namespace Budget.Infrastructure.Repositories;
 
-internal sealed class CategoryRepository : Repository<Category, CategoryId>, ICategoryRepository, IUnitOfWork
+internal sealed class CategoryRepository : Repository<Category, CategoryId>, ICategoryRepository
 {
     public CategoryRepository(CosmosDbContext context) : base(context)
     {

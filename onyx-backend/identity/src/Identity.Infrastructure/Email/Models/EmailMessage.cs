@@ -6,16 +6,18 @@ internal sealed record EmailMessage
 {
     public Domain.Email Recipient { get; init; }
     public EmailMessageSubject Subject { get; init; }
-    public EmailMessageBody Body { get; init; }
+    public EmailMessageBody HtmlBody { get; init; }
+    public EmailMessageBody PlainTextBody { get; init; }
 
-    private EmailMessage(Domain.Email recipient, EmailMessageSubject subject, EmailMessageBody body)
+    private EmailMessage(Domain.Email recipient, EmailMessageSubject subject, EmailMessageBody plainTextBody, EmailMessageBody htmlBody)
     {
         Recipient = recipient;
         Subject = subject;
-        Body = body;
+        PlainTextBody = plainTextBody;
+        HtmlBody = htmlBody;
     }
 
-    public static Result<EmailMessage> Write(string recipient, string subject, string body)
+    public static Result<EmailMessage> Write(string recipient, string subject, string htmlBody, string plainTextBody)
     {
         var recipientEmailCreateResult = Domain.Email.Create(recipient);
 
@@ -31,16 +33,19 @@ internal sealed record EmailMessage
             return messageSubjectCreateResult.Error;
         }
 
-        var messageBodyCreateResult = EmailMessageBody.Create(body);
+        var htmlBodyCreateResult = EmailMessageBody.CreateHtml(htmlBody);
 
-        if (messageBodyCreateResult.IsFailure)
+        if (htmlBodyCreateResult.IsFailure)
         {
-            return messageBodyCreateResult.Error;
+            return htmlBodyCreateResult.Error;
         }
+
+        var plainTextBodyCreateResult = EmailMessageBody.CreatePlainText(plainTextBody);
 
         return new EmailMessage(
             recipientEmailCreateResult.Value,
             messageSubjectCreateResult.Value,
-            messageBodyCreateResult.Value);
+            htmlBodyCreateResult.Value,
+            plainTextBodyCreateResult.Value);
     }
 }

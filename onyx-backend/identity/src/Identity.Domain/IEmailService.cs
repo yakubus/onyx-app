@@ -4,7 +4,7 @@ namespace Identity.Domain;
 
 public interface IEmailService
 {
-    Task<Result> SendEmailAsync(string recipient, string subject, string message);
+    Task<Result> SendEmailAsync(string recipient, string subject, string htmlBody, string plainTextBody);
 
-    Task<Result> SendEmailAsync((string recipient, string subject, string body) request, CancellationToken cancellationToken);
+    Task<Result> SendEmailAsync((string recipient, string subject, string htmlBody, string plainTextBody) request, CancellationToken cancellationToken);
 }
