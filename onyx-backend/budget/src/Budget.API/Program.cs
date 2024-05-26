@@ -9,6 +9,16 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        //builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+        //    .AddMicrosoftIdentityWebApp(builder.Configuration.GetFunctionSection("AzureAd"));
+
+        //builder.Services.AddTokenAcquisition().AddInMemoryTokenCaches();
+
+        //builder.Services.AddAuthorization(options =>
+        //{
+        //    options.FallbackPolicy = options.DefaultPolicy;
+        //});
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.InjectApplication();
@@ -36,7 +46,10 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
 
         await app.RunAsync();

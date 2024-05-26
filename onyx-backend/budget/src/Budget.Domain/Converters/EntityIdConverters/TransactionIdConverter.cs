@@ -1,23 +1,21 @@
-﻿using System.Runtime.Serialization;
-using Budget.Domain.Transactions;
+﻿using Budget.Domain.Transactions;
 using Newtonsoft.Json;
 
 namespace Budget.Domain.Converters.EntityIdConverters;
 
 public class TransactionIdConverter : JsonConverter
 {
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        var id = (TransactionId)value;
-        serializer.Serialize(writer, id.Value.ToString());
+        var id = value as TransactionId;
+        serializer.Serialize(writer, id?.Value.ToString());
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        var guid = serializer.Deserialize<string>(reader) ??
-                   throw new SerializationException($"Missing property {nameof(TransactionId.Value)} in {nameof(TransactionId)}"); ;
+        var guid = serializer.Deserialize<string>(reader);
 
-        return new TransactionId(guid);
+        return guid is null ? null : new TransactionId(guid);
     }
 
     public override bool CanConvert(Type objectType)

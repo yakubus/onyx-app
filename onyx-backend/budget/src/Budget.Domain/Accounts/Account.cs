@@ -7,7 +7,6 @@ namespace Budget.Domain.Accounts;
 
 public sealed class Account : Entity<AccountId>
 {
-
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
     public AccountType Type { get; init; }
@@ -79,7 +78,7 @@ public sealed class Account : Entity<AccountId>
         return Result.Success();
     }
 
-    public Result RemoveTransaction(Transaction transaction)
+    internal Result RemoveTransaction(Transaction transaction)
     {
         if (transaction.Amount.Currency != Balance.Currency)
         {

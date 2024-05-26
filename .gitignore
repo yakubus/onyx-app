@@ -6,6 +6,7 @@
 # dotenv files
 .env
 appsettings.Development.json
+*local.settings.json
 
 # User-specific files
 *.rsuser
@@ -483,3 +484,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/onyx-backend/budget/src/Budget.Functions/local.settings.json

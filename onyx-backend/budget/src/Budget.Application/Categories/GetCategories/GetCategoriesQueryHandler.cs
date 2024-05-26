@@ -39,6 +39,16 @@ internal sealed class GetCategoriesQueryHandler : ICommandHandler<GetCategoriesQ
 
         var subcategories = subcategoriesGetResult.Value;
 
-        return Result.Create(categories.Select(c => CategoryModel.FromDomainModel(c, subcategories)));
+        var categorySubcategoryDictionary = categories.ToDictionary(
+            category =>
+                category,
+            category => subcategories
+                .Where(subcategory => category.SubcategoriesId.Contains(subcategory.Id)));
+
+        return Result.Create(
+            categorySubcategoryDictionary
+                .Select(
+                    pair =>
+                        CategoryModel.FromDomainModel(pair.Key, pair.Value)));
     }
 }

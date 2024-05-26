@@ -22,7 +22,7 @@ public interface ICounterpartyRepository
 
     Task<Result<Counterparty>> UpdateAsync(Counterparty counterparty, CancellationToken cancellationToken);
 
-    Task<Result<IEnumerable<Counterparty>>> GetWhereAsync(Expression<Func<Counterparty, bool>> filterPredicate, CancellationToken cancellationToken);
+    Result<IEnumerable<Counterparty>> GetWhere(Expression<Func<Counterparty, bool>> filterPredicate, CancellationToken cancellationToken);
 
     Task<Result<IEnumerable<Counterparty>>> GetManyByIdAsync(
         IEnumerable<CounterpartyId> ids,

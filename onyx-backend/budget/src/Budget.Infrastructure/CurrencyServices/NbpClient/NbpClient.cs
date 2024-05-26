@@ -1,4 +1,5 @@
 ﻿using Budget.Infrastructure.CurrencyServices.NbpClient.Models;
+using Models.DataTypes;
 using Models.Responses;
 using Newtonsoft.Json;
 
@@ -37,9 +38,14 @@ internal sealed class NbpClient
 
     private async Task<Result<decimal>> GetPlnExchange(string currency, CancellationToken cancellationToken)
     {
+        if (currency == Currency.Pln.Code)
+        {
+            return 1;
+        }
+
         var response = await _httpClient.SendAsync(new (HttpMethod.Get, currency), cancellationToken);
 
-        if (response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
         {
             return Result.Failure<decimal>(_nbpResponseError);
         }

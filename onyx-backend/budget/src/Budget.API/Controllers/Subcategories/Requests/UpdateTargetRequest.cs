@@ -1,10 +1,15 @@
-﻿using Budget.Application.Shared.Models;
-using Models.DataTypes;
+﻿using Models.DataTypes;
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
 public sealed record UpdateTargetRequest
 {
     public MonthDate TargetUpToMonth { get; set; }
-    public MoneyModel TargetAmount { get; set; }
+    public decimal TargetAmount { get; set; }
+
+    private UpdateTargetRequest(MonthDate targetUpToMonth, decimal targetAmount)
+    {
+        TargetUpToMonth = targetUpToMonth;
+        TargetAmount = targetAmount;
+    }
 }

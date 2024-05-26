@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <LangVersion>12</LangVersion>
+  </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\shared-kernel\Abstractions\Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\shared-kernel\Converters\Converters.csproj" />
+	</ItemGroup>
+
+</Project>

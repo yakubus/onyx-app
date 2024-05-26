@@ -10,6 +10,7 @@ public sealed record MoneyModel
     public string Currency { get; init; }
 
     [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
     internal MoneyModel(decimal amount, string currency)
     {
         Amount = amount;

@@ -34,6 +34,7 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
         {
             return Result.Failure<CategoryModel>(AddCategoryErrors.CategoryAlreadyExistsError);
         }
+
         var categoryAddResult = await _categoryRepository.AddAsync(category, cancellationToken);
 
         if (categoryAddResult.IsFailure)

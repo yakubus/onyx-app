@@ -9,5 +9,11 @@ public record Error(string Code, string Message)
     public static Error Exception = new("Error.Exception", "Internal server error");
     public static Error ValidationError = new("Error.Validation", "Validation error");
 
+    /// <summary>
+    /// Use only for logging, do not return this error to user
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    public static Error ExceptionWithMessage(Exception e) => new("Error.Exception", $"{e.Message}");
     public override string ToString() => $"{Code}: {Message}";
 }

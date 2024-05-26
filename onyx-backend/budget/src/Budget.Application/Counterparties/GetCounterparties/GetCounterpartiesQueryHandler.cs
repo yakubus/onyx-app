@@ -14,28 +14,28 @@ internal sealed class GetCounterpartiesQueryHandler : IQueryHandler<GetCounterpa
         _counterpartyRepository = counterpartyRepository;
     }
 
-    public async Task<Result<IEnumerable<CounterpartyModel>>> Handle(GetCounterpartiesQuery request, CancellationToken cancellationToken)
+    public Task<Result<IEnumerable<CounterpartyModel>>> Handle(GetCounterpartiesQuery request, CancellationToken cancellationToken)
     {
         var counterPartyTypeCreateResult = CounterpartyType.Create(request.CounterpartyType);
 
         if (counterPartyTypeCreateResult.IsFailure)
         {
-            return Result.Failure<IEnumerable<CounterpartyModel>>(counterPartyTypeCreateResult.Error);
+            return Task.FromResult(Result.Failure<IEnumerable<CounterpartyModel>>(counterPartyTypeCreateResult.Error));
         }
 
         var counterpartyType = counterPartyTypeCreateResult.Value;
 
-        var counterpartiesGetResult = await _counterpartyRepository.GetWhereAsync(
+        var counterpartiesGetResult = _counterpartyRepository.GetWhere(
             c => c.Type == counterpartyType,
             cancellationToken);
 
         if (counterpartiesGetResult.IsFailure)
         {
-            return Result.Failure<IEnumerable<CounterpartyModel>>(counterpartiesGetResult.Error);
+            return Task.FromResult(Result.Failure<IEnumerable<CounterpartyModel>>(counterpartiesGetResult.Error));
         }
 
         var counterparties = counterpartiesGetResult.Value;
 
-        return Result.Create(counterparties.Select(CounterpartyModel.FromDomainModel));
+        return Task.FromResult(Result.Create(counterparties.Select(CounterpartyModel.FromDomainModel)));
     }
 }

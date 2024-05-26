@@ -23,24 +23,29 @@ public sealed record MonthDate
         Year = year;
     }
 
-        
+
     public static Result<MonthDate> Create(int month, int year)
     {
-            if (month is < minMonth or > maxMonth)
-            {
-                return Result.Failure<MonthDate>(new (
-                    "MonthDate.InvalidMonthValue", "Invalid month value"));
-            }
-
-            if (year < 0)
-            {
-                return Result.Failure<MonthDate>(new(
-                    "MonthDate.InvalidYearValue", "Invalid year value"));
-            }
-
-            return new MonthDate(month, year);
+        if (month is < minMonth or > maxMonth)
+        {
+            return Result.Failure<MonthDate>(
+                new(
+                    "MonthDate.InvalidMonthValue",
+                    "Invalid month value"));
         }
 
+        if (year < 0)
+        {
+            return Result.Failure<MonthDate>(
+                new(
+                    "MonthDate.InvalidYearValue",
+                    "Invalid year value"));
+        }
+
+        return new MonthDate(month, year);
+    }
+
+    public static Result<MonthDate> FromDateTime(DateTime dateTime) => Create(dateTime.Month, dateTime.Year);
 
     public static MonthDate Current => new (DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 

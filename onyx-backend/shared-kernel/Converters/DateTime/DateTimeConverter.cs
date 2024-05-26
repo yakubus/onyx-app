@@ -1,41 +1,58 @@
-﻿using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Converters.DateTime;
 
-public sealed class DateTimeConverter : JsonConverter<System.DateTime>
+public sealed class DateTimeConverter : JsonConverter
 {
-    public override System.DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonTokenType.String)
+        if (value is null)
         {
-            var dateString = reader.GetString();
-            if (System.DateTime.TryParseExact(
-                    dateString,
-                    "dd-MM-yyyyTHH:mm:ss",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out System.DateTime result))
-            {
-                return result.ToUniversalTime();
-            }
+            serializer.Serialize(writer, null);
+            return;
         }
 
-        try
-        {
-            return reader.GetDateTime().ToUniversalTime();
-        }
-        catch (FormatException)
-        {
-            return System.DateTime.ParseExact(reader.GetString(), "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
-        }
+        var dateTime = (System.DateTime)value;
+        dateTime = dateTime.ToUniversalTime();
+
+        serializer.Serialize(writer, new DateObject(
+            dateTime.Day,
+            dateTime.Month,
+            dateTime.Year,
+            dateTime.Hour, 
+            dateTime.Minute,
+            dateTime.Second));
     }
 
-    public override void Write(Utf8JsonWriter writer, System.DateTime value, JsonSerializerOptions options)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        var localTime = value.ToLocalTime();
+        var dateObject = serializer.Deserialize<DateObject>(reader);
 
-        writer.WriteStringValue(localTime.ToString("dd-MM-yyyyTHH:mm:ss"));
+        if(dateObject is null)
+        {
+            return null;
+        }
+
+        return new System.DateTime(
+            dateObject.Year,
+            dateObject.Month,
+            dateObject.Day,
+            dateObject.Hour,
+            dateObject.Minute,
+            dateObject.Second,
+            DateTimeKind.Utc);
     }
+
+    public override bool CanConvert(Type objectType)
+    {
+        return objectType == typeof(System.DateTime);
+    }
+
+    private sealed record DateObject(
+        int Day,
+        int Month,
+        int Year,
+        int Hour,
+        int Minute,
+        int Second);
 }

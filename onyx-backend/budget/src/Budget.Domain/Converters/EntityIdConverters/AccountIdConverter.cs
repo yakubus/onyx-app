@@ -1,23 +1,21 @@
-﻿using System.Runtime.Serialization;
-using Budget.Domain.Accounts;
+﻿using Budget.Domain.Accounts;
 using Newtonsoft.Json;
 
 namespace Budget.Domain.Converters.EntityIdConverters;
 
 public class AccountIdConverter : JsonConverter
 {
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        var id = (AccountId)value;
-        serializer.Serialize(writer, id.Value.ToString());
+        var id = value as AccountId;
+        serializer.Serialize(writer, id?.Value.ToString());
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        var guid = serializer.Deserialize<string>(reader) ??
-                   throw new SerializationException($"Missing property {nameof(AccountId.Value)} in {nameof(AccountId)}"); ;
+        var guid = serializer.Deserialize<string>(reader);
 
-        return new AccountId(guid);
+        return guid is null ? null : new AccountId(guid);
     }
 
     public override bool CanConvert(Type objectType)

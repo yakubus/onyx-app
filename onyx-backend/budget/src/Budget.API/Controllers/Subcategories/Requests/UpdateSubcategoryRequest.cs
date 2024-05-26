@@ -2,6 +2,6 @@
 
 public sealed record UpdateSubcategoryRequest
 {
-    public string NewName { get; set; }
-    public string NewDescription { get; set; }
+    public string? NewName { get; set; }
+    public string? NewDescription { get; set; }
 }

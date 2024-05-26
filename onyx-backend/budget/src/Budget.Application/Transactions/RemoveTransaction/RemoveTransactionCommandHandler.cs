@@ -19,6 +19,7 @@ internal sealed class RemoveTransactionCommandHandler : ICommandHandler<RemoveTr
         _accountRepository = accountRepository;
     }
 
+    // TODO Money Echange
     public async Task<Result> Handle(RemoveTransactionCommand request, CancellationToken cancellationToken)
     {
         var requestTransactionId = new TransactionId(request.TransactionId);
@@ -50,19 +51,7 @@ internal sealed class RemoveTransactionCommandHandler : ICommandHandler<RemoveTr
         var subcategory = subcategoryGetResult?.Value;
         var account = accountGetResult.Value;
 
-        var subcategoryRemoveTransactionResult = subcategory?.RemoveTransaction(transaction);
-
-        if(subcategoryRemoveTransactionResult is { IsFailure: true })
-        {
-            return Result.Failure(subcategoryRemoveTransactionResult.Error);
-        }
-
-        var accountRemoveTransactionResult = account.RemoveTransaction(transaction);
-
-        if (accountRemoveTransactionResult.IsFailure)
-        {
-            return Result.Failure(accountRemoveTransactionResult.Error);
-        }
+        TransactionService.RemoveTransaction(transaction, account, subcategory);
 
         var transactionRemoveResult = await _transactionRepository.RemoveAsync(transaction.Id, cancellationToken);
 

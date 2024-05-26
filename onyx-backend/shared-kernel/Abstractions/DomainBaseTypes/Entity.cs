@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Abstractions.DomainBaseTypes;
 
-public abstract class Entity<TEntityId> : IEntity where TEntityId : EntityId
+public abstract class Entity<TEntityId> : IEntity where TEntityId : EntityId, new()
 {
     [JsonProperty("id")]
     [JsonPropertyName("id")]
@@ -12,13 +12,23 @@ public abstract class Entity<TEntityId> : IEntity where TEntityId : EntityId
 
     private readonly List<IDomainEvent> _domainEvents = new();
 
-    protected Entity() 
-    { }
+    protected Entity()
+    {
+        Id = new TEntityId();
+    }
 
     protected Entity(TEntityId id)
     {
         Id = id;
         _domainEvents = new();
+    }
+
+    [System.Text.Json.Serialization.JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    private Entity(TEntityId id, List<IDomainEvent> domainEvents)
+    {
+        Id = id;
+        _domainEvents = domainEvents;
     }
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents() =>

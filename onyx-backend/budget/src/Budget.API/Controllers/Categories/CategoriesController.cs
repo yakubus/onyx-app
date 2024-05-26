@@ -10,6 +10,7 @@ using Models.Responses;
 
 namespace Budget.API.Controllers.Categories;
 
+//TODO: Add query for GET to load assignments only for month
 [ApiController]
 [Route("/api/v1/categories")]
 public sealed class CategoriesController : ControllerBase

@@ -1,5 +1,4 @@
 ﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Subcategories.DomainEvents;
 using Models.DataTypes;
 using Models.Responses;
 using Transaction = Budget.Domain.Transactions.Transaction;
@@ -43,7 +42,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return new Subcategory(subcategoryName, null, new List<Assignment>(), null);
     }
 
-    public Result ChangeName(string name)
+    internal Result ChangeName(string name)
     {
         var subcategoryNameCreateResult = SubcategoryName.Create(name);
 
@@ -59,7 +58,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result ChangeDescription(string description)
+    internal Result ChangeDescription(string description)
     {
         var descriptionCreateResult = SubcategoryDescription.Create(description);
 
@@ -75,7 +74,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result<Assignment> Assign(int month, int year, Money amount)
+    internal Result<Assignment> Assign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
 
@@ -102,8 +101,6 @@ public sealed class Subcategory : Entity<SubcategoryId>
         var assignment = assignmentCreateResult.Value;
         _assignments.Add(assignment);
 
-        RaiseDomainEvent(new SubcategoryAssignedForMonthDomainEvent(Id, assignment.Month));
-
         return Result.Success(assignment);
     }
 
@@ -129,7 +126,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result<Assignment> Reassign(int month, int year, Money amount)
+    internal Result<Assignment> Reassign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
 
@@ -225,8 +222,6 @@ public sealed class Subcategory : Entity<SubcategoryId>
         var target = targetCreateResult.Value;
         Target = target;
 
-        RaiseDomainEvent(new TargetSetDomainEvent(Id));
-
         return target;
     }
 
@@ -242,7 +237,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return Result.Success();
     }
 
-    public Result MoveTargetEndMonth(MonthDate newEndMonth)
+    internal Result MoveTargetEndMonth(MonthDate newEndMonth)
     {
         if (Target is null)
         {
@@ -254,7 +249,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         return monthMoveResult;
     }
 
-    public Result UpdateTargetAmount(Money amount)
+    internal Result UpdateTargetAmount(Money amount)
     {
         if (Target is null)
         {
@@ -265,4 +260,14 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         return targetAmountUpdateResult;
     }
+
+    public Assignment? GetAssignmentForDate(DateTime transactedAt)
+    {
+        var monthDateCreateResult = MonthDate.FromDateTime(transactedAt);
+
+        return monthDateCreateResult.IsFailure ? null : GetAssignmentForMonth(monthDateCreateResult.Value);
+    }
+
+    public Assignment? GetAssignmentForMonth(MonthDate month) =>
+        _assignments.Find(a => a.Month == month);
 }
