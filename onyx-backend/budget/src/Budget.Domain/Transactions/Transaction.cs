@@ -1,6 +1,8 @@
 ﻿using Abstractions.DomainBaseTypes;
 using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
+using Budget.Domain.Shared.Constants;
+using Budget.Domain.Shared.Errors;
 using Budget.Domain.Subcategories;
 using Converters.DateTime;
 using Models.DataTypes;
@@ -79,6 +81,11 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
         var transaction = new Transaction(
             account,
             subcategory,
@@ -129,6 +136,11 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
         var transaction = new Transaction(
             account,
             subcategory,
@@ -172,6 +184,11 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
         var transaction = new Transaction(
             account,
             null,
@@ -212,6 +229,11 @@ public sealed class Transaction : Entity<TransactionId>
         if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
+        }
+
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
         }
 
         var transaction = new Transaction(

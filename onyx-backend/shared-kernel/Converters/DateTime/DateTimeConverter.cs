@@ -28,7 +28,7 @@ public sealed class DateTimeConverter : JsonConverter
     {
         var dateObject = serializer.Deserialize<DateObject>(reader);
 
-        if(dateObject is null )
+        if(dateObject is null)
         {
             return null;
         }

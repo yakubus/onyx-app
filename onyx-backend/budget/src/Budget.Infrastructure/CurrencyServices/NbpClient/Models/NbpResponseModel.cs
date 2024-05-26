@@ -1,4 +1,6 @@
-﻿namespace Budget.Infrastructure.CurrencyServices.NbpClient.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace Budget.Infrastructure.CurrencyServices.NbpClient.Models;
 
 internal sealed record NbpResponse
 {
@@ -7,6 +9,8 @@ internal sealed record NbpResponse
     public string Code { get; set; }
     public List<Rate> Rates { get; set; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [JsonConstructor]
     private NbpResponse(string table, string currency, string code, List<Rate> rates)
     {
         Table = table;
@@ -22,6 +26,8 @@ internal sealed record Rate
     public DateTime EffectiveDate { get; set; }
     public decimal Mid { get; set; }
 
+    [Newtonsoft.Json.JsonConstructor]
+    [JsonConstructor]
     private Rate(string no, DateTime effectiveDate, decimal mid)
     {
         No = no;

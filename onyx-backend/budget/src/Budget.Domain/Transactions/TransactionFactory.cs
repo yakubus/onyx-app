@@ -36,8 +36,7 @@ public sealed class TransactionFactory
         _budgetAmount = budgetAmount;
     }
 
-    public Result<Transaction> CreateTransaction() => 
-        SwitchTransactionCreate(IsForeignTransaction, IsOutflow);
+    public Result<Transaction> CreateTransaction() => SwitchTransactionCreate(IsForeignTransaction, IsOutflow);
 
     private Result<Transaction>
         SwitchTransactionCreate(bool isForeignTransaction, bool isOutflow) =>

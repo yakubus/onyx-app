@@ -9,7 +9,6 @@ using Container = Microsoft.Azure.Cosmos.Container;
 namespace SharedDAL;
 
 // TODO Add fetching only records for current budget
-// TODO Add safety adding items by using batch
 public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId, new()
@@ -271,7 +270,9 @@ public abstract class Repository<TEntity, TEntityId>
     private void EnsureBatchIsOpen()
     {
         if (_currentBatch is null)
+        {
             OpenBatch();
+        }
     }
 
     public async Task<Result> CommitBatchAsync(CancellationToken cancellationToken)
