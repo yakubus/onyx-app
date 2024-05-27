@@ -17,4 +17,15 @@ public static class DependencyInjection
 
         return builder;
     }
+
+    //TODO Temp
+    public static void InjectApplication(this IServiceCollection services)
+    {
+        services.AddMediatR(
+            config =>
+            {
+                config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            });
+    }
 }

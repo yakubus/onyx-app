@@ -8,13 +8,15 @@ using Budget.Application.Subcategories.UpdateAssignment;
 using Budget.Application.Subcategories.UpdateSubcategory;
 using Budget.Application.Subcategories.UpdateTarget;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
 namespace Budget.API.Controllers.Subcategories;
 
 [ApiController]
-[Route("/api/v1/subcategories")]
+[Authorize]
+[Route("/api/v1/{budgetId}/subcategories")]
 public sealed class SubcategoriesController : ControllerBase
 {
     private readonly ISender _sender;

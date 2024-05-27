@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Budget.Functions.Functions.Subcategories.Requests;
+﻿namespace Budget.Functions.Functions.Subcategories.Requests;
 
 public sealed record UpdateSubcategoryRequest
 {

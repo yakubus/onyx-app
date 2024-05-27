@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Budget.Domain.Users;
 using Models.DataTypes;
 using Models.Responses;
 
@@ -14,8 +15,11 @@ public sealed class Budget : Entity<BudgetId>
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Budget(BudgetName name, Currency baseCurrency, List<string> userIds) 
-        : base()
+    private Budget(
+        BudgetName name,
+        Currency baseCurrency,
+        List<string> userIds,
+        BudgetId? id = null) : base(id ?? new BudgetId())
     {
         Name = name;
         BaseCurrency = baseCurrency;
@@ -38,9 +42,7 @@ public sealed class Budget : Entity<BudgetId>
             return currencyCreateResult.Error;
         }
 
-        var baseCurrency = currencyCreateResult.Value;
-
-        return new Budget(budgetNameCreateResult.Value, baseCurrency, [userId]);
+        return new Budget(budgetNameCreateResult.Value, currencyCreateResult.Value, [userId]);
     }
 
     public Result AddUser(string userId)
@@ -57,21 +59,12 @@ public sealed class Budget : Entity<BudgetId>
 
     public Result ExcludeUser(string userId)
     {
-        _userIds.Remove(userId);
-
-        return Result.Success();
-    }
-
-    public Result ChangeBaseCurrency(string currencyCode)
-    {
-        var currencyCreateResult = Currency.FromCode(currencyCode);
-
-        if (currencyCreateResult.IsFailure)
+        if (_userIds.Count == 1)
         {
-            return currencyCreateResult.Error;
+            return BudgetErrors.UserRemoveError;
         }
 
-        BaseCurrency = currencyCreateResult.Value;
+        _userIds.Remove(userId);
 
         return Result.Success();
     }

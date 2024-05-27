@@ -1,9 +1,10 @@
-﻿using Abstractions.DomainBaseTypes;
+﻿using Budget.Domain.Budgets;
+using Budget.Domain.Shared.Abstractions;
 using Models.Responses;
 
 namespace Budget.Domain.Counterparties;
 
-public sealed class Counterparty : Entity<CounterpartyId>
+public sealed class Counterparty : BudgetOwnedEntity<CounterpartyId>
 {
 
     public CounterpartyName Name { get; private set; }
@@ -11,8 +12,8 @@ public sealed class Counterparty : Entity<CounterpartyId>
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Counterparty(CounterpartyName name, CounterpartyType type, CounterpartyId? id = null) 
-        : base(id ?? new CounterpartyId())
+    private Counterparty(CounterpartyName name, CounterpartyType type, BudgetId budgetId, CounterpartyId? id = null) 
+        : base(budgetId, id ?? new CounterpartyId())
     {
         Name = name;
         Type = type;
@@ -33,7 +34,7 @@ public sealed class Counterparty : Entity<CounterpartyId>
         return Result.Success();
     }
 
-    public static Result<Counterparty> Create(string name, string type)
+    public static Result<Counterparty> Create(string name, string type, BudgetId budgetId)
     {
         var counterpartyNameCreateResult = CounterpartyName.Create(name);
 
@@ -53,6 +54,6 @@ public sealed class Counterparty : Entity<CounterpartyId>
 
         var counterpartyType = counterpartyTypeCreateResult.Value;
 
-        return new Counterparty(counterpartyName, counterpartyType);
+        return new Counterparty(counterpartyName, counterpartyType, budgetId);
     }
 }

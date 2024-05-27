@@ -1,3 +1,4 @@
+using Budget.API.Authentication;
 using Budget.Application;
 using Budget.Infrastructure;
 
@@ -9,20 +10,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        //builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-        //    .AddMicrosoftIdentityWebApp(builder.Configuration.GetFunctionSection("AzureAd"));
-
-        //builder.Services.AddTokenAcquisition().AddInMemoryTokenCaches();
-
-        //builder.Services.AddAuthorization(options =>
-        //{
-        //    options.FallbackPolicy = options.DefaultPolicy;
-        //});
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.InjectApplication();
         builder.Services.InjectInfrastructure(builder.Configuration);
+        builder.Services.InjectAuthentication();
         builder.Services.AddControllers();
 
         builder.Services.AddCors(options =>

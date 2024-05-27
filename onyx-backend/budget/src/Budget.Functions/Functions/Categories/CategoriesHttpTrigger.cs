@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Budget.Application.Categories.AddCategory;
 using Budget.Application.Categories.GetCategories;
 using Budget.Application.Categories.RemoveCategory;

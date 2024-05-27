@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Domain.Counterparties;
 
 namespace Budget.Application.Counterparties.Models;
@@ -10,7 +9,8 @@ public sealed record CounterpartyModel : EntityBusinessModel
     public string Name { get; init; }
     public string Type { get; init; }
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private CounterpartyModel(Guid id, string name, string type, IEnumerable<IDomainEvent> domainEvents) : base(domainEvents)
     {
         Id = id;

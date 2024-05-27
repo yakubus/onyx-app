@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Azure;
+﻿using Azure;
 using Messanger.Functions.Models;
 using Models.Responses;
 using Azure.Communication.Email;

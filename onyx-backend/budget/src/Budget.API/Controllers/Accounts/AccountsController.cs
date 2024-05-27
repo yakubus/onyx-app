@@ -5,13 +5,15 @@ using Budget.Application.Accounts.Models;
 using Budget.Application.Accounts.RemoveAccount;
 using Budget.Application.Accounts.UpdateAccount;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
 namespace Budget.API.Controllers.Accounts;
 
 [ApiController]
-[Route("/api/v1/accounts")]
+[Authorize]
+[Route("/api/v1/{budgetId}/accounts")]
 public sealed class AccountsController : ControllerBase
 {
     private readonly ISender _sender;
@@ -78,7 +80,6 @@ public sealed class AccountsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription("Deletes account and all related transactions")]
     public async Task<IActionResult> RemoveAccount(
         [FromRoute] Guid accountId,
         CancellationToken cancellationToken)

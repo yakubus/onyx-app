@@ -5,6 +5,7 @@ using Budget.Application.Categories.Models;
 using Budget.Application.Categories.RemoveCategory;
 using Budget.Application.Categories.UpdateCategory;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
@@ -12,7 +13,8 @@ namespace Budget.API.Controllers.Categories;
 
 //TODO: Add query for GET to load assignments only for month
 [ApiController]
-[Route("/api/v1/categories")]
+[Authorize]
+[Route("/api/v1/{budgetId}/categories")]
 public sealed class CategoriesController : ControllerBase
 {
     private readonly ISender _sender;
@@ -79,7 +81,6 @@ public sealed class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription("Deletes category and all related subcategories (not removes transactions)")]
     public async Task<IActionResult> RemoveCategory(
         [FromRoute] Guid categoryId,
         CancellationToken cancellationToken)

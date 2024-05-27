@@ -1,12 +1,9 @@
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Budget.Application.Transactions.GetTransactions;
-using System.Threading;
-using System;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.RemoveTransaction;
 using Budget.Functions.Functions.Transactions.Requests;

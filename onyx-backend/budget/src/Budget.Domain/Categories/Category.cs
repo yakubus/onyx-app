@@ -1,10 +1,11 @@
-﻿using Abstractions.DomainBaseTypes;
+﻿using Budget.Domain.Budgets;
+using Budget.Domain.Shared.Abstractions;
 using Budget.Domain.Subcategories;
 using Models.Responses;
 
 namespace Budget.Domain.Categories;
 
-public sealed class Category : Entity<CategoryId>
+public sealed class Category : BudgetOwnedEntity<CategoryId>
 {
     public CategoryName Name { get; private set; }
     private readonly List<SubcategoryId> _subcategoriesId;
@@ -13,14 +14,14 @@ public sealed class Category : Entity<CategoryId>
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Category(CategoryName name, List<SubcategoryId> subcategoriesId, CategoryId? id = null) 
-        : base(id ?? new CategoryId())
+    private Category(CategoryName name, List<SubcategoryId> subcategoriesId, BudgetId budgetId, CategoryId? id = null) 
+        : base(budgetId, id ?? new CategoryId())
     {
         Name = name;
         _subcategoriesId = subcategoriesId;
     }
 
-    public static Result<Category> Create(string name)
+    public static Result<Category> Create(string name, BudgetId budgetId)
     {
         var categoryNameCreateResult = CategoryName.Create(name);
 
@@ -31,7 +32,7 @@ public sealed class Category : Entity<CategoryId>
 
         var categoryName = categoryNameCreateResult.Value;
 
-        return new Category(categoryName, new ());
+        return new Category(categoryName, new (), budgetId);
     }
 
     public Result ChangeName(string name)

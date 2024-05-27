@@ -5,13 +5,15 @@ using Budget.Application.Counterparties.Models;
 using Budget.Application.Counterparties.RemoveCounterparty;
 using Budget.Application.Counterparties.UpdateCounterparty;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
 namespace Budget.API.Controllers.Counterparties;
 
 [ApiController]
-[Route("/api/v1/counterparties")]
+[Authorize]
+[Route("/api/v1/{budgetId}/counterparties")]
 public sealed class CounterpartiesController : ControllerBase
 {
     private readonly ISender _sender;
@@ -23,7 +25,6 @@ public sealed class CounterpartiesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription("Returns all counterparies of a given type (payee / payer)")]
     public async Task<IActionResult> GetCounterparties([FromQuery]string type, CancellationToken cancellationToken)
     {
         var query = new GetCounterpartiesQuery(type);
@@ -79,7 +80,6 @@ public sealed class CounterpartiesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription("Removes a counterparty (not removes related transactions)")]
     public async Task<IActionResult> RemoveCounterparty(
         [FromRoute] Guid counterpartyId,
         CancellationToken cancellationToken)

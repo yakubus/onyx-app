@@ -1,5 +1,4 @@
-﻿using Abstractions;
-using Budget.Application.Abstractions.Currency;
+﻿using Budget.Application.Abstractions.Currency;
 using Budget.Domain.Accounts;
 using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
@@ -18,10 +17,19 @@ namespace Budget.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static void InjectInfrastructure(this IFunctionsHostBuilder builder)
+    public static IFunctionsHostBuilder InjectInfrastructure(this IFunctionsHostBuilder builder)
     {
         builder.Services.AddPersistence();
         builder.Services.AddCurrencyConverter(builder.GetContext().Configuration);
+
+        return builder;
+    }
+
+    //TODO Temp
+    public static void InjectInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddPersistence();
+        services.AddCurrencyConverter(configuration);
     }
 
     private static void AddPersistence(this IServiceCollection services)
