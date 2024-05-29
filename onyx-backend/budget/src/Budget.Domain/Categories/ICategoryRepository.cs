@@ -5,12 +5,12 @@ namespace Budget.Domain.Categories;
 
 public interface ICategoryRepository
 {
-    Task<Result<Category>> GetByNameAsync(CategoryName name, CancellationToken cancellationToken);
+    Result<Category> GetByName(CategoryName name, CancellationToken cancellationToken);
 
     Task<Result<Category>> AddAsync(Category category, CancellationToken cancellationToken);
 
     Task<Result<IEnumerable<Category>>> GetAllAsync(CancellationToken cancellationToken);
-    Task<Result<Category>> GetSingleAsync(
+    Result<Category> GetFirst(
         Expression<Func<Category, bool>> filterPredicate,
         CancellationToken cancellationToken);
 

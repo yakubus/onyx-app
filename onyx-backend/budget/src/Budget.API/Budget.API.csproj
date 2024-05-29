@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Budget.Infrastructure\Budget.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Users\Requests\" />
-  </ItemGroup>
-
 </Project>

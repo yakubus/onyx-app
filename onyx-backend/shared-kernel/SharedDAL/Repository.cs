@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Abstractions.DomainBaseTypes;
 using Microsoft.Azure.Cosmos;
 using Models.Responses;
+using MongoDB.Bson.Serialization.Serializers;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 namespace SharedDAL;
@@ -13,14 +14,13 @@ public abstract class Repository<TEntity, TEntityId>
     where TEntityId : EntityId, new()
 {
     protected readonly Container Container;
-    private TransactionalBatch? _currentBatch;
 
     protected Repository(CosmosDbContext context)
     {
         Container = context.Set<TEntity>();
     }
 
-    public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken) =>
+    public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken) =>
         Result.Create(await Task.Run(
             () => Container.GetItemLinqQueryable<TEntity>(true).Where(_ => true).AsEnumerable(),
             cancellationToken));
@@ -49,7 +49,7 @@ public abstract class Repository<TEntity, TEntityId>
         }
     }
 
-    public Result<IEnumerable<TEntity>> GetWhere(
+    public virtual Result<IEnumerable<TEntity>> GetWhere(
         Expression<Func<TEntity, bool>> filterPredicate,
         CancellationToken cancellationToken = default)
     {
@@ -87,38 +87,13 @@ public abstract class Repository<TEntity, TEntityId>
         }
     }
 
-    public async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
-        string sqlQuery,
-        KeyValuePair<string, object>? parameter,
-        CancellationToken cancellationToken)
-    {
-        var queryDefinition = new QueryDefinition(sqlQuery);
-        if (parameter is not null)
-        {
-            queryDefinition.WithParameter(parameter.Value.Key, parameter.Value.Value);
-        }
-
-        var queryResultSetIterator = Container.GetItemQueryIterator<TEntity>(queryDefinition);
-
-        var results = new List<TEntity>();
-        while (queryResultSetIterator.HasMoreResults)
-        {
-            var response = await queryResultSetIterator.ReadNextAsync(cancellationToken);
-            results.AddRange(response);
-        }
-
-        return Result.Create(results.AsEnumerable());
-    }
-
-    public async Task<Result<TEntity>> GetSingleAsync(
+    public virtual Result<TEntity> GetFirst(
         Expression<Func<TEntity, bool>> filterPredicate,
         CancellationToken cancellationToken = default)
     { 
-        var entities = await Task.Run(
-            () => Container.GetItemLinqQueryable<TEntity>(true).Where(filterPredicate).AsEnumerable(),
-            cancellationToken);
+        var entities = Container.GetItemLinqQueryable<TEntity>(true).Where(filterPredicate).AsEnumerable();
 
-        var entity =  entities.SingleOrDefault();
+        var entity = entities.FirstOrDefault();
 
         return entity is null ?
             Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
@@ -139,7 +114,7 @@ public abstract class Repository<TEntity, TEntityId>
 
             return Result.Create(response.Resource);
         }
-        catch (Exception )
+        catch (Exception e)
         {
             return Result.Failure<TEntity>(DataAccessErrors<TEntity>.AddError);
         }
@@ -254,96 +229,6 @@ public abstract class Repository<TEntity, TEntityId>
         catch (Exception)
         {
             return Result.Failure<TEntity>(DataAccessErrors<TEntity>.UpdateError);
-        }
-    }
-
-
-    // Batch transactions
-    private void OpenBatch()
-    {
-        var transactionKey = new PartitionKey(Guid.NewGuid().ToString());
-        _currentBatch = Container.CreateTransactionalBatch(transactionKey);
-    }
-
-    [MemberNotNull(nameof(_currentBatch))]
-    private void EnsureBatchIsOpen()
-    {
-        if (_currentBatch is null)
-        {
-            OpenBatch();
-        }
-    }
-
-    public async Task<Result> CommitBatchAsync(CancellationToken cancellationToken)
-    {
-        if (_currentBatch is null)
-        {
-            throw new InvalidOperationException("No transaction started");
-        }
-
-        try
-        {
-            using var response = await _currentBatch.ExecuteAsync(cancellationToken);
-
-            if (response.IsSuccessStatusCode)
-                throw new Exception("Transaction failed");
-
-            _currentBatch = null;
-
-            return Result.Success();
-        }
-        catch
-        {
-            return DataAccessErrors<TEntity>.TransactionError;
-        }
-    }
-
-    public void BatchAdd(TEntity entity)
-    {
-        EnsureBatchIsOpen();
-
-        _currentBatch.CreateItem(entity);
-    }
-
-    public void BatchAddMany(IEnumerable<TEntity> entities)
-    {
-        EnsureBatchIsOpen();
-
-        foreach (var entity in entities)
-            _currentBatch.CreateItem(entity);
-    }
-
-    public void BatchRemove(TEntityId entityId)
-    {
-        EnsureBatchIsOpen();
-
-        _currentBatch.DeleteItem(entityId.Value.ToString());
-    }
-
-    public void BatchRemoveMany(IEnumerable<TEntity> entities)
-    {
-        EnsureBatchIsOpen();
-
-        foreach (var entity in entities)
-        {
-            _currentBatch.DeleteItem(entity.Id.Value.ToString());
-        }
-    }
-
-    public void BatchUpdate(TEntity entity)
-    {
-        EnsureBatchIsOpen();
-
-        _currentBatch.ReplaceItem(entity.Id.Value.ToString(), entity);
-    }
-
-    public void BatchUpdateMany(IEnumerable<TEntity> entities)
-    {
-        EnsureBatchIsOpen();
-
-        foreach (var entity in entities)
-        {
-            _currentBatch.ReplaceItem(entity.Id.Value.ToString(), entity);
         }
     }
 }

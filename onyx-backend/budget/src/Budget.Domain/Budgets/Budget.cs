@@ -10,8 +10,10 @@ public sealed class Budget : Entity<BudgetId>
     public BudgetName Name { get; private set; }
     public Currency BaseCurrency { get; private set; }
     private readonly List<string> _userIds;
-    public IReadOnlyCollection<string> UserIdsReadOnly => _userIds.AsReadOnly();
+    public IReadOnlyCollection<string> UserIds => _userIds.AsReadOnly();
     private const int maxUsers = 10;
+    public int MaxAccounts => 8 + 2 * (_userIds.Count - 1);
+    public int MaxCategories => 15 + 5 * (_userIds.Count - 1);
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]

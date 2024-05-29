@@ -31,6 +31,7 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetTransactions(
+        [FromRoute] Guid budgetId,
         [FromQuery] string? query,
         [FromQuery] Guid? counterpartyId,
         [FromQuery] Guid? accountId,
@@ -41,7 +42,8 @@ public sealed class TransactionsController : ControllerBase
             query, 
             counterpartyId,
             accountId,
-            subcategoryId);
+            subcategoryId,
+            budgetId);
 
         var result = await _sender.Send(transactionsQuery, cancellationToken);
 
@@ -57,6 +59,7 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(AddTransactionRequest), "application/json")]
     public async Task<IActionResult> AddTransaction(
+        [FromRoute] Guid budgetId,
         [FromBody] AddTransactionRequest request,
         CancellationToken cancellationToken)
     {
@@ -65,7 +68,8 @@ public sealed class TransactionsController : ControllerBase
             request.Amount,
             request.TransactedAt,
             request.CounterpartyName,
-            request.SubcategoryId);
+            request.SubcategoryId,
+            budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -80,10 +84,11 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveTransaction(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid transactionId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveTransactionCommand(transactionId);
+        var command = new RemoveTransactionCommand(transactionId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

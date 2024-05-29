@@ -6,6 +6,7 @@ using SharedDAL.DataSettings;
 
 namespace SharedDAL;
 
+//TODO implement idisposable
 public sealed class CosmosDbContext
 {
     private readonly Database _database;

@@ -26,9 +26,9 @@ public sealed class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCategories([FromRoute]Guid budgetId, CancellationToken cancellationToken)
     {
-        var query = new GetCategoriesQuery();
+        var query = new GetCategoriesQuery(budgetId);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -44,10 +44,11 @@ public sealed class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(AddCategoryRequest), "application/json")]
     public async Task<IActionResult> AddCategory(
+        [FromRoute] Guid budgetId,
         [FromBody] AddCategoryRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddCategoryCommand(request.Name);
+        var command = new AddCategoryCommand(request.Name, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -63,11 +64,12 @@ public sealed class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateCategoryRequest), "application/json")]
     public async Task<IActionResult> UpdateCategory(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid categoryId,
         [FromBody] UpdateCategoryRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateCategoryCommand(categoryId, request.NewName);
+        var command = new UpdateCategoryCommand(categoryId, request.NewName, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -82,10 +84,11 @@ public sealed class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveCategory(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid categoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveCategoryCommand(categoryId);
+        var command = new RemoveCategoryCommand(categoryId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

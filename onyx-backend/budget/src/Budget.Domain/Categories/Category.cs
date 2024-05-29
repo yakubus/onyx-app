@@ -58,7 +58,7 @@ public sealed class Category : BudgetOwnedEntity<CategoryId>
             return Result.Failure<Subcategory>(CategoryErrors.MaxSubcategoriesCountReached);
         }
 
-        var subcategoryCreateResult = Subcategory.Create(subcategoryName);
+        var subcategoryCreateResult = Subcategory.Create(subcategoryName, BudgetId);
 
         if (subcategoryCreateResult.IsFailure)
         {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Models.Responses;
 
-namespace Budget.Infrastructure.Identity;
+namespace Budget.Infrastructure.Contexts;
 
 //TODO change to internal
 public sealed class UserContext : IUserContext

@@ -31,7 +31,7 @@ public sealed class SubcategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<AddSubcategoryRequest>(cancellationToken);
 
-        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName);
+        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -48,7 +48,7 @@ public sealed class SubcategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateSubcategoryRequest>(cancellationToken);
 
-        var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription);
+        var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -63,7 +63,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveSubcategoryCommand(subcategoryId);
+        var command = new RemoveSubcategoryCommand(subcategoryId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -85,7 +85,7 @@ public sealed class SubcategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateAssignmentRequest>(cancellationToken);
 
-        var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount);
+        var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -106,7 +106,7 @@ public sealed class SubcategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<RemoveAssignmentRequest>(cancellationToken);
 
-        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth);
+        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -127,7 +127,7 @@ public sealed class SubcategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateTargetRequest>(cancellationToken);
 
-        var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount);
+        var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -142,7 +142,7 @@ public sealed class SubcategoriesHttpTrigger
         Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveTargetCommand(subcategoryId);
+        var command = new RemoveTargetCommand(subcategoryId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 

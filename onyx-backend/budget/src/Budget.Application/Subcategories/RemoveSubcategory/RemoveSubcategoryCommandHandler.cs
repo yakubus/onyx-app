@@ -32,7 +32,7 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
 
         var subcategory = subcategoryGetResult.Value;
 
-        var categoryGetResult = await _categoryRepository.GetSingleAsync(
+        var categoryGetResult = _categoryRepository.GetFirst(
             category => category.SubcategoriesId.Any(sId => sId == subcategory.Id), 
             cancellationToken);
 

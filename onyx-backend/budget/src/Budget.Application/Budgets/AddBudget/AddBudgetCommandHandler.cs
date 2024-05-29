@@ -19,7 +19,7 @@ internal sealed class AddBudgetCommandHandler : ICommandHandler<AddBudgetCommand
 
     public async Task<Result<BudgetModel>> Handle(AddBudgetCommand request, CancellationToken cancellationToken)
     {
-        var isBudgetNameUnique = await _budgetRepository.GetByNameAsync(request.BudgetName, cancellationToken)
+        var isBudgetNameUnique = _budgetRepository.GetByName(request.BudgetName)
             is var getBudgetResult && getBudgetResult.IsFailure;
 
         if (!isBudgetNameUnique)

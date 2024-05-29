@@ -27,6 +27,11 @@ internal sealed class LogInCommandHandler : ICommandHandler<LogInCommand, string
 
         var user = userGetResult.Value;
 
+        if (user.Password != request.Password)
+        {
+            return new Error("User.Unathorized", "Invalid credentials");
+        }
+
         var tokenCreateResult = _jwtService.GenerateJwt(user);
 
         if (tokenCreateResult.IsFailure)

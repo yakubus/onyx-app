@@ -1,5 +1,4 @@
 ﻿using Budget.Application.Abstractions.Identity;
-using Budget.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Budget.API.Authentication;
@@ -15,9 +14,6 @@ internal static class AuthenticationInjector
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer();
 
-            services.AddHttpContextAccessor();
-
-            services.AddScoped<IUserContext, UserContext>();
             services.AddScoped<IJwtService, JwtService>();
         }
 }

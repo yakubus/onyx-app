@@ -26,6 +26,6 @@ internal sealed class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudgetC
 
         var budget = budgetGetResult.Value;
 
-        return await _budgetRepository.RemoveAsync(budget, cancellationToken);
+        return await _budgetRepository.RemoveAsync(budget.Id, cancellationToken);
     }
 }

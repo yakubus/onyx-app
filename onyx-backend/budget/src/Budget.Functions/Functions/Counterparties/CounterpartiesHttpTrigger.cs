@@ -28,7 +28,7 @@ public sealed class CounterpartiesHttpTrigger
     {
         var type = req.Query["type"];
 
-        var query = new GetCounterpartiesQuery(type);
+        var query = new GetCounterpartiesQuery(type, Guid.Empty);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -44,7 +44,7 @@ public sealed class CounterpartiesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<AddCounterpartyRequest>(cancellationToken);
 
-        var command = new AddCounterpartyCommand(request.CounterpartyName, request.CounterpartyType);
+        var command = new AddCounterpartyCommand(request.CounterpartyName, request.CounterpartyType, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -61,7 +61,7 @@ public sealed class CounterpartiesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateCounterpartyRequest>(cancellationToken);
 
-        var command = new UpdateCounterpartyCommand(counterpartyId, request.NewName);
+        var command = new UpdateCounterpartyCommand(counterpartyId, request.NewName, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -76,7 +76,7 @@ public sealed class CounterpartiesHttpTrigger
         Guid counterpartyId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveCounterpartyCommand(counterpartyId);
+        var command = new RemoveCounterpartyCommand(counterpartyId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 

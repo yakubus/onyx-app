@@ -1,4 +1,5 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Abstractions.Messaging;
 using Budget.Application.Shared.Models;
 using Budget.Application.Transactions.Models;
 
@@ -9,6 +10,7 @@ public sealed record AddTransactionCommand(
     MoneyModel Amount,
     DateTime TransactedAt,
     string CounterpartyName,
-    Guid? SubcategoryId) : ICommand<TransactionModel>
+    Guid? SubcategoryId,
+    Guid BudgetId) : BudgetCommand<TransactionModel>(BudgetId)
 {
 }

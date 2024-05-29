@@ -10,7 +10,7 @@ internal static class BudgetErrors
     internal static readonly Error MaxUserNumberReached = new(
         "Budget.MaxUserNumberReached",
         "Maximum number of users reached");
-    internal static readonly Result UserRemoveError = new (
+    internal static readonly Error UserRemoveError = new (
         "Budget.Users.CannotRemove",
         "Budget must have at least one user");
 }

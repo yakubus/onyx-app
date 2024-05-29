@@ -1,9 +1,13 @@
 ﻿using Budget.Application.Abstractions.Currency;
+using Budget.Application.Abstractions.Identity;
 using Budget.Domain.Accounts;
+using Budget.Domain.Budgets;
 using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
+using Budget.Domain.Users;
+using Budget.Infrastructure.Contexts;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
 using Budget.Infrastructure.Repositories;
@@ -21,6 +25,7 @@ public static class DependencyInjection
     {
         builder.Services.AddPersistence();
         builder.Services.AddCurrencyConverter(builder.GetContext().Configuration);
+        builder.Services.AddContexts();
 
         return builder;
     }
@@ -30,6 +35,7 @@ public static class DependencyInjection
     {
         services.AddPersistence();
         services.AddCurrencyConverter(configuration);
+        services.AddContexts();
     }
 
     private static void AddPersistence(this IServiceCollection services)
@@ -41,6 +47,8 @@ public static class DependencyInjection
         services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
         services.AddScoped<ICounterpartyRepository, CounterpartyRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IBudgetRepository, BudgetRepository>();
     }
 
     private static void AddCurrencyConverter(this IServiceCollection services, IConfiguration configuration)
@@ -52,5 +60,14 @@ public static class DependencyInjection
         });
 
         services.AddTransient<ICurrencyConverter, CurrencyConverter>();
+    }
+
+    private static void AddContexts(this IServiceCollection services)
+    {
+        //TODO consider
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IBudgetContext, BudgetContext>();
+        services.AddScoped<IUserContext, UserContext>();
     }
 }

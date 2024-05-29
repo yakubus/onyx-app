@@ -37,6 +37,6 @@ internal sealed class UserQueryService
             return Result.Failure<User>(emailCreateresult.Error);
         }
 
-        return await _userRepository.GetByEmailAsync(emailCreateresult.Value, cancellationToken);
+        return _userRepository.GetByEmailAsync(emailCreateresult.Value, cancellationToken);
     }
 }

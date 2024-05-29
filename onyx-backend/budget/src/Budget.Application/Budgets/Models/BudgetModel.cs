@@ -20,5 +20,5 @@ public sealed record BudgetModel
             domainModel.Id.Value,
             domainModel.Name.Value,
             domainModel.BaseCurrency.Code,
-            domainModel.UserIdsReadOnly);
+            domainModel.UserIds);
 }

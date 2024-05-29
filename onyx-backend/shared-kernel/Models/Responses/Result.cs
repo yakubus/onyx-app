@@ -36,6 +36,8 @@ public class Result
 
     public static Result<TValue> Create<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
+    public static Result<TValue> Create<TValue>(TValue? value, Error callbackError) =>
+        value is not null ? Success(value) : Failure<TValue>(callbackError);
 
     public static Result<TValue?> CreateNullable<TValue>(TValue? value) => Success(value);
 

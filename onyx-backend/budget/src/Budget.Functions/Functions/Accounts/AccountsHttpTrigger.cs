@@ -26,7 +26,7 @@ public sealed class AccountsHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "accounts")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var query = new GetAccountsQuery();
+        var query = new GetAccountsQuery(Guid.Empty);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -42,7 +42,7 @@ public sealed class AccountsHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<AddAccountRequest>(cancellationToken);
         
-        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType);
+        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -59,7 +59,7 @@ public sealed class AccountsHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateAccountRequest>(cancellationToken);
 
-        var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance);
+        var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -74,7 +74,7 @@ public sealed class AccountsHttpTrigger
         Guid accountId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveAccountCommand(accountId);
+        var command = new RemoveAccountCommand(accountId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
