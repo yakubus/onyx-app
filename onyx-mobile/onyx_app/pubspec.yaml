@@ -29,6 +29,7 @@ dependencies:
   shared_preferences: ^2.2.3
   http: ^1.2.1
   carousel_slider_plus: ^5.0.1+1
+  shadcn_ui: ^0.5.2
 
 
 dev_dependencies:

@@ -1,10 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:onyx_app/themes/themes.dart';
 import 'package:onyx_app/views/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+
+// Import the Shadcn UI package
 
 import 'routing/routing.dart';
 
@@ -16,6 +20,13 @@ Future<void> main() async {
   runApp(const ProviderScope(
     child: MyApp(),
   ));
+}
+
+checkTheme(bool setTheme) {
+  if (!setTheme) {
+    return lightThemes;
+  }
+  return darkThemes;
 }
 
 class MyApp extends ConsumerWidget {
@@ -32,24 +43,10 @@ class MyApp extends ConsumerWidget {
         orElse: () => const SettingsData(language: "en", darkMode: false),
         data: (data) => data);
 
-    return AdaptiveTheme(
-      light: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorSchemeSeed: Colors.blue,
-        fontFamily: 'Roboto',
-      ),
-      dark: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.blue,
-        fontFamily: 'Roboto',
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontSize: 20),
-        ),
-      ),
-      initial: savedThemeMode ?? AdaptiveThemeMode.dark,
-      builder: (theme, darkTheme) => MaterialApp.router(
+    // Define Shadcn UI themes
+
+    return ShadApp(
+      builder: (theme, darkTheme) => ShadApp.router(
         locale: Locale(currentSettings.language, ''),
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -62,10 +59,8 @@ class MyApp extends ConsumerWidget {
         ],
         routerConfig: goRouter,
         title: 'Onyx',
-        theme: theme,
-        darkTheme: darkTheme,
+        theme: checkTheme(currentSettings.darkMode),
       ),
-      debugShowFloatingThemeButton: true,
     );
   }
 }
