@@ -14,7 +14,7 @@ class AccountView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const AccountsCarousel(),
+          const AccountCarousel(),
           IconButton(
               onPressed: () {
                 context.go('/add_account');

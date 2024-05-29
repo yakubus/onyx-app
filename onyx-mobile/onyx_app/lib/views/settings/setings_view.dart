@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:onyx_app/main.dart';
 import 'package:onyx_app/views/settings/settings.dart';
 import 'package:onyx_app/widgets/appbar.dart';
@@ -38,11 +37,6 @@ class SettingsView extends HookConsumerWidget {
                         SettingsData(
                             language: currentSettings.language,
                             darkMode: value));
-                    if (value) {
-                      AdaptiveTheme.of(context).setDark();
-                    } else {
-                      AdaptiveTheme.of(context).setLight();
-                    }
                   },
                 ),
               ),
