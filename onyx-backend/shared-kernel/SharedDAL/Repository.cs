@@ -29,24 +29,17 @@ public abstract class Repository<TEntity, TEntityId>
         TEntityId id,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await Container.ReadItemAsync<TEntity>(
-                id.Value.ToString(),
-                new PartitionKey(id.Value.ToString()),
-                null,
-                cancellationToken);
+        var response = await Container.ReadItemAsync<TEntity>(
+            id.Value.ToString(),
+            new PartitionKey(id.Value.ToString()),
+            null,
+            cancellationToken);
 
-            var entity = response.Resource;
+        var entity = response.Resource;
 
-            return entity is null ?
-                Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-                Result.Success(entity);
-        }
-        catch (Exception)
-        {
-            return Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound);
-        }
+        return entity is null ?
+            Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
+            Result.Success(entity);
     }
 
     public virtual Result<IEnumerable<TEntity>> GetWhere(
@@ -70,21 +63,14 @@ public abstract class Repository<TEntity, TEntityId>
             .ToList()
             .AsReadOnly();
 
-        try
-        {
-            var response = await Container.ReadManyItemsAsync<TEntity>(
-                query,
-                null,
-                cancellationToken);
+        var response = await Container.ReadManyItemsAsync<TEntity>(
+            query,
+            null,
+            cancellationToken);
 
-            var entities = response.Resource;
+        var entities = response.Resource;
 
-            return Result.Create(entities);
-        }
-        catch (Exception )
-        {
-            return Result.Failure<IEnumerable<TEntity>>(DataAccessErrors<TEntity>.NotFound);
-        }
+        return Result.Create(entities);
     }
 
     public virtual Result<TEntity> GetFirst(
@@ -104,131 +90,88 @@ public abstract class Repository<TEntity, TEntityId>
         TEntity entity, 
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await Container.CreateItemAsync(
-                entity,
-                new(entity.Id.Value.ToString()),
-                null,
-                cancellationToken);
+        var response = await Container.CreateItemAsync(
+            entity,
+            new(entity.Id.Value.ToString()),
+            null,
+            cancellationToken);
 
-            return Result.Create(response.Resource);
-        }
-        catch (Exception e)
-        {
-            return Result.Failure<TEntity>(DataAccessErrors<TEntity>.AddError);
-        }
-
+        return Result.Create(response.Resource);
     }
 
     public async Task<Result> AddRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var tasks = entities.Select(
-                entity => Container.CreateItemAsync(
-                    entity,
-                    new PartitionKey(entity.Id.Value.ToString()),
-                    null,
-                    cancellationToken));
+        var tasks = entities.Select(
+            entity => Container.CreateItemAsync(
+                entity,
+                new PartitionKey(entity.Id.Value.ToString()),
+                null,
+                cancellationToken));
 
-            await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks);
 
-            return Result.Success();
-        }
-        catch (Exception)
-        {
-            return Result.Failure<TEntity>(DataAccessErrors<TEntity>.AddError);
-        }
+        return Result.Success();
     }
 
     public async Task<Result> RemoveAsync(
         TEntityId entityId, 
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            await Container.DeleteItemAsync<TEntity>(
-                entityId.Value.ToString(),
-                new PartitionKey(entityId.Value.ToString()),
-                null,
-                cancellationToken);
+        await Container.DeleteItemAsync<TEntity>(
+            entityId.Value.ToString(),
+            new PartitionKey(entityId.Value.ToString()),
+            null,
+            cancellationToken);
 
-            return Result.Success();
-        }
-        catch (Exception)
-        {
-            return Result.Failure(DataAccessErrors<TEntity>.RemoveError);
-        }
+        return Result.Success();
     }
 
     public async Task<Result> RemoveRangeAsync(
         IEnumerable<TEntityId> entitiesId,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var tasks = entitiesId.Select(
-                id => Container.DeleteItemAsync<TEntity>(
-                    id.Value.ToString(),
-                    new PartitionKey(id.Value.ToString()),
-                    null,
-                    cancellationToken));
+        var tasks = entitiesId.Select(
+            id => Container.DeleteItemAsync<TEntity>(
+                id.Value.ToString(),
+                new PartitionKey(id.Value.ToString()),
+                null,
+                cancellationToken));
 
-            await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks);
 
-            return Result.Success();
-        }
-        catch (Exception)
-        {
-            return Result.Failure(DataAccessErrors<TEntity>.RemoveError);
-        }
+        return Result.Success();
     }
 
     public async Task<Result<TEntity>> UpdateAsync(
         TEntity entity, 
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await Container.ReplaceItemAsync(
-                entity,
-                entity.Id.Value.ToString(),
-                new PartitionKey(entity.Id.Value.ToString()),
-                null,
-                cancellationToken);
+        var response = await Container.ReplaceItemAsync(
+            entity,
+            entity.Id.Value.ToString(),
+            new PartitionKey(entity.Id.Value.ToString()),
+            null,
+            cancellationToken);
 
-            return Result.Success(response.Resource);
-        }
-        catch (Exception)
-        {
-            return Result.Failure<TEntity>(DataAccessErrors<TEntity>.UpdateError);
-        }
+        return Result.Success(response.Resource);
     }
 
     public async Task<Result> UpdateRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var tasks = entities.Select(
-                entity => Container.ReplaceItemAsync(
-                    entity,
-                    entity.Id.Value.ToString(),
-                    new PartitionKey(entity.Id.Value.ToString()),
-                    null,
-                    cancellationToken));
+        var tasks = entities.Select(
+            entity => Container.ReplaceItemAsync(
+                entity,
+                entity.Id.Value.ToString(),
+                new PartitionKey(entity.Id.Value.ToString()),
+                null,
+                cancellationToken));
 
-            await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks);
 
-            return Result.Success();
-        }
-        catch (Exception)
-        {
-            return Result.Failure<TEntity>(DataAccessErrors<TEntity>.UpdateError);
-        }
+        return Result.Success();
     }
 }
