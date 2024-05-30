@@ -10,13 +10,17 @@ namespace Budget.Application.Budgets.UpdateBudget;
 internal sealed class UpdateBudgetCommandHandler : ICommandHandler<UpdateBudgetCommand, BudgetModel>
 {
     private readonly IBudgetRepository _repository;
+    private static readonly Error _invalidInputError = new Error(
+        "UpdateBudget.InvalidInput", 
+        "Specify either user to add or user to remove"
+        );
 
     public UpdateBudgetCommandHandler(IBudgetRepository repository)
     {
         _repository = repository;
     }
 
-
+    //TODO Send event when user added or removed
     public async Task<Result<BudgetModel>> Handle(UpdateBudgetCommand request, CancellationToken cancellationToken)
     {
         var budgetId = new BudgetId(request.BudgetId);
@@ -36,7 +40,7 @@ internal sealed class UpdateBudgetCommandHandler : ICommandHandler<UpdateBudgetC
         {
             (false, true) => budget.AddUser(request.UserIdToAdd!),
             (true, false) => budget.ExcludeUser(request.UserIdToRemove!),
-            _ => Error.InvalidValue
+            _ => _invalidInputError
         };
 
         if (updateBudgetResult.IsFailure)

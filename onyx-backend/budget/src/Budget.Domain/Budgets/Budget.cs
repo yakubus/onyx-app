@@ -54,6 +54,11 @@ public sealed class Budget : Entity<BudgetId>
             return Result.Failure(BudgetErrors.MaxUserNumberReached);
         }
 
+        if (_userIds.Any(id => id == userId))
+        {
+            return BudgetErrors.UserAlreadyAdded;
+        }
+
         _userIds.Add(userId);
 
         return Result.Success();
@@ -66,7 +71,12 @@ public sealed class Budget : Entity<BudgetId>
             return BudgetErrors.UserRemoveError;
         }
 
-        _userIds.Remove(userId);
+        var isFound = _userIds.Remove(userId);
+
+        if (!isFound)
+        {
+            return BudgetErrors.UserNotAdded;
+        }
 
         return Result.Success();
     }

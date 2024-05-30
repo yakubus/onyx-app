@@ -17,6 +17,7 @@ internal sealed class AddBudgetCommandHandler : ICommandHandler<AddBudgetCommand
         _userContext = userContext;
     }
 
+    //TODO Send event
     public async Task<Result<BudgetModel>> Handle(AddBudgetCommand request, CancellationToken cancellationToken)
     {
         var isBudgetNameUnique = _budgetRepository.GetByName(request.BudgetName)

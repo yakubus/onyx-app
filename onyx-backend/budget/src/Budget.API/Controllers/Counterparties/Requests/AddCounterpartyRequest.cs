@@ -1,13 +1,5 @@
 ﻿namespace Budget.API.Controllers.Counterparties.Requests;
 
-public sealed record AddCounterpartyRequest
+public sealed record AddCounterpartyRequest(string CounterpartyType, string CounterpartyName)
 {
-    public string CounterpartyType { get; set; }
-    public string CounterpartyName { get; set;}
-
-    private AddCounterpartyRequest(string counterpartyType, string counterpartyName)
-    {
-        CounterpartyType = counterpartyType;
-        CounterpartyName = counterpartyName;
-    }
 }

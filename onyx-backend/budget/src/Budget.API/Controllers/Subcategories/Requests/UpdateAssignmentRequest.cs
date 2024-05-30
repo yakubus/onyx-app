@@ -2,14 +2,6 @@
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record UpdateAssignmentRequest
+public sealed record UpdateAssignmentRequest(decimal AssignedAmount, MonthDate AssignmentMonth)
 {
-    public decimal AssignedAmount { get; set; }
-    public MonthDate AssignmentMonth { get; set; }
-
-    private UpdateAssignmentRequest(decimal assignedAmount, MonthDate assignmentMonth)
-    {
-        AssignedAmount = assignedAmount;
-        AssignmentMonth = assignmentMonth;
-    }
 }

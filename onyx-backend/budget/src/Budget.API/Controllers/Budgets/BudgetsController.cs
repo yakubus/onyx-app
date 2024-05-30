@@ -31,8 +31,6 @@ public sealed class BudgetsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateBudgetRequest), "application/json")]
     public async Task<IActionResult> GetBudgets(
-        [FromRoute] Guid budgetId,
-        [FromBody] UpdateBudgetRequest request,
         CancellationToken cancellationToken)
     {
         var command = new GetBudgetsQuery();
@@ -41,7 +39,7 @@ public sealed class BudgetsController : ControllerBase
 
         return result.IsSuccess ?
             Ok(result) :
-            BadRequest(result);
+            NotFound(result);
     }
 
 
