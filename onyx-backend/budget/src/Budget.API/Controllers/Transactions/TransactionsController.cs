@@ -4,6 +4,7 @@ using Budget.Application.Transactions.GetTransactions;
 using Budget.Application.Transactions.Models;
 using Budget.Application.Transactions.RemoveTransaction;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 using Result = Models.Responses.Result;
@@ -11,16 +12,17 @@ using Result = Models.Responses.Result;
 namespace Budget.API.Controllers.Transactions;
 
 [ApiController]
-[Route("/api/v1/transactions")]
+[Authorize]
+[Route("/api/v1/{budgetId}/transactions")]
 public sealed class TransactionsController : ControllerBase
 {
     private readonly ISender _sender;
-    private readonly IConfiguration _configuration;
+    private readonly IServiceProvider _serviceProvider;
 
-    public TransactionsController(ISender sender, IConfiguration configuration)
+    public TransactionsController(ISender sender, IServiceProvider serviceProvider)
     {
         _sender = sender;
-        _configuration = configuration;
+        _serviceProvider = serviceProvider;
     }
 
     [HttpGet]
@@ -28,9 +30,8 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription(
-        "Returns all transactions for a given query (all, counterparty, account, subcategory)")]
     public async Task<IActionResult> GetTransactions(
+        [FromRoute] Guid budgetId,
         [FromQuery] string? query,
         [FromQuery] Guid? counterpartyId,
         [FromQuery] Guid? accountId,
@@ -41,7 +42,8 @@ public sealed class TransactionsController : ControllerBase
             query, 
             counterpartyId,
             accountId,
-            subcategoryId);
+            subcategoryId,
+            budgetId);
 
         var result = await _sender.Send(transactionsQuery, cancellationToken);
 
@@ -57,6 +59,7 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(AddTransactionRequest), "application/json")]
     public async Task<IActionResult> AddTransaction(
+        [FromRoute] Guid budgetId,
         [FromBody] AddTransactionRequest request,
         CancellationToken cancellationToken)
     {
@@ -65,7 +68,8 @@ public sealed class TransactionsController : ControllerBase
             request.Amount,
             request.TransactedAt,
             request.CounterpartyName,
-            request.SubcategoryId);
+            request.SubcategoryId,
+            budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -80,10 +84,11 @@ public sealed class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveTransaction(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid transactionId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveTransactionCommand(transactionId);
+        var command = new RemoveTransactionCommand(transactionId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

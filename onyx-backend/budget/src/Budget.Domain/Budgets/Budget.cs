@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Budget.Domain.Users;
 using Models.DataTypes;
 using Models.Responses;
 
@@ -9,13 +10,18 @@ public sealed class Budget : Entity<BudgetId>
     public BudgetName Name { get; private set; }
     public Currency BaseCurrency { get; private set; }
     private readonly List<string> _userIds;
-    public IReadOnlyCollection<string> UserIdsReadOnly => _userIds.AsReadOnly();
+    public IReadOnlyCollection<string> UserIds => _userIds.AsReadOnly();
     private const int maxUsers = 10;
+    public int MaxAccounts => 8 + 2 * (_userIds.Count - 1);
+    public int MaxCategories => 15 + 5 * (_userIds.Count - 1);
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Budget(BudgetName name, Currency baseCurrency, List<string> userIds) 
-        : base()
+    private Budget(
+        BudgetName name,
+        Currency baseCurrency,
+        List<string> userIds,
+        BudgetId? id = null) : base(id ?? new BudgetId())
     {
         Name = name;
         BaseCurrency = baseCurrency;
@@ -38,9 +44,7 @@ public sealed class Budget : Entity<BudgetId>
             return currencyCreateResult.Error;
         }
 
-        var baseCurrency = currencyCreateResult.Value;
-
-        return new Budget(budgetNameCreateResult.Value, baseCurrency, [userId]);
+        return new Budget(budgetNameCreateResult.Value, currencyCreateResult.Value, [userId]);
     }
 
     public Result AddUser(string userId)
@@ -50,6 +54,11 @@ public sealed class Budget : Entity<BudgetId>
             return Result.Failure(BudgetErrors.MaxUserNumberReached);
         }
 
+        if (_userIds.Any(id => id == userId))
+        {
+            return BudgetErrors.UserAlreadyAdded;
+        }
+
         _userIds.Add(userId);
 
         return Result.Success();
@@ -57,21 +66,17 @@ public sealed class Budget : Entity<BudgetId>
 
     public Result ExcludeUser(string userId)
     {
-        _userIds.Remove(userId);
-
-        return Result.Success();
-    }
-
-    public Result ChangeBaseCurrency(string currencyCode)
-    {
-        var currencyCreateResult = Currency.FromCode(currencyCode);
-
-        if (currencyCreateResult.IsFailure)
+        if (_userIds.Count == 1)
         {
-            return currencyCreateResult.Error;
+            return BudgetErrors.UserRemoveError;
         }
 
-        BaseCurrency = currencyCreateResult.Value;
+        var isFound = _userIds.Remove(userId);
+
+        if (!isFound)
+        {
+            return BudgetErrors.UserNotAdded;
+        }
 
         return Result.Success();
     }

@@ -1,6 +1,7 @@
-﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Accounts;
+﻿using Budget.Domain.Accounts;
+using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
+using Budget.Domain.Shared.Abstractions;
 using Budget.Domain.Shared.Constants;
 using Budget.Domain.Shared.Errors;
 using Budget.Domain.Subcategories;
@@ -11,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Budget.Domain.Transactions;
 
-public sealed class Transaction : Entity<TransactionId>
+public sealed class Transaction : BudgetOwnedEntity<TransactionId>
 {
     public AccountId AccountId { get; init; }
     public Money Amount { get; init; }
@@ -32,7 +33,8 @@ public sealed class Transaction : Entity<TransactionId>
         SubcategoryId? subcategoryId,
         CounterpartyId? counterpartyId,
         Money? budgetAmount,
-        TransactionId? id) : base(id ?? new TransactionId())
+        BudgetId budgetId,
+        TransactionId? id = null) : base(budgetId, id ?? new TransactionId())
     {
         AccountId = accountId;
         Amount = amount;
@@ -51,8 +53,9 @@ public sealed class Transaction : Entity<TransactionId>
         DateTime transactedAt,
         Counterparty counterparty,
         Money? budgetAmount,
+        BudgetId budgetId,
         TransactionId? id = null) 
-        : base(id ?? new TransactionId())
+        : base(budgetId, id ?? new TransactionId())
     {
         AccountId = account.Id;
         Amount = amount;
@@ -69,7 +72,8 @@ public sealed class Transaction : Entity<TransactionId>
         Money amount,
         DateTime transactedAt,
         Counterparty payee,
-        Money? budgetAmount)
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -93,7 +97,8 @@ public sealed class Transaction : Entity<TransactionId>
             null,
             transactedAt,
             payee,
-            budgetAmount);
+            budgetAmount,
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -119,7 +124,8 @@ public sealed class Transaction : Entity<TransactionId>
         Money originalAmount,
         DateTime transactedAt,
         Counterparty payee,
-        Money? budgetAmount)
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -148,7 +154,8 @@ public sealed class Transaction : Entity<TransactionId>
             originalAmount,
             transactedAt,
             payee,
-            budgetAmount);
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -172,7 +179,8 @@ public sealed class Transaction : Entity<TransactionId>
         Money amount,
         DateTime transactedAt,
         Counterparty payer,
-        Money? budgetAmount)
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payer.Type != CounterpartyType.Payer)
         {
@@ -196,7 +204,8 @@ public sealed class Transaction : Entity<TransactionId>
             null,
             transactedAt,
             payer,
-            budgetAmount);
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -214,7 +223,8 @@ public sealed class Transaction : Entity<TransactionId>
         Money originalAmount,
         DateTime transactedAt,
         Counterparty payer,
-        Money? budgetAmount)
+        Money? budgetAmount, 
+        BudgetId budgetId)
     {
         if (payer.Type != CounterpartyType.Payer)
         {
@@ -243,7 +253,8 @@ public sealed class Transaction : Entity<TransactionId>
             originalAmount,
             transactedAt,
             payer,
-            budgetAmount);
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 

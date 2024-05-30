@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Budget.Application.Categories.AddCategory;
 using Budget.Application.Categories.GetCategories;
 using Budget.Application.Categories.RemoveCategory;
@@ -29,7 +26,7 @@ public sealed class CategoriesHttpTrigger
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "categories")] HttpRequest req,
         CancellationToken cancellationToken)
     {
-        var query = new GetCategoriesQuery();
+        var query = new GetCategoriesQuery(Guid.Empty);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -45,7 +42,7 @@ public sealed class CategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<AddCategoryRequest>(cancellationToken);
 
-        var command = new AddCategoryCommand(request.Name);
+        var command = new AddCategoryCommand(request.Name, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -62,7 +59,7 @@ public sealed class CategoriesHttpTrigger
     {
         var request = await req.Body.ConvertBodyToAsync<UpdateCategoryRequest>(cancellationToken);
 
-        var command = new UpdateCategoryCommand(categoryId, request.NewName);
+        var command = new UpdateCategoryCommand(categoryId, request.NewName, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -77,7 +74,7 @@ public sealed class CategoriesHttpTrigger
         Guid categoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveCategoryCommand(categoryId);
+        var command = new RemoveCategoryCommand(categoryId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 

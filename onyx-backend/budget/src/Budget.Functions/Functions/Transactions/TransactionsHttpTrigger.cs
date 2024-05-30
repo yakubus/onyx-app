@@ -1,12 +1,9 @@
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Budget.Application.Transactions.GetTransactions;
-using System.Threading;
-using System;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.RemoveTransaction;
 using Budget.Functions.Functions.Transactions.Requests;
@@ -37,7 +34,8 @@ public sealed class TransactionsHttpTrigger
             query,
             counterpartyId,
             accountId,
-            subcategoryId);
+            subcategoryId, 
+            Guid.Empty);
 
         var result = await _sender.Send(transactionsQuery, cancellationToken);
 
@@ -58,7 +56,8 @@ public sealed class TransactionsHttpTrigger
             request.Amount,
             request.TransactedAt,
             request.CounterpartyName,
-            request.SubcategoryId);
+            request.SubcategoryId,
+            Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -73,7 +72,7 @@ public sealed class TransactionsHttpTrigger
         Guid transactionId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveTransactionCommand(transactionId);
+        var command = new RemoveTransactionCommand(transactionId, Guid.Empty);
 
         var result = await _sender.Send(command, cancellationToken);
 

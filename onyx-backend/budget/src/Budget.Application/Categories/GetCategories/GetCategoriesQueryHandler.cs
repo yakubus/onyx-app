@@ -6,7 +6,7 @@ using Models.Responses;
 
 namespace Budget.Application.Categories.GetCategories;
 
-internal sealed class GetCategoriesQueryHandler : ICommandHandler<GetCategoriesQuery, IEnumerable<CategoryModel>>
+internal sealed class GetCategoriesQueryHandler : IQueryHandler<GetCategoriesQuery, IEnumerable<CategoryModel>>
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ISubcategoryRepository _subcategoryRepository;

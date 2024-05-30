@@ -10,10 +10,10 @@ internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
     {
     }
 
-    public async Task<Result<User>> GetByEmailAsync(
+    public Result<User> GetByEmailAsync(
         Domain.Email email,
         CancellationToken cancellationToken) =>
-        await GetSingleAsync(
+        GetFirst(
             u => u.Email == email,
             cancellationToken);
 }

@@ -35,7 +35,7 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
             return Result.Failure<CategoryModel>(categoryChangeNameResult.Error);
         }
 
-        var categoryIsNotUniqueResult = await _categoryRepository.GetByNameAsync(category.Name, cancellationToken);
+        var categoryIsNotUniqueResult = _categoryRepository.GetByName(category.Name, cancellationToken);
 
         if (categoryIsNotUniqueResult.IsSuccess)
         {

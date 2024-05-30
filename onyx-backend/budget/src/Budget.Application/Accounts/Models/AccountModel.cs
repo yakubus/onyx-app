@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Application.Shared.Models;
 using Budget.Domain.Accounts;
 
@@ -12,7 +11,8 @@ public sealed record AccountModel : EntityBusinessModel
     public MoneyModel Balance { get; init; }
     public string Type { get; init; }
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private AccountModel(Guid id, string name, MoneyModel balance, string type, IEnumerable<IDomainEvent> domainEvents)
         : base(domainEvents)
     {

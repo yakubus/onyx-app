@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Budget.Application;
+﻿using Budget.Application;
 using Budget.Functions;
 using Budget.Infrastructure;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -15,8 +13,9 @@ public sealed class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
     {
-        builder.InjectApplication();
-        builder.InjectInfrastructure();
+        builder
+            .InjectApplication()
+            .InjectInfrastructure();
     }
 
     public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)

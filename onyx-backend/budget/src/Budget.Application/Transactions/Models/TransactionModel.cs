@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Application.Counterparties.Models;
 using Budget.Application.Shared.Models;
@@ -21,7 +20,8 @@ public sealed record TransactionModel : EntityBusinessModel
     public CounterpartyModel? Counterparty { get; init; }
     public DateTime TransactedAt { get; init; }
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     private TransactionModel(
         Guid id,
         AccountModel account,

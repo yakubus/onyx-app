@@ -8,13 +8,15 @@ using Budget.Application.Subcategories.UpdateAssignment;
 using Budget.Application.Subcategories.UpdateSubcategory;
 using Budget.Application.Subcategories.UpdateTarget;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
 namespace Budget.API.Controllers.Subcategories;
 
 [ApiController]
-[Route("/api/v1/subcategories")]
+[Authorize]
+[Route("/api/v1/{budgetId}/subcategories")]
 public sealed class SubcategoriesController : ControllerBase
 {
     private readonly ISender _sender;
@@ -28,10 +30,11 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(AddSubcategoryRequest), "application/json")]
     public async Task<IActionResult> AddSubcategory(
+        [FromRoute] Guid budgetId,
         [FromBody] AddSubcategoryRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName);
+        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -47,11 +50,12 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateSubcategoryRequest), "application/json")]
     public async Task<IActionResult> UpdateSubcategory(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateSubcategoryRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription);
+        var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -66,10 +70,11 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveSubcategory(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveSubcategoryCommand(subcategoryId);
+        var command = new RemoveSubcategoryCommand(subcategoryId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -86,11 +91,12 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateAssignmentRequest), "application/json")]
     public async Task<IActionResult> UpdateAssignment(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateAssignmentRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount);
+        var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -106,11 +112,12 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(RemoveAssignmentRequest), "application/json")]
     public async Task<IActionResult> RemoveAssignment(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         [FromBody] RemoveAssignmentRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth);
+        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -126,11 +133,12 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateTargetRequest), "application/json")]
     public async Task<IActionResult> UpdateTarget(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         [FromBody] UpdateTargetRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount);
+        var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -145,10 +153,11 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveTarget(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid subcategoryId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveTargetCommand(subcategoryId);
+        var command = new RemoveTargetCommand(subcategoryId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

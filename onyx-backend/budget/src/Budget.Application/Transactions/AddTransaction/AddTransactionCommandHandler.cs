@@ -2,6 +2,7 @@
 using Budget.Application.Abstractions.Currency;
 using Budget.Application.Transactions.Models;
 using Budget.Domain.Accounts;
+using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
@@ -100,7 +101,8 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
             request.TransactedAt,
             amount,
             convertedAmount,
-            budgetAmount);
+            budgetAmount,
+            new (request.BudgetId));
 
         var transactionCreateResult = transactionFactory.CreateTransaction();
 
@@ -151,7 +153,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         var counterpartyName = counterpartyNameCreateResult.Value;
         var isPayee = request.Amount.Amount < 0;
         var counterpartyType = isPayee ? CounterpartyType.Payee : CounterpartyType.Payer;
-        var counterpartyGetResult = await _counterpartyRepository.GetSingleAsync(
+        var counterpartyGetResult = _counterpartyRepository.GetFirst(
             c => c.Name == counterpartyName && c.Type == counterpartyType, cancellationToken);
 
         if (counterpartyGetResult.IsSuccess)
@@ -159,7 +161,7 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
             return counterpartyGetResult;
         }
 
-        var counterpartyCreateResult = Counterparty.Create(counterpartyName.Value, counterpartyType.Value);
+        var counterpartyCreateResult = Counterparty.Create(counterpartyName.Value, counterpartyType.Value, new (request.BudgetId));
 
         if (counterpartyCreateResult.IsFailure)
         {

@@ -9,11 +9,6 @@ public interface ITransactionRepository
         Expression<Func<Transaction, bool>> filterPredicate, 
         CancellationToken cancellationToken = default);
 
-    Task<Result<IEnumerable<Transaction>>> GetWhereAsync(
-        string sqlQuery,
-        KeyValuePair<string, object>? parameter,
-        CancellationToken cancellationToken);
-
     Task<Result<IEnumerable<Transaction>>> GetManyByIdAsync(
         IEnumerable<TransactionId> ids,
         CancellationToken cancellationToken = default);

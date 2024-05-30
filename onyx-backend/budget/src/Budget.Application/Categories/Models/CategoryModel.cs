@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Application.Subcategories.Models;
 using Budget.Domain.Categories;
 using Budget.Domain.Subcategories;
@@ -12,7 +11,8 @@ public sealed record CategoryModel : EntityBusinessModel
     public string Name { get; init; }
     public IEnumerable<SubcategoryModel> Subcategories { get; init; }
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     public CategoryModel(
         Guid id,
         string name,

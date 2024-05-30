@@ -27,7 +27,7 @@ internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserC
             return emailCreateResult.Error;
         }
 
-        var isEmailUnique = await _userRepository.GetByEmailAsync(emailCreateResult.Value, cancellationToken) is
+        var isEmailUnique = _userRepository.GetByEmailAsync(emailCreateResult.Value, cancellationToken) is
         {
             IsFailure: true
         };

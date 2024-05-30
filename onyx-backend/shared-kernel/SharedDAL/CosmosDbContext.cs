@@ -6,6 +6,7 @@ using SharedDAL.DataSettings;
 
 namespace SharedDAL;
 
+//TODO implement idisposable
 public sealed class CosmosDbContext
 {
     private readonly Database _database;
@@ -37,6 +38,8 @@ public sealed class CosmosDbContext
                                       ?? throw _connectionException;
     private Container Users => _database.GetContainer(nameof(Users)) 
                                       ?? throw _connectionException;
+    private Container Budgets => _database.GetContainer(nameof(Budgets)) 
+                                      ?? throw _connectionException;
 
     internal Container Set<T>() where T : IEntity
     {
@@ -48,6 +51,7 @@ public sealed class CosmosDbContext
             { Name: "Account" } => Accounts,
             { Name: "Counterparty" } => Counterparties,
             { Name: "User" } => Users,
+            { Name: "Budget" } => Budgets,
             _ => throw new ArgumentException("Unknown entity type")
         };
     }

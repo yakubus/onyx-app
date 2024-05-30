@@ -1,11 +1,12 @@
-﻿using Abstractions.DomainBaseTypes;
+﻿using Budget.Domain.Budgets;
+using Budget.Domain.Shared.Abstractions;
 using Models.DataTypes;
 using Models.Responses;
 using Transaction = Budget.Domain.Transactions.Transaction;
 
 namespace Budget.Domain.Subcategories;
 
-public sealed class Subcategory : Entity<SubcategoryId>
+public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
 {
     public SubcategoryName Name { get; private set; }
     public SubcategoryDescription? Description { get; private set; }
@@ -20,7 +21,8 @@ public sealed class Subcategory : Entity<SubcategoryId>
         SubcategoryDescription? description,
         List<Assignment> assignments,
         Target? target,
-        SubcategoryId? id = null) : base(id ?? new SubcategoryId())
+        BudgetId budgetId,
+        SubcategoryId? id = null) : base(budgetId, id ?? new SubcategoryId())
     {
         Name = name;
         Description = description;
@@ -28,7 +30,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
         Target = target;
     }
 
-    internal static Result<Subcategory> Create(string name)
+    internal static Result<Subcategory> Create(string name, BudgetId budgetId)
     {
         var subcategoryNameCreateResult = SubcategoryName.Create(name);
 
@@ -39,7 +41,7 @@ public sealed class Subcategory : Entity<SubcategoryId>
 
         var subcategoryName = subcategoryNameCreateResult.Value;
 
-        return new Subcategory(subcategoryName, null, new List<Assignment>(), null);
+        return new Subcategory(subcategoryName, null, new List<Assignment>(), null, budgetId);
     }
 
     internal Result ChangeName(string name)

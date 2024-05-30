@@ -1,5 +1,4 @@
 ﻿using Budget.Application.Shared.Models;
-using System;
 
 namespace Budget.Functions.Functions.Transactions.Requests;
 
