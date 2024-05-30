@@ -1,8 +1,8 @@
 import axios from "axios";
 import { queryOptions } from "@tanstack/react-query";
 
-import { CategoryResultSchema } from "./validation/api";
-import { getErrorMessage } from "./utils";
+import { CategoryResultSchema } from "../validation/category";
+import { getErrorMessage } from "../utils";
 
 export const getCategories = async () => {
   try {
@@ -28,3 +28,17 @@ export const getCategoriesQueryOptions = queryOptions({
   queryKey: ["categories"],
   queryFn: getCategories,
 });
+
+export const createCategory = (name: string) =>
+  axios.post("/api/categories", { name });
+
+export const deleteCategory = (id: string) =>
+  axios.delete(`/api/categories/${id}`);
+
+export const editCategoryName = ({
+  id,
+  newName,
+}: {
+  id: string;
+  newName: string;
+}) => axios.put(`/api/categories/${id}`, { newName });

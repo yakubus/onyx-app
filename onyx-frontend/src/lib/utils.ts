@@ -20,3 +20,6 @@ export const getErrorMessage = (error: unknown): string => {
 
   return message;
 };
+
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);

@@ -26,8 +26,8 @@ function Layout() {
   return (
     <div className="flex h-screen flex-col bg-background">
       <div className="mx-auto w-full max-w-screen-2xl flex-grow border-r shadow-xl shadow-primaryDark">
-        <div className="flex h-full">
-          <aside className="h-full w-1/5 bg-primaryDark py-10 text-primaryDark-foreground">
+        <div className="grid h-full w-full grid-cols-5">
+          <aside className="col-span-1 h-full bg-primaryDark py-10 text-primaryDark-foreground">
             <Link to="/budget">
               <Logo />
             </Link>
@@ -48,14 +48,14 @@ function Layout() {
               </div>
             </div>
           </aside>
-          <div className="flex flex-grow flex-col">
-            <nav className="px-16 py-8 text-end">
+          <div className="fixed left-0 top-0 w-full">
+            <nav className="mx-auto max-w-screen-2xl px-28 py-10 text-end">
               <UserDropdown />
             </nav>
-            <main className="flex-grow px-12 py-8">
-              <Outlet />
-            </main>
           </div>
+          <main className="col-span-4 h-screen px-8 pb-4 pt-28">
+            <Outlet />
+          </main>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@ function Layout() {
 const MobileLayout = () => {
   return (
     <>
-      <nav className="fixed flex w-full items-center justify-between bg-primaryDark px-4 py-2 text-primaryDark-foreground md:px-8">
+      <nav className="fixed z-50 flex w-full items-center justify-between bg-primaryDark px-4 py-2 text-primaryDark-foreground md:px-8">
         <MobileNavigation navLinks={navLinks} />
         <Link to="/budget">
           <Logo />
