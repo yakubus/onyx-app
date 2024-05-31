@@ -37,6 +37,7 @@ const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
     clearErrors,
     formState: { errors },
     reset,
+    setError,
   } = form;
   const queryClient = useQueryClient();
 
@@ -46,6 +47,12 @@ const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
     onSettled: async () => {
       return await queryClient.invalidateQueries({
         queryKey: getCategoriesQueryOptions.queryKey,
+      });
+    },
+    onError: () => {
+      setError("name", {
+        type: "network",
+        message: "Something went wrong. Please try again.",
       });
     },
     onSuccess: () => {

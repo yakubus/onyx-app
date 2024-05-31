@@ -43,6 +43,7 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
     control,
     clearErrors,
     formState: { errors },
+    setError,
   } = form;
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -56,8 +57,16 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
   const { mutate, isPending, variables } = useMutation({
     mutationKey: ["editCategory", id],
     mutationFn: editCategoryName,
-    onSettled: async () => {
-      setIsEdit(false);
+    onError: () => {
+      setError("name", {
+        type: "network",
+        message: "Error occured. Try again.",
+      });
+    },
+    onSettled: async (newName, error) => {
+      if (!error) {
+        setIsEdit(false);
+      }
       return await queryClient.invalidateQueries({
         queryKey: getCategoriesQueryOptions.queryKey,
       });

@@ -33,13 +33,16 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
   const queryClient = useQueryClient();
   const { id } = category;
 
-  const { mutate } = useMutation({
+  const { mutate, isError } = useMutation({
     mutationKey: ["deleteCategory", id],
     mutationFn: deleteCategory,
     onSettled: async () => {
       return await queryClient.invalidateQueries({
         queryKey: getCategoriesQueryOptions.queryKey,
       });
+    },
+    onError: () => {
+      setIsDeleteDialogOpen(true);
     },
   });
 
@@ -79,7 +82,12 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
               category and remove all your assigments.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="items-center">
+            {isError && (
+              <p className="text-end text-sm text-destructive">
+                Something went wrong. Please try again.
+              </p>
+            )}
             <Button type="submit" variant="destructive" onClick={onDelete}>
               Delete
             </Button>
