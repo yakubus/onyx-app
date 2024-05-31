@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Abstractions.DomainBaseTypes;
 using Microsoft.Azure.Cosmos;
 using Models.Responses;
-using MongoDB.Bson.Serialization.Serializers;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 namespace SharedDAL;

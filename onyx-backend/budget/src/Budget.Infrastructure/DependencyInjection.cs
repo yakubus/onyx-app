@@ -30,7 +30,6 @@ public static class DependencyInjection
         return builder;
     }
 
-    //TODO Temp
     public static void InjectInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddPersistence();
@@ -56,7 +55,7 @@ public static class DependencyInjection
         services.AddHttpClient<NbpClient>(client =>
         {
             client.BaseAddress = new Uri(configuration["CurrencyConverterBaseUrl"] 
-                                         ?? throw new MissingFieldException("Currency converter base url is missing"));
+                                         ?? throw new MissingFieldException("BalanceCurrency converter base url is missing"));
         });
 
         services.AddTransient<ICurrencyConverter, CurrencyConverter>();

@@ -1,5 +1,4 @@
-﻿using Abstractions.Messaging;
-using Budget.Application.Abstractions.Messaging;
+﻿using Budget.Application.Abstractions.Messaging;
 using Budget.Application.Subcategories.Models;
 
 namespace Budget.Application.Subcategories.AddSubcategory;

@@ -9,7 +9,7 @@ public sealed class UserContext : IUserContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private const string userIdClaimName = "Id";
-    private const string userCurrencyClaimName = "Currency";
+    private const string userCurrencyClaimName = "BalanceCurrency";
     private readonly Error _userIdClaimNotFound = new(
         "UserContext.UserIdNotFound",
         "Cannot retrieve user ID");

@@ -2,7 +2,6 @@
 using Budget.Application.Abstractions.Currency;
 using Budget.Application.Transactions.Models;
 using Budget.Domain.Accounts;
-using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;

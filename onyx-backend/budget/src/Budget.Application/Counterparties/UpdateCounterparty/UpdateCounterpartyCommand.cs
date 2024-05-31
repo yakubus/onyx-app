@@ -1,5 +1,4 @@
-﻿using Abstractions.Messaging;
-using Budget.Application.Abstractions.Messaging;
+﻿using Budget.Application.Abstractions.Messaging;
 using Budget.Application.Counterparties.Models;
 
 namespace Budget.Application.Counterparties.UpdateCounterparty;

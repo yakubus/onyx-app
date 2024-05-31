@@ -1,5 +1,4 @@
 ﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Users;
 using Models.DataTypes;
 using Models.Responses;
 
