@@ -6,7 +6,7 @@ using BindingFlags = System.Reflection.BindingFlags;
 
 namespace Budget.Infrastructure.Data.DataModels.Accounts;
 
-internal sealed class AccountDataModel : IDataModel
+internal sealed class AccountDataModel : IDataModel<Account>
 {
     public Guid Id { get; set; }
     public Guid BudgetId { get; set; }

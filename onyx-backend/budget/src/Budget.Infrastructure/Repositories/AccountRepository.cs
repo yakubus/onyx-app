@@ -15,16 +15,6 @@ internal sealed class AccountRepository : BaseBudgetRepository<Account, AccountI
 
     public async Task<Result<Account>> GetByNameAsync(AccountName accountName, CancellationToken cancellationToken)
     {
-        var entities = await Task.Run(
-            () => Container.GetItemLinqQueryable<Account>(true)
-                .Where(a => a.Name == accountName)
-                .AsEnumerable(),
-            cancellationToken);
-
-        var entity = entities.SingleOrDefault();
-
-        return entity is null ?
-            Result.Failure<Account>(DataAccessErrors<Category>.NotFound) :
-            Result.Success(entity);
+        return GetFirst(a => a.Name == accountName, cancellationToken);
     }
 }

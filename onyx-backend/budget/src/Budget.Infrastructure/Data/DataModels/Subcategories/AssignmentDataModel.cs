@@ -5,7 +5,7 @@ using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Subcategories;
 
-internal sealed class AssignmentDataModel : IDataModel
+internal sealed class AssignmentDataModel : IDataModel<Assignment>
 {
     public int MonthMonth { get; set; }
     public int MonthYear { get; set; }

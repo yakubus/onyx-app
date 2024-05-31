@@ -7,7 +7,7 @@ using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Categories;
 
-internal sealed class CategoryDataModel : IDataModel
+internal sealed class CategoryDataModel : IDataModel<Category>
 {
     public Guid Id { get; set; }
     public Guid BudgetId { get; set; }

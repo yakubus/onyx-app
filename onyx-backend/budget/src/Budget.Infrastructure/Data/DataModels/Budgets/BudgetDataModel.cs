@@ -5,7 +5,7 @@ using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Budgets;
 
-internal sealed class BudgetDataModel : IDataModel
+internal sealed class BudgetDataModel : IDataModel<Domain.Budgets.Budget>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

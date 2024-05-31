@@ -5,7 +5,7 @@ using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Counterparties;
 
-internal sealed class CounterpartyDataModel : IDataModel
+internal sealed class CounterpartyDataModel : IDataModel<Counterparty>
 {
     public Guid Id { get; set; }
     public Guid BudgetId { get; set; }

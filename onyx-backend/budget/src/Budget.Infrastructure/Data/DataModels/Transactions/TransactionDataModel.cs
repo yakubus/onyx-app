@@ -9,7 +9,7 @@ using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Transactions;
 
-internal sealed class TransactionDataModel : IDataModel
+internal sealed class TransactionDataModel : IDataModel<Transaction>
 {
     public Guid Id { get; set; }
     public Guid BudgetId { get; set; }
