@@ -6,7 +6,6 @@ using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
-using Budget.Domain.Users;
 using Budget.Infrastructure.Contexts;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
@@ -46,7 +45,6 @@ public static class DependencyInjection
         services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
         services.AddScoped<ICounterpartyRepository, CounterpartyRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBudgetRepository, BudgetRepository>();
     }
 

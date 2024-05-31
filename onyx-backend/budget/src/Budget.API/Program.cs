@@ -1,4 +1,3 @@
-using Budget.API.Authentication;
 using Budget.Application;
 using Budget.Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -48,7 +47,6 @@ public class Program
             });
         builder.Services.InjectApplication();
         builder.Services.InjectInfrastructure(builder.Configuration);
-        builder.Services.InjectAuthentication();
         builder.Services.AddControllers();
 
         builder.Services.AddCors(options =>
