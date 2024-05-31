@@ -5,6 +5,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import BudgetAssigmentCard from "@/components/dashboard/budget/BudgetAssigmentCard";
 import CategoriesCard from "@/components/dashboard/budget/CategoriesCard";
 import SubcategoriesCard from "@/components/dashboard/budget/SubcategoriesCard";
+import RouteLoadingError from "@/components/RouteLoadingError";
+import BudgetLoadingSkeleton from "@/components/dashboard/BudgetLoadingSkeleton";
 
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 
@@ -12,7 +14,8 @@ export const Route = createFileRoute("/_dashboard-layout/budget")({
   component: Budget,
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(getCategoriesQueryOptions),
-  pendingComponent: () => <div>loading...</div>,
+  pendingComponent: () => <BudgetLoadingSkeleton />,
+  errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
 });
 
 function Budget() {
