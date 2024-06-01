@@ -8,7 +8,7 @@ export default {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-  ],
+  ],  
   prefix: "",
   theme: {
     container: {
@@ -16,6 +16,7 @@ export default {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
+        'xs': "639px"
       },
     },
     extend: {
@@ -77,7 +78,32 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      height: {   
+        "900px": "900px",
+        "1320px": "1320px" ,
+        "30px": "30px",
+        "864px": "864px",
+        "680px": "680px",
+        "600px": "600px",
+        "518px": "518px" 
+      },
+      width: {   
+        "1440px": "1440px",   
+        "1196px": "1196px",
+        "498px": "498px",
+        "990px": "990px",
+        "850px": "850px",
+        "600px": "600px",
+        "386px": "386px"
+      },
+      maxHeight: {
+        "700": "700px",
+      },
+      margin: {
+        "122px": "122px"
+      }
     },
   },
   plugins: [tailwindcssAnimate],
+  
 };

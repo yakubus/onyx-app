@@ -65,7 +65,7 @@ function Layout() {
 const MobileLayout = () => {
   return (
     <>
-      <nav className="fixed flex w-full items-center justify-between bg-primaryDark px-4 py-2 text-primaryDark-foreground md:px-8">
+      <nav className="fixed h-80 flex w-full items-center justify-between bg-primaryDark px-4 py-2 text-primaryDark-foreground md:px-8">
         <MobileNavigation navLinks={navLinks} />
         <Link to="/budget">
           <Logo />
