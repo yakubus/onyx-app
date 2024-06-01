@@ -1,11 +1,11 @@
-import { Button } from "../ui/button";
-import HeroImageBackground from "../../assets/images/hero/hero-bg.png";
-import HeroImage from "../../assets/images/hero/hero-img.svg";
+import { Button } from "@/components/ui/button";
+import HeroImageBackground from "@/assets/images/hero/hero-bg.png";
+import HeroImage from "@//assets/images/hero/hero-img.svg";
 
 const Hero = () => {
     return (
-        <div className="container max-w-full lg:max-w-1440px p-0 m-0 ml-0 mx-auto lg:ml-122px my-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="container max-w-full lg:max-w-1440px p-0 m-0 ml-0 mx-auto lg:ml-122px mt-28 mb-10">
+        <div className="grid grid-cols-1 max-h-screen lg:grid-cols-2">
             <div className="flex justify-center flex-col lg:max-w-600px max-w-full px-10 md:px-30 lg:px-0">
                 <h1 className="font-bold leading-snug text-6xl w-full lg:w-498px text-foreground text-center lg:text-left">The only budget planner you'll ever need.</h1>
                 <p className="mt-10 w-auto lg:w-386px text-center  text-foreground lg:text-left">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae perferendis labore quibusdam mollitia quaerat maiores, iste reiciendis laudantium laboriosam eveniet!</p>
