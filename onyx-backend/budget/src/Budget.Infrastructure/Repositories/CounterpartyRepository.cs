@@ -6,7 +6,7 @@ namespace Budget.Infrastructure.Repositories;
 
 internal sealed class CounterpartyRepository : BaseBudgetRepository<Counterparty, CounterpartyId>, ICounterpartyRepository
 {
-    public CounterpartyRepository(CosmosDbContext context, IBudgetContext budgetContext) : base(context, budgetContext)
+    public CounterpartyRepository(DbContext context, IBudgetContext budgetContext) : base(context, budgetContext)
     {
     }
 }

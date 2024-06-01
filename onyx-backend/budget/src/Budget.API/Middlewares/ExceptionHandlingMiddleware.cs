@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Exceptions;
 using Models.Responses;
 
-namespace Budget.API;
+namespace Budget.API.Middlewares;
 
 public sealed class ExceptionMiddleware
 {

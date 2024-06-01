@@ -6,7 +6,7 @@ namespace Identity.Infrastructure.Repositories;
 
 internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
 {
-    public UserRepository(CosmosDbContext context) : base(context)
+    public UserRepository(DbContext context) : base(context)
     {
     }
 

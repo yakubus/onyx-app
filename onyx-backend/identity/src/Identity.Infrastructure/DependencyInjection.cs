@@ -5,27 +5,17 @@ using Identity.Infrastructure.Email;
 using Identity.Infrastructure.Messanger;
 using Identity.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedDAL;
-using SharedDAL.DataSettings;
 
 namespace Identity.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static void InjectInfrastructure(this IFunctionsHostBuilder builder)
-    {
-        builder.Services.AddPersistence(builder.GetContext().Configuration);
-        builder.Services.AddMessanger(builder.GetContext().Configuration);
-        builder.Services.AddAuthentication(builder.GetContext().Configuration);
-    }
-
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.ConfigureOptions<CosmosDbOptionsSetup>();
-        services.AddScoped<CosmosDbContext>();
+        services.AddScoped<DbContext>();
         services.AddScoped<IUserRepository, UserRepository>();
     }
 
@@ -44,8 +34,6 @@ public static class DependencyInjection
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
-
-        services.AddFunctionAuthorization(options => { });
 
         services.AddScoped<IJwtService, JwtService>();
     }

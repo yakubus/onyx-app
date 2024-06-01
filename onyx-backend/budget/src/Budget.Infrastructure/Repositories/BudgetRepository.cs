@@ -9,10 +9,10 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 {
     private readonly IBudgetContext _budgetContext;
 
-    public BudgetRepository(CosmosDbContext context, IBudgetContext budgetContext) : base(context)
+    public BudgetRepository(DbContext context, IBudgetContext budgetContext) : base(context)
     {
-            _budgetContext = budgetContext;
-        }
+        _budgetContext = budgetContext;
+    }
 
     public Result<Domain.Budgets.Budget> GetByName(
         string name) =>
@@ -20,17 +20,17 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 
     public async Task<Result<Domain.Budgets.Budget>> GetCurrentBudget(CancellationToken cancellationToken)
     {
-            var budgetIdGetResult = _budgetContext.GetBudgetId();
+        var budgetIdGetResult = _budgetContext.GetBudgetId();
 
-            if (budgetIdGetResult.IsFailure)
-            {
-                return budgetIdGetResult.Error;
-            }
-
-            var budgetId = new BudgetId(budgetIdGetResult.Value);
-
-            return await GetByIdAsync(budgetId, cancellationToken);
+        if (budgetIdGetResult.IsFailure)
+        {
+            return budgetIdGetResult.Error;
         }
+
+        var budgetId = new BudgetId(budgetIdGetResult.Value);
+
+        return await GetByIdAsync(budgetId, cancellationToken);
+    }
 
     public async Task<Result<IEnumerable<Domain.Budgets.Budget>>> GetBudgetsForUserAsync(string userId, CancellationToken cancellationToken)
     {

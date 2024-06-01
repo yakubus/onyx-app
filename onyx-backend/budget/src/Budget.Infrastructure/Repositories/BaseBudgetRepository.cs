@@ -13,7 +13,7 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 {
     private readonly IBudgetContext _budgetContext;
 
-    protected BaseBudgetRepository(CosmosDbContext context, IBudgetContext budgetContext) : base(context)
+    protected BaseBudgetRepository(DbContext context, IBudgetContext budgetContext) : base(context)
     {
         _budgetContext = budgetContext;
     }
@@ -53,9 +53,10 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        return Result.Create(await Task.Run(
-            () => Container.GetItemLinqQueryable<TEntity>(true).Where(e => e.BudgetId == budgetId).AsEnumerable(),
-            cancellationToken));
+        //return Result.Create(await Task.Run(
+        //    () => Table.GetItemLinqQueryable<TEntity>(true).Where(e => e.BudgetId == budgetId).AsEnumerable(),
+        //    cancellationToken));
+        return null;
     }
 
     public override Result<IEnumerable<TEntity>> GetWhere(Expression<Func<TEntity, bool>> filterPredicate, CancellationToken cancellationToken = default)
