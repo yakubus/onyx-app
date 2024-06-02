@@ -78,7 +78,7 @@ public sealed record Target : ValueObject
             return Result.Failure(SubcategoryErrors.TargetDateHasPassed);
         }
 
-        CollectedAmount += transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        CollectedAmount += transaction.BudgetAmount with { Amount = Math.Abs(transaction.BudgetAmount.Amount) };
 
         return Result.Success();
     }
@@ -106,7 +106,7 @@ public sealed record Target : ValueObject
             return Result.Failure(SubcategoryErrors.TargetStartedAfterTransactionDate);
         }
 
-        CollectedAmount -= transaction.Amount with { Amount = Math.Abs(transaction.Amount.Amount) };
+        CollectedAmount -= transaction.BudgetAmount with { Amount = Math.Abs(transaction.BudgetAmount.Amount) };
 
         return Result.Success();
     }

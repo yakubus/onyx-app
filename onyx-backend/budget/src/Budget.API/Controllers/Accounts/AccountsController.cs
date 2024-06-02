@@ -5,13 +5,15 @@ using Budget.Application.Accounts.Models;
 using Budget.Application.Accounts.RemoveAccount;
 using Budget.Application.Accounts.UpdateAccount;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 
 namespace Budget.API.Controllers.Accounts;
 
 [ApiController]
-[Route("/api/v1/accounts")]
+[Authorize]
+[Route("/api/v1/{budgetId}/accounts")]
 public sealed class AccountsController : ControllerBase
 {
     private readonly ISender _sender;
@@ -23,9 +25,9 @@ public sealed class AccountsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetAccounts(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAccounts([FromRoute] Guid budgetId, CancellationToken cancellationToken)
     {
-        var query = new GetAccountsQuery();
+        var query = new GetAccountsQuery(budgetId);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -41,10 +43,11 @@ public sealed class AccountsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(AddAccountRequest), "application/json")]
     public async Task<IActionResult> AddAccount(
+        [FromRoute] Guid budgetId,
         [FromBody] AddAccountRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType);
+        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -60,11 +63,12 @@ public sealed class AccountsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     [Consumes(typeof(UpdateAccountRequest), "application/json")]
     public async Task<IActionResult> UpdateAccount(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid accountId,
         [FromBody] UpdateAccountRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance);
+        var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -78,12 +82,12 @@ public sealed class AccountsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [EndpointDescription("Deletes account and all related transactions")]
     public async Task<IActionResult> RemoveAccount(
+        [FromRoute] Guid budgetId,
         [FromRoute] Guid accountId,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveAccountCommand(accountId);
+        var command = new RemoveAccountCommand(accountId, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

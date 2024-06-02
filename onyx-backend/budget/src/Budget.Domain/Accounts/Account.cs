@@ -1,28 +1,28 @@
-﻿using Abstractions.DomainBaseTypes;
+﻿using Budget.Domain.Budgets;
+using Budget.Domain.Shared.Abstractions;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Domain.Accounts;
 
-public sealed class Account : Entity<AccountId>
+public sealed class Account : BudgetOwnedEntity<AccountId>
 {
-
     public AccountName Name { get; private set; }
     public Money Balance { get; private set; }
     public AccountType Type { get; init; }
 
     [Newtonsoft.Json.JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    private Account(AccountName name, Money balance, AccountType type, AccountId? id = null) 
-        : base(id ?? new AccountId())
+    private Account(AccountName name, Money balance, AccountType type, BudgetId budgetId, AccountId? id = null) 
+        : base(budgetId, id ?? new AccountId())
     {
         Name = name;
         Balance = balance;
         Type = type;
     }
 
-    public static Result<Account> Create(string name, Money balance, string type)
+    public static Result<Account> Create(string name, Money balance, string type, BudgetId budgetId)
     {
         var accountNameCreateResult = AccountName.Create(name);
 
@@ -42,7 +42,7 @@ public sealed class Account : Entity<AccountId>
 
         var accountType = accountTypeCreateResult.Value;
 
-        return new Account(accountName, balance, accountType);
+        return new Account(accountName, balance, accountType, budgetId);
     }
 
     public Result ChangeName(string name)
@@ -79,7 +79,7 @@ public sealed class Account : Entity<AccountId>
         return Result.Success();
     }
 
-    public Result RemoveTransaction(Transaction transaction)
+    internal Result RemoveTransaction(Transaction transaction)
     {
         if (transaction.Amount.Currency != Balance.Currency)
         {

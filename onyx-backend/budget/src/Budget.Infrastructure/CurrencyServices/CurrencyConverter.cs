@@ -1,4 +1,4 @@
-﻿using Budget.Application.Abstractions.Services;
+﻿using Budget.Application.Abstractions.Currency;
 using Models.DataTypes;
 using Models.Responses;
 

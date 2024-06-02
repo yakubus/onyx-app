@@ -1,7 +1,5 @@
 ﻿namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record UpdateSubcategoryRequest
+public sealed record UpdateSubcategoryRequest(string? NewName, string? NewDescription)
 {
-    public string NewName { get; set; }
-    public string NewDescription { get; set; }
 }

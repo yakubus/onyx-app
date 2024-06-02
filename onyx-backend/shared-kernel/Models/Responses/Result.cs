@@ -20,9 +20,6 @@ public class Result
         }
     }
 
-    protected Result()
-    { }
-
     public bool IsSuccess { get; }
 
     public bool IsFailure => !IsSuccess;
@@ -39,8 +36,17 @@ public class Result
 
     public static Result<TValue> Create<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
+    public static Result<TValue> Create<TValue>(TValue? value, Error callbackError) =>
+        value is not null ? Success(value) : Failure<TValue>(callbackError);
 
     public static Result<TValue?> CreateNullable<TValue>(TValue? value) => Success(value);
+
+    public static implicit operator Result(Error error) => Failure(error);
+
+    public static Result Aggregate(IEnumerable<Result> results)
+    {
+        return results.FirstOrDefault(x => x.IsFailure) ?? Success();
+    }
 }
 
 public class Result<TValue> : Result
@@ -49,7 +55,7 @@ public class Result<TValue> : Result
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
-    protected internal Result(TValue? value, bool isSuccess, Error error)
+    public Result(TValue? value, bool isSuccess, Error error)
         : base(isSuccess, error)
     {
         _value = value;
@@ -60,5 +66,7 @@ public class Result<TValue> : Result
         ? _value! : default;
 
     public static implicit operator Result<TValue>(TValue? value) => Create(value);
+
+    public static implicit operator Result<TValue>(Error error) => Failure<TValue>(error);
 
 }

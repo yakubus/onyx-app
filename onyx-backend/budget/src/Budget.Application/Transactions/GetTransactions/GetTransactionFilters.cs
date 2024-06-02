@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Budget.Domain.Transactions;
+#pragma warning disable CS8846 
 
 namespace Budget.Application.Transactions.GetTransactions;
 

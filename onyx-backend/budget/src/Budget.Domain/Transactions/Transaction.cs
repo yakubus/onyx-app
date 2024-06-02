@@ -1,17 +1,24 @@
-﻿using Abstractions.DomainBaseTypes;
-using Budget.Domain.Accounts;
+﻿using Budget.Domain.Accounts;
+using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
+using Budget.Domain.Shared.Abstractions;
+using Budget.Domain.Shared.Constants;
+using Budget.Domain.Shared.Errors;
 using Budget.Domain.Subcategories;
+using Converters.DateTime;
 using Models.DataTypes;
 using Models.Responses;
+using Newtonsoft.Json;
 
 namespace Budget.Domain.Transactions;
 
-public sealed class Transaction : Entity<TransactionId>
+public sealed class Transaction : BudgetOwnedEntity<TransactionId>
 {
     public AccountId AccountId { get; init; }
     public Money Amount { get; init; }
-    public Money? OriginalAmount { get; init; }
+    public Money BudgetAmount { get; init; }
+    public Money OriginalAmount { get; init; }
+    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime TransactedAt { get; init; }
     public SubcategoryId? SubcategoryId { get; private set; }
     public CounterpartyId? CounterpartyId { get; private set; }
@@ -25,14 +32,17 @@ public sealed class Transaction : Entity<TransactionId>
         DateTime transactedAt,
         SubcategoryId? subcategoryId,
         CounterpartyId? counterpartyId,
-        TransactionId? id) : base(id ?? new TransactionId())
+        Money? budgetAmount,
+        BudgetId budgetId,
+        TransactionId? id = null) : base(budgetId, id ?? new TransactionId())
     {
         AccountId = accountId;
         Amount = amount;
-        OriginalAmount = originalAmount;
+        OriginalAmount = originalAmount ?? amount;
         TransactedAt = transactedAt;
         SubcategoryId = subcategoryId;
         CounterpartyId = counterpartyId;
+        BudgetAmount = budgetAmount ?? amount;
     }
 
     private Transaction(
@@ -42,23 +52,28 @@ public sealed class Transaction : Entity<TransactionId>
         Money? originalAmount,
         DateTime transactedAt,
         Counterparty counterparty,
+        Money? budgetAmount,
+        BudgetId budgetId,
         TransactionId? id = null) 
-        : base(id ?? new TransactionId())
+        : base(budgetId, id ?? new TransactionId())
     {
         AccountId = account.Id;
         Amount = amount;
-        OriginalAmount = originalAmount;
+        OriginalAmount = originalAmount ?? amount;
         TransactedAt = transactedAt;
+        BudgetAmount = budgetAmount ?? amount;
         SubcategoryId = subcategory?.Id;
         CounterpartyId = counterparty.Id;
     }
 
-    public static Result<Transaction> CreatePrincipalOutflow(
+    internal static Result<Transaction> CreatePrincipalOutflow(
         Account account,
         Subcategory subcategory,
         Money amount,
         DateTime transactedAt,
-        Counterparty payee)
+        Counterparty payee,
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -70,7 +85,20 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, subcategory, amount, null, transactedAt, payee);
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
+        var transaction = new Transaction(
+            account,
+            subcategory,
+            amount,
+            null,
+            transactedAt,
+            payee,
+            budgetAmount,
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -89,13 +117,15 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreateForeignOutflow(
+    internal static Result<Transaction> CreateForeignOutflow(
         Account account,
         Subcategory subcategory,
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
-        Counterparty payee)
+        Counterparty payee,
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payee.Type != CounterpartyType.Payee)
         {
@@ -110,6 +140,11 @@ public sealed class Transaction : Entity<TransactionId>
         if (transactedAt.ToUniversalTime() > DateTime.UtcNow)
         {
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
+        }
+
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
         }
 
         var transaction = new Transaction(
@@ -118,7 +153,9 @@ public sealed class Transaction : Entity<TransactionId>
             convertedAmount,
             originalAmount,
             transactedAt,
-            payee);
+            payee,
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -137,11 +174,13 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreatePrincipalInflow(
+    internal static Result<Transaction> CreatePrincipalInflow(
         Account account,
         Money amount,
         DateTime transactedAt,
-        Counterparty payer)
+        Counterparty payer,
+        Money? budgetAmount,
+        BudgetId budgetId)
     {
         if (payer.Type != CounterpartyType.Payer)
         {
@@ -153,7 +192,20 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, null, amount, null, transactedAt, payer);
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
+        var transaction = new Transaction(
+            account,
+            null,
+            amount,
+            null,
+            transactedAt,
+            payer,
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -165,12 +217,14 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public static Result<Transaction> CreateForeignInflow(
+    internal static Result<Transaction> CreateForeignInflow(
         Account account,
         Money convertedAmount,
         Money originalAmount,
         DateTime transactedAt,
-        Counterparty payer)
+        Counterparty payer,
+        Money? budgetAmount, 
+        BudgetId budgetId)
     {
         if (payer.Type != CounterpartyType.Payer)
         {
@@ -187,7 +241,20 @@ public sealed class Transaction : Entity<TransactionId>
             return Result.Failure<Transaction>(TransactionErrors.TransactionCannotBeInFuture);
         }
 
-        var transaction = new Transaction(account, null, convertedAmount, originalAmount, transactedAt, payer);
+        if (transactedAt.ToUniversalTime() < DateTimeConstants.MinimumValidPastDateTime)
+        {
+            return Result.Failure<Transaction>(DateTimeErrors.InvalidDateTime);
+        }
+
+        var transaction = new Transaction(
+            account,
+            null,
+            convertedAmount,
+            originalAmount,
+            transactedAt,
+            payer,
+            budgetAmount, 
+            budgetId);
 
         var accountTransactResult = account.Transact(transaction);
 
@@ -199,7 +266,17 @@ public sealed class Transaction : Entity<TransactionId>
         return transaction;
     }
 
-    public void RemoveCounterparty() => CounterpartyId = null;
+    public Result RemoveCounterparty()
+    {
+        CounterpartyId = null;
 
-    public void RemoveSubcategory() => SubcategoryId = null;
+        return Result.Success();
+    }
+
+    public Result RemoveSubcategory()
+    {
+        SubcategoryId = null;
+
+        return Result.Success();
+    }
 }

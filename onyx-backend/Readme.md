@@ -17,7 +17,12 @@ To run this project, you must have these environment variables
 
 
 ## Run Locally
-Temporary solution, won't be supported after migration to Azure Functions
+<i>Temporary solution, won't be supported after migration to Azure Functions</i>
+
+### Prerequisites
+- <a href='https://www.docker.com/products/docker-desktop/'>Docker desktop installed</a>
+- <a href='https://www.docker.io/'>Registered to docker.io</a>
+- <a href=''>Azure Cosmos DB key</a>
 
 ### Using git
 
@@ -45,7 +50,7 @@ Temporary solution, won't be supported after migration to Azure Functions
 [run-scipt.ps1](https://github.com/DBrdak/onyx-app/blob/penny-migration/onyx-backend/run-script.ps1)
 
 #### Run file
-You'll need to login to docker.io and pass the Azure CosmosDB instance key which have 'budget' database created
+You'll need to login to docker.io and pass the Azure CosmosDB key
 ## Authors
 
 - [@dbrdak](https://www.github.com/dbrdak)

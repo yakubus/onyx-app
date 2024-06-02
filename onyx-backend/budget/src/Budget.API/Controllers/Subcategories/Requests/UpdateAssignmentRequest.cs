@@ -1,10 +1,7 @@
-﻿using Budget.Application.Shared.Models;
-using Models.DataTypes;
+﻿using Models.DataTypes;
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record UpdateAssignmentRequest
+public sealed record UpdateAssignmentRequest(decimal AssignedAmount, MonthDate AssignmentMonth)
 {
-    public MoneyModel AssignedAmount { get; set; }
-    public MonthDate AssignmentMonth { get; set; }
 }

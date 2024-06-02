@@ -62,7 +62,7 @@ class AccountListNotifier extends AsyncNotifier<List<Account>> {
     refresh();
   }
 
-  Future<void> updateAccount(Account account) async {
+  /*Future<void> updateAccount(Account account) async {
     ref.read(accountRepoProvider).updateAccount(account);
     refresh();
   }
@@ -78,5 +78,5 @@ class AccountListNotifier extends AsyncNotifier<List<Account>> {
 
   Future<List<String>> getAccountNames() async {
     return ref.read(accountRepoProvider).getAccountNames();
-  }
+  }*/
 }

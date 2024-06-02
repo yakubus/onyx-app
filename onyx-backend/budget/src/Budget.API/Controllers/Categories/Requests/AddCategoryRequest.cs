@@ -1,6 +1,5 @@
 ﻿namespace Budget.API.Controllers.Categories.Requests;
 
-public sealed record AddCategoryRequest
+public sealed record AddCategoryRequest(string Name)
 {
-    public string Name { get; set; }
 }

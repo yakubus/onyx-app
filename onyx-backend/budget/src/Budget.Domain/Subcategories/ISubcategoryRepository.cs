@@ -5,12 +5,8 @@ namespace Budget.Domain.Subcategories;
 
 public interface ISubcategoryRepository
 {
-    Task<Result<IEnumerable<Subcategory>>> GetWhereAsync(
+    Result<IEnumerable<Subcategory>> GetWhere(
         Expression<Func<Subcategory, bool>> filterPredicate,
-        CancellationToken cancellationToken);
-    Task<Result<IEnumerable<Subcategory>>> GetWhereAsync(
-        string sqlQuery,
-        KeyValuePair<string, object>? parameter,
         CancellationToken cancellationToken);
 
     Task<Result<IEnumerable<Subcategory>>> GetManyByIdAsync(

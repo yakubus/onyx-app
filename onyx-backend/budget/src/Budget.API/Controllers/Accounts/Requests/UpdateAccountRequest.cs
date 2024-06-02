@@ -2,8 +2,6 @@
 
 namespace Budget.API.Controllers.Accounts.Requests;
 
-public sealed record UpdateAccountRequest
+public sealed record UpdateAccountRequest(string? NewName, MoneyModel? NewBalance)
 {
-    public string? NewName { get; set; }
-    public MoneyModel? NewBalance { get; set; }
 }

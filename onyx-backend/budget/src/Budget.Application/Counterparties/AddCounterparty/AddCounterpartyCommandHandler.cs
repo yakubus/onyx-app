@@ -14,10 +14,9 @@ internal sealed class AddCounterpartyCommandHandler : ICommandHandler<AddCounter
         _counterpartyRepository = counterpartyRepository;
     }
 
-    // TODO: Add max account validation (50 per budget (increased by 25 for each budget member))
     public async Task<Result<CounterpartyModel>> Handle(AddCounterpartyCommand request, CancellationToken cancellationToken)
     {
-        var counterpartyCreateResult = Counterparty.Create(request.CounterpartyName, request.CounterpartyType);
+        var counterpartyCreateResult = Counterparty.Create(request.CounterpartyName, request.CounterpartyType, new (request.BudgetId));
 
         if (counterpartyCreateResult.IsFailure)
         {
@@ -26,7 +25,7 @@ internal sealed class AddCounterpartyCommandHandler : ICommandHandler<AddCounter
 
         var counterparty = counterpartyCreateResult.Value;
 
-        var isCounterpartyExistsResult = await _counterpartyRepository.GetSingleAsync(
+        var isCounterpartyExistsResult = _counterpartyRepository.GetFirst(
             c => c.Name == counterparty.Name && c.Type == counterparty.Type, 
             cancellationToken);
 

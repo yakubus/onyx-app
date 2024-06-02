@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:onyx_app/config.dart';
+import 'package:onyx_app/models/money.dart';
 
 import 'package:onyx_app/views/accounts/accounts.dart';
 
@@ -17,12 +18,30 @@ class AccountRepo {
   );
 
   Future<List<Account>> getAccounts() async {
-    final response = await http.get(Uri.parse('${Config.API_URL}/accounts'));
-    if (response.statusCode == 200) {
-      final List<dynamic> accounts = jsonDecode(response.body);
-      return accounts.map((account) => Account.fromMap(account)).toList();
-    } else {
-      throw Exception('Failed to load accounts');
+    try {
+      final response = await http.get(
+        Uri.parse('${Config.API_URL}/accounts'),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<Account> accounts = [];
+        for (var item in data['value']) {
+          accounts.add(Account(
+            id: item['id'],
+            name: item['name'],
+            balance: Money(
+              currency: item['balance']['currency'],
+              amount: item['balance']['amount'],
+            ),
+            type: item['type'],
+          ));
+        }
+        return accounts;
+      } else {
+        throw Exception('Nie udało się pobrać danych z API.');
+      }
+    } catch (e) {
+      throw Exception('Wystąpił błąd: $e');
     }
   }
 
@@ -46,12 +65,13 @@ class AccountRepo {
       throw Exception('Failed to create account');
     }
   }
+}
 
-  Future<void> updateAccount(Account account) async {}
+Future<void> updateAccount(Account account) async {}
 
-  Future<void> deleteAccount(Account account) async {}
+Future<void> deleteAccount(Account account) async {}
 
-  Future<List<String>> getAllBalances() async {
+  /*Future<List<String>> getAllBalances() async {
     List<String> currency = [];
     List<double> balance = [];
     List<String> result = [];
@@ -73,10 +93,10 @@ class AccountRepo {
     }
 
     return result;
-  }
+  }*/
 
-  Future<List<String>> getAccountNames() async {
+ /* Future<List<String>> getAccountNames() async {
     final accounts = await getAccounts();
     return accounts.map((account) => account.name).toList();
-  }
-}
+  }*/
+// Remove the incomplete code block

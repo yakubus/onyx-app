@@ -23,4 +23,10 @@ internal static class TransactionErrors
     internal static readonly Error TransactionCannotBeInFuture = new (
         "Transaction.Date.CannotBeInFuture",
         "Transaction date cannot be in future");
+    internal static readonly Error AssignmentAmountMustBeNegative = new (
+        "Transaction.AssignmentAmount.MustBeNegative",
+        "Assignment amount must be negative");
+    internal static readonly Error TargetAmountMustBeNegative = new (
+        "Transaction.TargetAmount.MustBeNegative",
+        "Target amount must be negative");
 }

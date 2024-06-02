@@ -1,6 +1,7 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Domain.Accounts;
+using Budget.Domain.Budgets;
 using Models.Responses;
 
 namespace Budget.Application.Accounts.AddAccount;
@@ -8,15 +9,39 @@ namespace Budget.Application.Accounts.AddAccount;
 internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountCommand, AccountModel>
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IBudgetRepository _budgetRepository;
 
-    public AddAccountCommandHandler(IAccountRepository accountRepository)
+    public AddAccountCommandHandler(IAccountRepository accountRepository, IBudgetRepository budgetRepository)
     {
         _accountRepository = accountRepository;
+        _budgetRepository = budgetRepository;
     }
 
-    // TODO: Add max account validation (5 per budget (increased by 2 for each budget member))
     public async Task<Result<AccountModel>> Handle(AddAccountCommand request, CancellationToken cancellationToken)
     {
+        var accountsGetResult = await _accountRepository.GetAllAsync(cancellationToken);
+
+        if (accountsGetResult.IsFailure)
+        {
+            return accountsGetResult.Error;
+        }
+
+        var budgetGetResult = await _budgetRepository.GetCurrentBudget(cancellationToken);
+
+        if (budgetGetResult.IsFailure)
+        {
+            return budgetGetResult.Error;
+        }
+
+        var budget = budgetGetResult.Value;
+
+        var isNewAccountForbidden = accountsGetResult.Value.Count() >= budget.MaxAccounts;
+
+        if (isNewAccountForbidden)
+        {
+            return AddAccountErrors.AccountMaxCountReached;
+        }
+
         var moneyCreateResult = request.Balance.ToDomainModel();
 
         if (moneyCreateResult.IsFailure)
@@ -26,7 +51,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
 
         var balance = moneyCreateResult.Value;
 
-        var accountCreateResult = Account.Create(request.Name, balance, request.AccountType);
+        var accountCreateResult = Account.Create(request.Name, balance, request.AccountType, new (request.BudgetId));
 
         if (accountCreateResult.IsFailure)
         {

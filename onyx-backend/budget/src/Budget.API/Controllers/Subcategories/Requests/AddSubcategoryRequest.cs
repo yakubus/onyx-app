@@ -1,7 +1,5 @@
 ﻿namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record AddSubcategoryRequest
+public sealed record AddSubcategoryRequest(Guid ParentCategoryId, string SubcategoryName)
 {
-    public Guid ParentSubcategoryId { get; set; }
-    public string SubcategoryName { get; set; }
 }
