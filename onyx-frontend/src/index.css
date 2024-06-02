@@ -5,6 +5,13 @@
 @layer base {
   @font-face {
     font-family: "Poppins";
+    font-weight: 300;
+    src:
+      url(/fonts/poppins-light-webfont.woff2) format("woff2"),
+      url(/fonts/poppins-light-webfont.woff) format("woff");
+  }
+  @font-face {
+    font-family: "Poppins";
     font-weight: 400;
     src:
       url(/fonts/poppins-regular-webfont.woff2) format("woff2"),
@@ -35,6 +42,10 @@
 
 body {
   font-family: "Poppins", sans-serif;
+}
+
+input {
+  font-family: sans-serif;
 }
 
 @layer base {
