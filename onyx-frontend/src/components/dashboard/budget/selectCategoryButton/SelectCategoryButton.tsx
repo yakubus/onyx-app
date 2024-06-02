@@ -4,8 +4,8 @@ import { useMutationState } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 
 import { type Category } from "@/lib/validation/category";
-import LeftNavigation from "./LeftNavigation";
-import MiddleSection from "./MiddleSection";
+import LeftNavigation from "@/components/dashboard/budget/selectCategoryButton/LeftNavigation";
+import MiddleSection from "@/components/dashboard/budget/selectCategoryButton/MiddleSection";
 
 import { cn } from "@/lib/utils";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";

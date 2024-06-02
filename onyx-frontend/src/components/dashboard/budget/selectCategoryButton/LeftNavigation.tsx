@@ -1,8 +1,6 @@
 import { FC, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { deleteCategory, getCategoriesQueryOptions } from "@/lib/api/category";
-
 import { Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +19,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { type SelectCategorySectionProps } from "./SelectCategoryButton";
+import { deleteCategory, getCategoriesQueryOptions } from "@/lib/api/category";
+import { type SelectCategorySectionProps } from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
 
 const LeftNavigation: FC<SelectCategorySectionProps> = ({
   category,
@@ -62,7 +61,7 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
     return (
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="outline-none">
             <Settings />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">

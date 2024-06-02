@@ -1,4 +1,3 @@
-import { ReactNode } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
 export const useClickOutside = <T extends HTMLElement = HTMLElement>(
@@ -7,7 +6,7 @@ export const useClickOutside = <T extends HTMLElement = HTMLElement>(
   const ref = useRef<T>(null);
 
   const handleMouseDown = (e: MouseEvent) => {
-    if (ref.current && !ref.current.contains(e.target as ReactNode)) {
+    if (ref.current && !ref.current.contains(e.target as Node)) {
       callback();
     }
   };

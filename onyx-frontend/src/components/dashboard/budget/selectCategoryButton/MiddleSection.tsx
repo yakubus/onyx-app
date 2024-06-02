@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-import { type SelectCategorySectionProps } from "./SelectCategoryButton";
 import {
   CreateCategorySchema,
   type CreateCategory,
@@ -24,6 +23,7 @@ import {
 } from "@/lib/api/category";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { capitalize, cn } from "@/lib/utils";
+import { type SelectCategorySectionProps } from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
 
 const MiddleSection: FC<SelectCategorySectionProps> = ({
   isEdit,
@@ -63,7 +63,7 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
         message: "Error occured. Try again.",
       });
     },
-    onSettled: async (newName, error) => {
+    onSettled: async (_newName, error) => {
       if (!error) {
         setIsEdit(false);
       }

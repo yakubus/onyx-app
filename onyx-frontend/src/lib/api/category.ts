@@ -1,8 +1,8 @@
 import axios from "axios";
 import { queryOptions } from "@tanstack/react-query";
 
-import { CategoryResultSchema } from "../validation/category";
-import { getErrorMessage } from "../utils";
+import { CategoryResultSchema } from "@/lib/validation/category";
+import { getErrorMessage } from "@/lib/utils";
 
 export const getCategories = async () => {
   try {

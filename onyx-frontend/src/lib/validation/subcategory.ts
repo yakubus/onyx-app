@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AssignmentSchema, TargetSchema } from "./base";
+import { AssignmentSchema, TargetSchema } from "@/lib/validation/base";
 
 export const SubcategorySchema = z.object({
   id: z.string().min(1),

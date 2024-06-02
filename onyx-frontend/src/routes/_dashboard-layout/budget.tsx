@@ -6,7 +6,7 @@ import BudgetAssigmentCard from "@/components/dashboard/budget/BudgetAssigmentCa
 import CategoriesCard from "@/components/dashboard/budget/CategoriesCard";
 import SubcategoriesCard from "@/components/dashboard/budget/SubcategoriesCard";
 import RouteLoadingError from "@/components/RouteLoadingError";
-import BudgetLoadingSkeleton from "@/components/dashboard/BudgetLoadingSkeleton";
+import BudgetLoadingSkeleton from "@/components/dashboard/budget/BudgetLoadingSkeleton";
 
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 

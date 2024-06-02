@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 import { AlignJustify } from "lucide-react";
-import Logo from "../Logo";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,

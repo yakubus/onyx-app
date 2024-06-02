@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { SubcategorySchema } from "./subcategory";
-import { ResultSchema } from "./base";
+import { SubcategorySchema } from "@/lib/validation/subcategory";
+import { ResultSchema } from "@/lib/validation/base";
 
 export const CategorySchema = z.object({
   id: z.string().min(1),

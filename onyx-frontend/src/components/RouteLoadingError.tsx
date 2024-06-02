@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Button } from "./ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface RouteLoadingErrorProps {
   reset: () => void;

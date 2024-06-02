@@ -3,8 +3,8 @@ import { useMutationState } from "@tanstack/react-query";
 
 import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import SelectCategoryButton from "./selectCategoryButton/SelectCategoryButton";
-import AddCategoryButton from "./CreateCategoryButton";
+import SelectCategoryButton from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
+import AddCategoryButton from "@/components/dashboard/budget/CreateCategoryButton";
 
 import { Category } from "@/lib/validation/category";
 import { capitalize } from "@/lib/utils";

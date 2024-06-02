@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { MoneySchema, ResultSchema } from "./base";
+import { MoneySchema, ResultSchema } from "@/lib/validation/base";
 
-const AccountSchema = z.object({
+export const AccountSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   balance: MoneySchema,
