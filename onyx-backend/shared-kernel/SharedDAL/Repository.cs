@@ -62,41 +62,79 @@ public abstract class Repository<TEntity, TEntityId>
     }
 
     //TODO Implement
-    public virtual Result<IEnumerable<TEntity>> GetWhere(
-        Expression<Func<TEntity, bool>> filterPredicate,
+    /// <summary>
+    /// Query the database with a custom query
+    /// </summary>
+    /// <param name="query">Must be a valid DynamoDB query<br/>
+    ///     Must contain only logical part of query (without SELECT FROM statement) </param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>List of TEntity type</returns>
+    public virtual async Task<Result<IEnumerable<TEntity>>> GetWhere(
+        string query,
         CancellationToken cancellationToken = default)
     {
         var statement = string.Join(
             $"SELECT * FROM {_table.TableName} WHERE ",
-            string.Empty);
+            query);
 
-        _context.Client.ExecuteStatementAsync(
+        var response = await _context.Client.ExecuteStatementAsync(
             new ExecuteStatementRequest
             {
+                Statement = statement
+            },
+            cancellationToken);
 
-            });
-        //var queryable = Table.GetItemLinqQueryable<TEntity>(true);
-        //var filteredQueryable = queryable.Where(filterPredicate);
-        //var result = filteredQueryable.ToList();
+        var items = response.Items;
+        var docs = items.Select(Document.FromAttributeMap);
 
-        //return result;
-        return null;
+        var records = docs.Select(
+            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
+                   throw new InvalidCastException(
+                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var enitites = records.Select(record => record.ToDomainModel());
+
+        return Result.Create(enitites);
     }
 
     //TODO Implement
-    public virtual Result<TEntity> GetFirst(
-        Expression<Func<TEntity, bool>> filterPredicate,
+    /// <summary>
+    /// Query the database with a custom query
+    /// </summary>
+    /// <param name="query">Must be a valid DynamoDB query<br/>
+    ///     Must contain only logical part of query (without SELECT FROM statement) </param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Object of TEntity type, which is first found<br/>
+    /// Failure when no record was found</returns>
+    public virtual async Task<Result<TEntity>> GetFirst(
+        string query,
         CancellationToken cancellationToken = default)
     {
-        //var entities = Table.GetItemLinqQueryable<TEntity>(true).Where(filterPredicate).AsEnumerable();
+        var statement = string.Join(
+            $"SELECT * FROM {_table.TableName} WHERE ",
+            query);
 
-        //var entity = entities.FirstOrDefault();
+        var response = await _context.Client.ExecuteStatementAsync(
+            new ExecuteStatementRequest
+            {
+                Statement = statement
+            },
+            cancellationToken);
 
-        //return entity is null ?
-        //    Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-        //    Result.Success(entity);
+        var item = response.Items.FirstOrDefault();
 
-        return null;
+        if (item is null)
+        {
+            return DataAccessErrors<TEntity>.NotFound;
+        }
+
+        var doc = Document.FromAttributeMap(item);
+
+        var record = JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
+                     throw new InvalidCastException(
+                         $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}");
+        var entity = record.ToDomainModel();
+
+        return entity;
     }
 
     public async Task<Result<IEnumerable<TEntity>>> GetManyByIdAsync(
