@@ -2,6 +2,7 @@
 using Budget.Domain.Budgets;
 using Models.Responses;
 using SharedDAL;
+using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Repositories;
 
@@ -9,7 +10,12 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 {
     private readonly IBudgetContext _budgetContext;
 
-    public BudgetRepository(DbContext context, IBudgetContext budgetContext) : base(context)
+    public BudgetRepository(
+        DbContext context,
+        IBudgetContext budgetContext,
+        IDataModelService<Domain.Budgets.Budget> dataModelService) : base(
+        context,
+        dataModelService)
     {
         _budgetContext = budgetContext;
     }

@@ -1,7 +1,11 @@
 ﻿using System.Linq.Expressions;
 using Abstractions.DomainBaseTypes;
 using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
 using Models.Responses;
+using Newtonsoft.Json;
+using SharedDAL.DataModels.Abstractions;
+using Expression = Amazon.DynamoDBv2.DocumentModel.Expression;
 
 namespace SharedDAL;
 
@@ -9,44 +13,68 @@ public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId, new()
 {
-    protected readonly Table Table;
+    private readonly Table _table;
+    private readonly DbContext _context;
+    private readonly IDataModelService<TEntity> _dataModelService;
 
-    protected Repository(DbContext context)
+    protected Repository(DbContext context, IDataModelService<TEntity> dataModelService)
     {
-        Table = context.Set<TEntity>();
+        _context = context;
+        _dataModelService = dataModelService;
+        _table = context.Set<TEntity>();
     }
 
     public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return new List<TEntity>();
+        var config = new ScanOperationConfig
+        {
+            Select = SelectValues.AllAttributes,
+            Filter = new ScanFilter(),
+            Limit = 1000
+        };
+
+        var scanner = _table.Scan(config);
+        var docs = new List<Document>();
+
+        do 
+            docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
+        while (!scanner.IsDone);
+
+        var records = docs.Select(
+            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
+                   throw new InvalidCastException(
+                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var enitites = records.Select(record => record.ToDomainModel());
+
+        return Result.Create(enitites);
     }
-        //Result.Create(await Task.Run(
-        //    () => Table.GetItemLinqQueryable<TEntity>(true).Where(_ => true).AsEnumerable(),
-        //    cancellationToken));
 
     public async Task<Result<TEntity>> GetByIdAsync(
         TEntityId id,
         CancellationToken cancellationToken = default)
     {
-        return null;
-
-        //var response = await Table.ReadItemAsync<TEntity>(
-        //    id.Value.ToString(),
-        //    new PartitionKey(id.Value.ToString()),
-        //    null,
-        //    cancellationToken);
-
-        //var entity = response.Resource;
-
-        //return entity is null ?
-        //    Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-        //    Result.Success(entity);
+        var doc = await _table.GetItemAsync(new Primitive(id.Value.ToString()), cancellationToken);
+        var record = JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson());
+        
+        return record is null ? 
+            Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
+            record.ToDomainModel();
     }
 
+    //TODO Implement
     public virtual Result<IEnumerable<TEntity>> GetWhere(
         Expression<Func<TEntity, bool>> filterPredicate,
         CancellationToken cancellationToken = default)
     {
+        var statement = string.Join(
+            $"SELECT * FROM {_table.TableName} WHERE ",
+            string.Empty);
+
+        _context.Client.ExecuteStatementAsync(
+            new ExecuteStatementRequest
+            {
+
+            });
         //var queryable = Table.GetItemLinqQueryable<TEntity>(true);
         //var filteredQueryable = queryable.Where(filterPredicate);
         //var result = filteredQueryable.ToList();
@@ -55,27 +83,7 @@ public abstract class Repository<TEntity, TEntityId>
         return null;
     }
 
-    public async Task<Result<IEnumerable<TEntity>>> GetManyByIdAsync(
-        IEnumerable<TEntityId> ids,
-        CancellationToken cancellationToken = default)
-    {
-        //var entityIds = ids.ToArray();
-        //var query = entityIds.Select(
-        //    id => (id.Value.ToString(), new PartitionKey(id.Value.ToString())))
-        //    .ToList()
-        //    .AsReadOnly();
-
-        //var response = await Table.ReadManyItemsAsync<TEntity>(
-        //    query,
-        //    null,
-        //    cancellationToken);
-
-        //var entities = response.Resource;
-
-        //return Result.Create(entities);
-        return null;
-    }
-
+    //TODO Implement
     public virtual Result<TEntity> GetFirst(
         Expression<Func<TEntity, bool>> filterPredicate,
         CancellationToken cancellationToken = default)
@@ -91,99 +99,89 @@ public abstract class Repository<TEntity, TEntityId>
         return null;
     }
 
-    public async Task<Result<TEntity>> AddAsync(
-        TEntity entity, 
+    public async Task<Result<IEnumerable<TEntity>>> GetManyByIdAsync(
+        IEnumerable<TEntityId> ids,
         CancellationToken cancellationToken = default)
     {
-        //var response = await Table.CreateItemAsync(
-        //    entity,
-        //    new(entity.Id.Value.ToString()),
-        //    null,
-        //    cancellationToken);
+        var batch = _table.CreateBatchGet();
 
-        //return Result.Create(response.Resource);
+        ids.ToList().ForEach(id => batch.AddKey(new Primitive(id.Value.ToString())));
 
-        return null;
-    }
+        await batch.ExecuteAsync(cancellationToken);
 
-    public async Task<Result> AddRangeAsync(
-        IEnumerable<TEntity> entities,
-        CancellationToken cancellationToken = default)
-    {
-        //var tasks = entities.Select(
-        //    entity => Table.CreateItemAsync(
-        //        entity,
-        //        new PartitionKey(entity.Id.Value.ToString()),
-        //        null,
-        //        cancellationToken));
+        var docs = batch.Results;
+        var records = docs.Select(
+            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc) ??
+                   throw new InvalidCastException(
+                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var enitites = records.Select(record => record.ToDomainModel());
 
-        //await Task.WhenAll(tasks);
-
-        //return Result.Success();
-        return null;
+        return Result.Create(enitites);
     }
 
     public async Task<Result> RemoveAsync(
         TEntityId entityId, 
         CancellationToken cancellationToken = default)
     {
-        //await Table.DeleteItemAsync<TEntity>(
-        //    entityId.Value.ToString(),
-        //    new PartitionKey(entityId.Value.ToString()),
-        //    null,
-        //    cancellationToken);
+        await _table.DeleteItemAsync(new Primitive(entityId.Value.ToString()), cancellationToken);
 
-        //return Result.Success();
-        return null;
+        return Result.Success();
     }
 
     public async Task<Result> RemoveRangeAsync(
         IEnumerable<TEntityId> entitiesId,
         CancellationToken cancellationToken = default)
     {
-        //var tasks = entitiesId.Select(
-        //    id => Table.DeleteItemAsync<TEntity>(
-        //        id.Value.ToString(),
-        //        new PartitionKey(id.Value.ToString()),
-        //        null,
-        //        cancellationToken));
+        var batch = _table.CreateBatchWrite();
 
-        //await Task.WhenAll(tasks);
+        entitiesId.ToList().ForEach(id => batch.AddKeyToDelete(new Primitive(id.Value.ToString())));
 
-        //return Result.Success();
-        return null;
+        await batch.ExecuteAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result<TEntity>> AddAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        var record = _dataModelService.ConvertDomainModelToDataModel(entity);
+        var json = JsonConvert.SerializeObject(record);
+        var doc = Document.FromJson(json);
+
+        await _table.PutItemAsync(doc, cancellationToken);
+
+        return Result.Success(entity);
+    }
+
+    public async Task<Result> AddRangeAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var batch = _table.CreateBatchWrite();
+
+        var records = entities.Select(_dataModelService.ConvertDomainModelToDataModel);
+        var jsons = records.Select(JsonConvert.SerializeObject);
+        var docs = jsons.Select(Document.FromJson);
+
+        docs.ToList().ForEach(batch.AddDocumentToPut);
+
+        await batch.ExecuteAsync(cancellationToken);
+
+        return Result.Success();
     }
 
     public async Task<Result<TEntity>> UpdateAsync(
-        TEntity entity, 
+        TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        //var response = await Table.ReplaceItemAsync(
-        //    entity,
-        //    entity.Id.Value.ToString(),
-        //    new PartitionKey(entity.Id.Value.ToString()),
-        //    null,
-        //    cancellationToken);
-
-        //return Result.Success(response.Resource);
-        return null;
+        return await AddAsync(entity, cancellationToken);
     }
 
     public async Task<Result> UpdateRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
-        //var tasks = entities.Select(
-        //    entity => Table.ReplaceItemAsync(
-        //        entity,
-        //        entity.Id.Value.ToString(),
-        //        new PartitionKey(entity.Id.Value.ToString()),
-        //        null,
-        //        cancellationToken));
-
-        //await Task.WhenAll(tasks);
-
-        //return Result.Success();
-        return null;
+        return await AddRangeAsync(entities, cancellationToken);
     }
 }

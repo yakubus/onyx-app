@@ -7,6 +7,7 @@ namespace SharedDAL;
 public sealed class DbContext
 {
     private readonly AmazonDynamoDBClient _client = new();
+    public AmazonDynamoDBClient Client => _client;
 
     private readonly AmazonDynamoDBException _connectionException =
         new ("Could not connect to DynamoDB");

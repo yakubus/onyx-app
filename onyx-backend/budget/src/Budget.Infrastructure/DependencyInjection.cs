@@ -9,10 +9,12 @@ using Budget.Domain.Transactions;
 using Budget.Infrastructure.Contexts;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
+using Budget.Infrastructure.Data.Services;
 using Budget.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedDAL;
+using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure;
 
@@ -28,6 +30,7 @@ public static class DependencyInjection
     private static void AddPersistence(this IServiceCollection services)
     {
         services.AddScoped<DbContext>();
+        services.AddScoped(typeof(IDataModelService<>), typeof(DataModelService<>));
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();

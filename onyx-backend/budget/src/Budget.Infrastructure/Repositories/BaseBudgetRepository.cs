@@ -5,6 +5,7 @@ using Budget.Domain.Budgets;
 using Budget.Domain.Shared.Abstractions;
 using Models.Responses;
 using SharedDAL;
+using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Repositories;
 
@@ -13,7 +14,12 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 {
     private readonly IBudgetContext _budgetContext;
 
-    protected BaseBudgetRepository(DbContext context, IBudgetContext budgetContext) : base(context)
+    protected BaseBudgetRepository(
+        DbContext context,
+        IBudgetContext budgetContext,
+        IDataModelService<TEntity> dataModelService) : base(
+        context,
+        dataModelService)
     {
         _budgetContext = budgetContext;
     }
