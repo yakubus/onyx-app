@@ -28,7 +28,7 @@ public sealed record Target : ValueObject
         StartedAt = startedAt;
     }
 
-    internal static Result<Target> Create(MonthDate upToMonth, Money targetAmount)
+    internal static Result<Target> Create(MonthDate startedAt, MonthDate upToMonth, Money targetAmount)
     {
         if (targetAmount.Amount <= 0)
         {
@@ -44,7 +44,7 @@ public sealed record Target : ValueObject
             upToMonth, 
             targetAmount, 
             targetAmount with { Amount = 0 }, 
-            MonthDate.Current);
+            startedAt);
     }
 
     internal Result MoveTargetEndMonth(MonthDate upToMonth)

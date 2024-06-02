@@ -10,6 +10,4 @@ public sealed record AddTransactionCommand(
     DateTime TransactedAt,
     string CounterpartyName,
     Guid? SubcategoryId,
-    Guid BudgetId) : BudgetCommand<TransactionModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<TransactionModel>(BudgetId);

@@ -9,6 +9,4 @@ public sealed record UpdateUserCommand(
     string? NewUsername,
     string? NewPassword,
     string? NewCurrency,
-    string? VerificationCode) : ICommand<UserModel>
-{
-}
+    string? VerificationCode) : ICommand<UserModel>;

@@ -116,7 +116,7 @@ public abstract class Repository<TEntity, TEntityId>
         var response = await _context.Client.ExecuteStatementAsync(
             new ExecuteStatementRequest
             {
-                Statement = statement
+                Statement = statement,
             },
             cancellationToken);
 

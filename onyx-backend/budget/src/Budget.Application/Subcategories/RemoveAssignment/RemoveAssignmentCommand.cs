@@ -5,6 +5,4 @@ using Models.DataTypes;
 namespace Budget.Application.Subcategories.RemoveAssignment;
 
 public sealed record RemoveAssignmentCommand(Guid SubcategoryId, MonthDate AssignmentMonth, Guid BudgetId) 
-    : BudgetCommand<SubcategoryModel>(BudgetId)
-{
-}
+    : BudgetCommand<SubcategoryModel>(BudgetId);

@@ -7,6 +7,4 @@ public sealed record AddTransactionRequest(
     MoneyModel Amount,
     DateTime TransactedAt,
     string CounterpartyName,
-    Guid? SubcategoryId)
-{
-}
+    Guid? SubcategoryId);

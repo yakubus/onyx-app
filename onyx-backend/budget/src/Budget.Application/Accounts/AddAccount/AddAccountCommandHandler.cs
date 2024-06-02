@@ -26,7 +26,7 @@ internal sealed class AddAccountCommandHandler : ICommandHandler<AddAccountComma
             return accountsGetResult.Error;
         }
 
-        var budgetGetResult = await _budgetRepository.GetCurrentBudget(cancellationToken);
+        var budgetGetResult = await _budgetRepository.GetCurrentBudgetAsync(cancellationToken);
 
         if (budgetGetResult.IsFailure)
         {

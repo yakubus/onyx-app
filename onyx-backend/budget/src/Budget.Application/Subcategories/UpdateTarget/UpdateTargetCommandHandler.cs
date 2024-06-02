@@ -41,6 +41,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
             subcategory,
             currentTarget,
             targetAmount,
+            request.StartedAt,
             request.TargetUpToMonth);
 
         if (targetUpdateResult.IsFailure)

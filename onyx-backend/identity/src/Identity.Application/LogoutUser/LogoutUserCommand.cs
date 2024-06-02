@@ -2,6 +2,4 @@
 
 namespace Identity.Application.LogoutUser;
 
-public sealed record LogoutUserCommand(Guid UserId) : ICommand
-{
-}
+public sealed record LogoutUserCommand(Guid UserId) : ICommand;

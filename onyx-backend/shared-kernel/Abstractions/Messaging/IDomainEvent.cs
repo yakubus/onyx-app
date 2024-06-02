@@ -2,6 +2,4 @@
 
 namespace Abstractions.Messaging;
 
-public interface IDomainEvent : INotification
-{
-}
+public interface IDomainEvent : INotification;

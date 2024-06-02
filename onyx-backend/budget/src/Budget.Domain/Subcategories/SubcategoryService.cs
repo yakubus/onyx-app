@@ -57,10 +57,11 @@ public sealed class SubcategoryService
         Subcategory subcategory,
         Target? currentTarget,
         Money targetAmount,
+        MonthDate startedAt,
         MonthDate targetUpToMonth) =>
         currentTarget switch
         {
-            null => subcategory.SetTarget(targetAmount, targetUpToMonth),
+            null => subcategory.SetTarget(targetAmount, startedAt, targetUpToMonth),
             _ when currentTarget.TargetAmount != targetAmount && currentTarget.UpToMonth != targetUpToMonth => 
                 Result.Aggregate([subcategory.UpdateTargetAmount(targetAmount), subcategory.MoveTargetEndMonth(targetUpToMonth)]),
             _ when currentTarget.TargetAmount != targetAmount => subcategory.UpdateTargetAmount(targetAmount),

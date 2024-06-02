@@ -20,11 +20,12 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
         _budgetContext = budgetContext;
     }
 
-    public Result<Domain.Budgets.Budget> GetByName(
-        string name) =>
-        GetFirst(b => b.Name.Value == name);
+    public async Task<Result<Domain.Budgets.Budget>> GetByNameAsync(
+        string name,
+        CancellationToken cancellationToken) =>
+        await GetFirst($"Name = '{name}'", cancellationToken);
 
-    public async Task<Result<Domain.Budgets.Budget>> GetCurrentBudget(CancellationToken cancellationToken)
+    public async Task<Result<Domain.Budgets.Budget>> GetCurrentBudgetAsync(CancellationToken cancellationToken)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
 
@@ -40,6 +41,6 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 
     public async Task<Result<IEnumerable<Domain.Budgets.Budget>>> GetBudgetsForUserAsync(string userId, CancellationToken cancellationToken)
     {
-        return await Task.Run(() => GetWhere(b => b.UserIds.Any(id => id == userId)), cancellationToken);
+        return await GetWhere($"CONTAINS (UserIds, '{userId}')", cancellationToken);
     }
 }

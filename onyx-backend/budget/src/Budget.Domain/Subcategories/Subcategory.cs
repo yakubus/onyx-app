@@ -207,14 +207,14 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
         return Result.Success(assignment);
     }
 
-    public Result<Target> SetTarget(Money targetAmount, MonthDate upToMonth)
+    public Result<Target> SetTarget(Money targetAmount, MonthDate startedAt, MonthDate upToMonth)
     {
         if (Target is not null)
         {
             return Result.Failure<Target>(SubcategoryErrors.TargetAlreadySet);
         }
 
-        var targetCreateResult = Target.Create(upToMonth, targetAmount);
+        var targetCreateResult = Target.Create(startedAt, upToMonth, targetAmount);
 
         if (targetCreateResult.IsFailure)
         {

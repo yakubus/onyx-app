@@ -2,6 +2,4 @@
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record UpdateAssignmentRequest(decimal AssignedAmount, MonthDate AssignmentMonth)
-{
-}
+public sealed record UpdateAssignmentRequest(decimal AssignedAmount, MonthDate AssignmentMonth);

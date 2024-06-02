@@ -3,6 +3,4 @@ using Budget.Application.Subcategories.Models;
 
 namespace Budget.Application.Subcategories.RemoveTarget;
 
-public sealed record RemoveTargetCommand(Guid SubcategoryId, Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId)
-{
-}
+public sealed record RemoveTargetCommand(Guid SubcategoryId, Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId);

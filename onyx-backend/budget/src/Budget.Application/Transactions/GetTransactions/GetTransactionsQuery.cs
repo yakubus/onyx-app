@@ -8,6 +8,4 @@ public sealed record GetTransactionsQuery(
     Guid? CounterpartyId,
     Guid? AccountId,
     Guid? SubcategoryId,
-    Guid BudgetId) : BudgetQuery<IEnumerable<TransactionModel>>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetQuery<IEnumerable<TransactionModel>>(BudgetId);

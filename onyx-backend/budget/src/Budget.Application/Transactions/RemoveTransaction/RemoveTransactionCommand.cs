@@ -2,6 +2,4 @@
 
 namespace Budget.Application.Transactions.RemoveTransaction;
 
-public sealed record RemoveTransactionCommand(Guid TransactionId, Guid BudgetId) : BudgetCommand(BudgetId)
-{
-}
+public sealed record RemoveTransactionCommand(Guid TransactionId, Guid BudgetId) : BudgetCommand(BudgetId);

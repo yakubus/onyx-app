@@ -8,6 +8,4 @@ public sealed record UpdateAccountCommand(
     Guid Id,
     string? NewName,
     MoneyModel? NewBalance,
-    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId);

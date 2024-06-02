@@ -20,6 +20,6 @@ internal sealed class AccountRepository : BaseBudgetRepository<Account, AccountI
 
     public async Task<Result<Account>> GetByNameAsync(AccountName accountName, CancellationToken cancellationToken)
     {
-        return GetFirst(a => a.Name == accountName, cancellationToken);
+        return await GetFirst($"Name = {accountName.Value}", cancellationToken);
     }
 }

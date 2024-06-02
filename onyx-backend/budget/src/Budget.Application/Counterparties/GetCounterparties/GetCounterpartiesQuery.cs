@@ -5,6 +5,4 @@ namespace Budget.Application.Counterparties.GetCounterparties;
 
 public sealed record GetCounterpartiesQuery(
     string CounterpartyType,
-    Guid BudgetId) : BudgetQuery<IEnumerable<CounterpartyModel>>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetQuery<IEnumerable<CounterpartyModel>>(BudgetId);

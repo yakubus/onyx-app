@@ -24,7 +24,7 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
         _budgetContext = budgetContext;
     }
 
-    public override Result<TEntity> GetFirst(Expression<Func<TEntity, bool>> filterPredicate, CancellationToken cancellationToken = default)
+    public override async Task<Result<TEntity>> GetFirst(string query, CancellationToken cancellationToken = default)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
 
@@ -35,17 +35,9 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        var parameter = filterPredicate.Parameters[0];
+        var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
 
-        var budgetIdProperty = Expression.Property(parameter, nameof(BudgetOwnedEntity<TEntityId>.BudgetId));
-        var budgetIdValue = Expression.Constant(budgetId);
-        var budgetIdCondition = Expression.Equal(budgetIdProperty, budgetIdValue);
-
-        var combinedExpression = Expression.Lambda<Func<TEntity, bool>>(
-            Expression.AndAlso(filterPredicate.Body, budgetIdCondition),
-            parameter);
-
-        return base.GetFirst(combinedExpression, cancellationToken);
+        return await base.GetFirst(combinedQuery, cancellationToken);
     }
 
     public override async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
@@ -59,13 +51,12 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        //return Result.Create(await Task.Run(
-        //    () => Table.GetItemLinqQueryable<TEntity>(true).Where(e => e.BudgetId == budgetId).AsEnumerable(),
-        //    cancellationToken));
-        return null;
+        return await GetWhere($"BudgetId = '{budgetId.Value}'", cancellationToken);
     }
 
-    public override Result<IEnumerable<TEntity>> GetWhere(Expression<Func<TEntity, bool>> filterPredicate, CancellationToken cancellationToken = default)
+    public override async Task<Result<IEnumerable<TEntity>>> GetWhere(
+        string query,
+        CancellationToken cancellationToken = default)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
 
@@ -76,16 +67,8 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        var parameter = filterPredicate.Parameters[0];
+        var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
 
-        var budgetIdProperty = Expression.Property(parameter, nameof(BudgetOwnedEntity<TEntityId>.BudgetId));
-        var budgetIdValue = Expression.Constant(budgetId);
-        var budgetIdCondition = Expression.Equal(budgetIdProperty, budgetIdValue);
-
-        var combinedExpression = Expression.Lambda<Func<TEntity, bool>>(
-            Expression.AndAlso(filterPredicate.Body, budgetIdCondition),
-            parameter);
-
-        return base.GetWhere(combinedExpression, cancellationToken);
+        return await base.GetWhere(combinedQuery, cancellationToken);
     }
 }

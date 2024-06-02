@@ -4,7 +4,7 @@ namespace Budget.Domain.Budgets;
 
 public interface IBudgetRepository
 {
-    Result<Budget> GetByName(string name);
+    Task<Result<Budget>> GetByNameAsync(string name, CancellationToken cancellationToken);
 
     Task<Result<Budget>> AddAsync(Budget budget, CancellationToken cancellationToken);
 
@@ -14,7 +14,7 @@ public interface IBudgetRepository
 
     Task<Result<Budget>> UpdateAsync(Budget budget, CancellationToken cancellationToken);
 
-    Task<Result<Budget>> GetCurrentBudget(CancellationToken cancellationToken);
+    Task<Result<Budget>> GetCurrentBudgetAsync(CancellationToken cancellationToken);
 
     Task<Result<IEnumerable<Budget>>> GetBudgetsForUserAsync(string userId, CancellationToken cancellationToken);
 }

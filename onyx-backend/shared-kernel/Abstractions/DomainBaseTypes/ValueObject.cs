@@ -1,5 +1,3 @@
 ﻿namespace Abstractions.DomainBaseTypes;
 
-public abstract record ValueObject
-{
-}
+public abstract record ValueObject;

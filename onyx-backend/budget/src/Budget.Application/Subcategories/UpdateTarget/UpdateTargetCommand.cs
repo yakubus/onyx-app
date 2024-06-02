@@ -6,8 +6,7 @@ namespace Budget.Application.Subcategories.UpdateTarget;
 
 public sealed record UpdateTargetCommand(
     Guid SubcategoryId,
+    MonthDate StartedAt,
     MonthDate TargetUpToMonth,
     decimal TargetAmount,
-    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId);

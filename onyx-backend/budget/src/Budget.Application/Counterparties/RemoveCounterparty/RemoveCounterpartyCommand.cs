@@ -2,6 +2,4 @@
 
 namespace Budget.Application.Counterparties.RemoveCounterparty;
 
-public sealed record RemoveCounterpartyCommand(Guid Id, Guid BudgetId) : BudgetCommand(BudgetId)
-{
-}
+public sealed record RemoveCounterpartyCommand(Guid Id, Guid BudgetId) : BudgetCommand(BudgetId);

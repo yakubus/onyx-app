@@ -2,6 +2,4 @@
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record RemoveAssignmentRequest(MonthDate AssignmentMonth)
-{
-}
+public sealed record RemoveAssignmentRequest(MonthDate AssignmentMonth);

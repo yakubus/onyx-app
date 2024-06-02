@@ -7,6 +7,4 @@ public sealed record UpdateSubcategoryCommand(
     Guid Id,
     string? NewName,
     string? NewDescription,
-    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId);

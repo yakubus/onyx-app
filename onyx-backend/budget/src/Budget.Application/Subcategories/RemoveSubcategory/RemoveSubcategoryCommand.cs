@@ -2,6 +2,4 @@
 
 namespace Budget.Application.Subcategories.RemoveSubcategory;
 
-public sealed record RemoveSubcategoryCommand(Guid Id, Guid BudgetId) : BudgetCommand(BudgetId)
-{
-}
+public sealed record RemoveSubcategoryCommand(Guid Id, Guid BudgetId) : BudgetCommand(BudgetId);

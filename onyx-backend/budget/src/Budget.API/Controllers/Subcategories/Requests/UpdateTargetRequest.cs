@@ -2,6 +2,4 @@
 
 namespace Budget.API.Controllers.Subcategories.Requests;
 
-public sealed record UpdateTargetRequest(MonthDate TargetUpToMonth, decimal TargetAmount)
-{
-}
+public sealed record UpdateTargetRequest(MonthDate StartedAt, MonthDate TargetUpToMonth, decimal TargetAmount);

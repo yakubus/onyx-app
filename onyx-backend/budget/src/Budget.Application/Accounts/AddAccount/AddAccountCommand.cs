@@ -8,6 +8,4 @@ public sealed record AddAccountCommand(
     string Name,
     MoneyModel Balance,
     string AccountType,
-    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId);

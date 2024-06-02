@@ -8,6 +8,4 @@ public sealed record UpdateAssignmentCommand(
     Guid SubcategoryId,
     MonthDate AssignmentMonth,
     decimal AssignedAmount,
-    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<SubcategoryModel>(BudgetId);

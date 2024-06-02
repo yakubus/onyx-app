@@ -1,5 +1,7 @@
 ﻿using Budget.API.Controllers.Subcategories.Requests;
+using Budget.Application.Shared.Models;
 using Budget.Application.Subcategories.AddSubcategory;
+using Budget.Application.Subcategories.GetToAssign;
 using Budget.Application.Subcategories.Models;
 using Budget.Application.Subcategories.RemoveAssignment;
 using Budget.Application.Subcategories.RemoveSubcategory;
@@ -22,6 +24,24 @@ public sealed class SubcategoriesController : ControllerBase
     private readonly ISender _sender;
 
     public SubcategoriesController(ISender sender) => _sender = sender;
+
+    [HttpGet("to-assign")]
+    [ProducesResponseType(typeof(Result<MoneyModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetToAssignAmount(
+        [FromRoute] Guid budgetId,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetToAssignQuery();
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.IsSuccess ?
+            Ok(result) :
+            BadRequest(result);
+    }
 
     [HttpPost]
     [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
@@ -138,7 +158,7 @@ public sealed class SubcategoriesController : ControllerBase
         [FromBody] UpdateTargetRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateTargetCommand(subcategoryId, request.TargetUpToMonth, request.TargetAmount, budgetId);
+        var command = new UpdateTargetCommand(subcategoryId, request.StartedAt, request.TargetUpToMonth, request.TargetAmount, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

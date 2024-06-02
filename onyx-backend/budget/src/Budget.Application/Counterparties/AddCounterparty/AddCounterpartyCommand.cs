@@ -6,6 +6,4 @@ namespace Budget.Application.Counterparties.AddCounterparty;
 public sealed record AddCounterpartyCommand(
     string CounterpartyType,
     string CounterpartyName,
-    Guid BudgetId) : BudgetCommand<CounterpartyModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<CounterpartyModel>(BudgetId);
