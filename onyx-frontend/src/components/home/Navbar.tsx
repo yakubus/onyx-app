@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button";
+import LoginButton from "@/components/home/LoginButton";
 
-const Navbar =()=>{
-    return (
-            <div className="flex max-w-1196px h-30px mt-6 justify-between md:px-32 sm:px-10 bg-background">
-                <div className="font-bold text-xl leading-7 h-30px flex items-center text-foreground cursor-pointer">ONYX</div>
-                <Button variant="link" className="h-30px font-bold text-xl leading-7 flex items-center text-foreground w-20">Sign in</Button>                 
-            </div>
-    )}
+const Navbar = () => {
+  return (
+    <div className="max-w-1196px mt-6 flex h-30px justify-between bg-background sm:px-10 md:px-32">
+      <div className="flex h-30px cursor-pointer items-center text-xl font-bold leading-7 text-foreground">
+        ONYX
+      </div>
+      <LoginButton />
+    </div>
+  );
+};
 export default Navbar;
