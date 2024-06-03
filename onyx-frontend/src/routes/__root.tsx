@@ -6,6 +6,7 @@ import { User } from "@/lib/validation/user";
 interface RouterContext {
   queryClient: QueryClient;
   user: User | null;
+  token: string | null;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({

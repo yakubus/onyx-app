@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import createStore from "react-auth-kit/createStore";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import AuthProvider from "react-auth-kit";
 import { routeTree } from "./routeTree.gen";
 import { User } from "./lib/validation/user";
@@ -24,19 +25,16 @@ const store = createStore({
 const queryClient = new QueryClient();
 const router = createRouter({
   routeTree,
-  context: { queryClient, user: null },
+  context: { queryClient, user: null, token: null },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
 });
 
 const App = () => {
-  const user = useAuthUser<User>();
-  const routerContext = { queryClient, user };
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider store={store}>
-        <RouterProvider router={router} context={routerContext} />
+        <RouterWithAuth />
         <ReactQueryDevtools initialIsOpen={false} />
       </AuthProvider>
     </QueryClientProvider>
@@ -44,3 +42,10 @@ const App = () => {
 };
 
 export default App;
+
+const RouterWithAuth = () => {
+  const user = useAuthUser<User>();
+  const token = useAuthHeader();
+  const routerContext = { queryClient, user, token };
+  return <RouterProvider router={router} context={routerContext} />;
+};

@@ -9,8 +9,15 @@ export const UserSchema = z.object({
   budgetIds: z.array(z.string()),
 });
 
-export const UserResultSchema = ResultSchema.extend({
-  value: UserSchema,
+export type User = z.infer<typeof UserSchema>;
+
+export const UserWithTokenSchema = UserSchema.extend({
+  accessToken: z.string(),
+});
+export type UserWithToken = z.infer<typeof UserSchema>;
+
+export const UserWithTokenResultSchema = ResultSchema.extend({
+  value: UserWithTokenSchema,
 });
 
-export type User = z.infer<typeof UserSchema>;
+export type UserWithTokenResult = z.infer<typeof UserWithTokenResultSchema>;

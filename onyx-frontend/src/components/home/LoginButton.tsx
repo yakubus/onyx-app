@@ -1,3 +1,9 @@
+import axios from "axios";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { useNavigate } from "@tanstack/react-router";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,10 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { Form, FormField, FormItem } from "../ui/form";
+import { Form, FormField, FormItem } from "@/components/ui/form";
+import { UserWithTokenResult } from "@/lib/validation/user";
 
 const LoginButton = () => {
+  const navigate = useNavigate();
+  const signIn = useSignIn();
   const form = useForm<FieldValues>({
     defaultValues: {
       email: "",
@@ -20,8 +28,45 @@ const LoginButton = () => {
   });
   const { control, handleSubmit } = form;
 
+  const { mutate } = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      const response = await axios.post<UserWithTokenResult>(
+        "/api/user/login",
+        { email, password },
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      const { accessToken, id, budgetIds, currency, email, username } =
+        data.value;
+      signIn({
+        auth: {
+          token: accessToken,
+          type: "Bearer",
+        },
+        userState: {
+          id,
+          budgetIds,
+          currency,
+          email,
+          username,
+        },
+      });
+      navigate({ to: "/budget" });
+    },
+  });
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+    mutate({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   return (
