@@ -1,4 +1,5 @@
-﻿using Budget.Domain.Accounts;
+﻿using Amazon.DynamoDBv2.DocumentModel;
+using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
 using Models.DataTypes;
 using SharedDAL.DataModels.Abstractions;
@@ -8,25 +9,37 @@ namespace Budget.Infrastructure.Data.DataModels.Accounts;
 
 internal sealed class AccountDataModel : IDataModel<Account>
 {
-    public Guid Id { get; set; }
-    public Guid BudgetId { get; set; }
-    public string Name { get; set; }
-    public decimal BalanceAmount { get; set; }
-    public string BalanceCurrency { get; set; }
-    public string Type { get; set; }
+    public Guid Id { get; init; }
+    public Guid BudgetId { get; init; }
+    public string Name { get; init; }
+    public decimal BalanceAmount { get; init; }
+    public string BalanceCurrency { get; init; }
+    public string Type { get; init; }
+
+    private AccountDataModel(
+        Document doc)
+    {
+        Id = doc[nameof(Id)].AsGuid();
+        BudgetId = doc[nameof(BudgetId)].AsGuid();
+        Name = doc[nameof(Name)];
+        BalanceAmount = doc[nameof(BalanceAmount)].AsDecimal();
+        BalanceCurrency = doc[nameof(BalanceCurrency)];
+        Type = doc[nameof(Type)];
+    }
+    private AccountDataModel(
+        Account account)
+    {
+        Id = account.Id.Value;
+        BudgetId = account.BudgetId.Value;
+        Name = account.Name.Value;
+        BalanceAmount = account.Balance.Amount;
+        BalanceCurrency = account.Balance.Currency.Code;
+        Type = account.Type.Value;
+    }
 
     public Type GetDomainModelType() => typeof(Account);
 
-    public static AccountDataModel FromDomainModel(Account account) =>
-        new AccountDataModel
-        {
-            Id = account.Id.Value,
-            BudgetId = account.BudgetId.Value,
-            Name = account.Name.Value,
-            BalanceAmount = account.Balance.Amount,
-            BalanceCurrency = account.Balance.Currency.Code,
-            Type = account.Type.Value
-        };
+    public static AccountDataModel FromDomainModel(Account account) => new(account);
 
     public Account ToDomainModel()
     {
@@ -79,4 +92,6 @@ internal sealed class AccountDataModel : IDataModel<Account>
                    typeof(Account));
 
     }
+
+    public static AccountDataModel FromDocument(Document doc) => new(doc);
 }

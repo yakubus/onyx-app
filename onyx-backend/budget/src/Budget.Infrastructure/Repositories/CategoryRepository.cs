@@ -18,8 +18,8 @@ internal sealed class CategoryRepository : BaseBudgetRepository<Category, Catego
     {
     }
 
-    public Result<Category> GetByName(CategoryName name, CancellationToken cancellationToken)
+    public async Task<Result<Category>> GetByNameAsync(CategoryName name, CancellationToken cancellationToken)
     {
-        return GetFirst(x => x.Name == name);
+        return await GetFirstAsync($"Name = '{name.Value}'");
     }
 }

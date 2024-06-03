@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
@@ -11,38 +12,53 @@ namespace Budget.Infrastructure.Data.DataModels.Transactions;
 
 internal sealed class TransactionDataModel : IDataModel<Transaction>
 {
-    public Guid Id { get; set; }
-    public Guid BudgetId { get; set; }
-    public Guid AccountId { get; set; }
-    public Guid? SubcategoryId { get; set; }
-    public Guid? CounterpartyId { get; set; }
-    //[JsonConverter(typeof(DateTimeConverter))]
-    public DateTime TransactedAt { get; set; }
-    public decimal AmountAmount { get; set; }
-    public string AmountCurrency { get; set; }
-    public decimal BudgetAmountAmount { get; set; }
-    public string BudgetAmountCurrency { get; set; }
-    public decimal OriginalAmountAmount { get; set; }
-    public string OriginalAmountCurrency { get; set; }
+    public Guid Id { get; init; }
+    public Guid BudgetId { get; init; }
+    public Guid AccountId { get; init; }
+    public Guid? SubcategoryId { get; init; }
+    public Guid? CounterpartyId { get; init; }
+    //[JsonConverter(typeof(DateTimeConverter))] TODO consider using object DateTime
+    public DateTime TransactedAt { get; init; }
+    public decimal AmountAmount { get; init; }
+    public string AmountCurrency { get; init; }
+    public decimal BudgetAmountAmount { get; init; }
+    public string BudgetAmountCurrency { get; init; }
+    public decimal OriginalAmountAmount { get; init; }
+    public string OriginalAmountCurrency { get; init; }
 
-    public static TransactionDataModel FromDomainModel(Transaction transaction)
+    public TransactionDataModel(Transaction transaction)
     {
-        return new TransactionDataModel
-        {
-            Id = transaction.Id.Value,
-            BudgetId = transaction.BudgetId.Value,
-            AccountId = transaction.AccountId.Value,
-            SubcategoryId = transaction.SubcategoryId?.Value,
-            CounterpartyId = transaction.CounterpartyId?.Value,
-            TransactedAt = transaction.TransactedAt,
-            AmountAmount = transaction.Amount.Amount,
-            AmountCurrency = transaction.Amount.Currency.Code,
-            BudgetAmountAmount = transaction.BudgetAmount.Amount,
-            BudgetAmountCurrency = transaction.BudgetAmount.Currency.Code,
-            OriginalAmountAmount = transaction.OriginalAmount.Amount,
-            OriginalAmountCurrency = transaction.OriginalAmount.Currency.Code
-        };
+        Id = transaction.Id.Value;
+        BudgetId = transaction.BudgetId.Value;
+        AccountId = transaction.AccountId.Value;
+        SubcategoryId = transaction.SubcategoryId?.Value;
+        CounterpartyId = transaction.CounterpartyId?.Value;
+        TransactedAt = transaction.TransactedAt;
+        AmountAmount = transaction.Amount.Amount;
+        AmountCurrency = transaction.Amount.Currency.Code;
+        BudgetAmountAmount = transaction.BudgetAmount.Amount;
+        BudgetAmountCurrency = transaction.BudgetAmount.Currency.Code;
+        OriginalAmountAmount = transaction.OriginalAmount.Amount;
+        OriginalAmountCurrency = transaction.OriginalAmount.Currency.Code;
     }
+
+    public TransactionDataModel(Document doc)
+    {
+        Id = doc[nameof(Id)].AsGuid();
+        BudgetId = doc[nameof(BudgetId)].AsGuid();
+        AccountId = doc[nameof(AccountId)].AsGuid();
+        SubcategoryId = doc[nameof(SubcategoryId)].AsGuid();
+        CounterpartyId = doc[nameof(CounterpartyId)].AsGuid();
+        TransactedAt = doc[nameof(TransactedAt)].AsDateTime();
+        AmountAmount = doc[nameof(AmountAmount)].AsDecimal();
+        AmountCurrency = doc[nameof(AmountCurrency)];
+        BudgetAmountAmount = doc[nameof(BudgetAmountAmount)].AsDecimal();
+        BudgetAmountCurrency = doc[nameof(BudgetAmountCurrency)];
+        OriginalAmountAmount = doc[nameof(OriginalAmountAmount)].AsDecimal();
+        OriginalAmountCurrency = doc[nameof(OriginalAmountCurrency)];
+    }
+
+    public static TransactionDataModel FromDomainModel(Transaction transaction) => new(transaction);
 
     public Type GetDomainModelType() => typeof(Transaction);
 
@@ -119,4 +135,6 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
                    this,
                    typeof(Transaction));
     }
+
+    public static TransactionDataModel FromDocument(Document doc) => new(doc);
 }

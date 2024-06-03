@@ -14,7 +14,7 @@ internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
     public Result<User> GetByEmailAsync(
         Domain.Email email,
         CancellationToken cancellationToken) =>
-        GetFirst(
+        GetFirstAsync(
             u => u.Email == email,
             cancellationToken);
 }

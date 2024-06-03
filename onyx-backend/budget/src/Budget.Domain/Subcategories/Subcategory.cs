@@ -19,14 +19,14 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
     private Subcategory(
         SubcategoryName name,
         SubcategoryDescription? description,
-        List<Assignment> assignments,
+        IEnumerable<Assignment> assignments,
         Target? target,
         BudgetId budgetId,
         SubcategoryId? id = null) : base(budgetId, id ?? new SubcategoryId())
     {
         Name = name;
         Description = description;
-        _assignments = assignments;
+        _assignments = assignments.ToList();
         Target = target;
     }
 

@@ -25,7 +25,7 @@ internal sealed class GetCounterpartiesQueryHandler : IQueryHandler<GetCounterpa
 
         var counterpartyType = counterPartyTypeCreateResult.Value;
 
-        var counterpartiesGetResult = _counterpartyRepository.GetWhere(
+        var counterpartiesGetResult = _counterpartyRepository.GetWhereAsync(
             c => c.Type == counterpartyType,
             cancellationToken);
 

@@ -5,8 +5,8 @@ namespace Budget.Domain.Transactions;
 
 public interface ITransactionRepository
 {
-    Result<IEnumerable<Transaction>> GetWhere(
-        Expression<Func<Transaction, bool>> filterPredicate, 
+    Task<Result<IEnumerable<Transaction>>> GetWhereAsync(
+        string query, 
         CancellationToken cancellationToken = default);
 
     Task<Result<IEnumerable<Transaction>>> GetManyByIdAsync(

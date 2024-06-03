@@ -7,8 +7,8 @@ public interface ICounterpartyRepository
 {
     Task<Result<Counterparty>> AddAsync(Counterparty counterparty, CancellationToken cancellationToken);
 
-    Result<Counterparty> GetFirst(
-        Expression<Func<Counterparty, bool>> filterPredicate,
+    Task<Result<Counterparty>> GetFirstAsync(
+        string query,
         CancellationToken cancellationToken);
 
     Task<Result> RemoveAsync(CounterpartyId counterpartyId, CancellationToken cancellationToken = default);
@@ -17,7 +17,9 @@ public interface ICounterpartyRepository
 
     Task<Result<Counterparty>> UpdateAsync(Counterparty counterparty, CancellationToken cancellationToken);
 
-    Result<IEnumerable<Counterparty>> GetWhere(Expression<Func<Counterparty, bool>> filterPredicate, CancellationToken cancellationToken);
+    Task<Result<IEnumerable<Counterparty>>> GetWhereAsync(
+        string query, 
+        CancellationToken cancellationToken);
 
     Task<Result<IEnumerable<Counterparty>>> GetManyByIdAsync(
         IEnumerable<CounterpartyId> ids,

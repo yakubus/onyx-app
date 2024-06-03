@@ -23,7 +23,7 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
     public async Task<Result<Domain.Budgets.Budget>> GetByNameAsync(
         string name,
         CancellationToken cancellationToken) =>
-        await GetFirst($"Name = '{name}'", cancellationToken);
+        await GetFirstAsync($"Name = '{name}'", cancellationToken);
 
     public async Task<Result<Domain.Budgets.Budget>> GetCurrentBudgetAsync(CancellationToken cancellationToken)
     {
@@ -41,6 +41,6 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 
     public async Task<Result<IEnumerable<Domain.Budgets.Budget>>> GetBudgetsForUserAsync(string userId, CancellationToken cancellationToken)
     {
-        return await GetWhere($"CONTAINS (UserIds, '{userId}')", cancellationToken);
+        return await GetWhereAsync($"CONTAINS (UserIds, '{userId}')", cancellationToken);
     }
 }

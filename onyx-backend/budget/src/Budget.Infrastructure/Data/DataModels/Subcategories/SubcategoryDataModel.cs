@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Domain.Budgets;
 using Budget.Domain.Subcategories;
 using Models.DataTypes;
@@ -8,39 +9,56 @@ namespace Budget.Infrastructure.Data.DataModels.Subcategories;
 
 internal sealed class SubcategoryDataModel : IDataModel<Subcategory>
 {
-    public Guid Id { get; set; }
-    public Guid BudgetId { get; set; }
-    public string Name { get; set; }
-    public string? Description { get; set; }
-    public IEnumerable<AssignmentDataModel> Assignments { get; set; }
-    public int? TargetUpToMonthMonth { get; set; }
-    public int? TargetUpToMonthYear { get; set; }
-    public int? TargetStartedAtMonth { get; set; }
-    public int? TargetStartedAtYear { get; set; }
-    public decimal? TargetTargetAmount { get; set; }
-    public string? TargetTargetCurrency { get; set; }
-    public decimal? TargetCollectedAmount { get; set; }
-    public string? TargetCollectedCurrency { get; set; }
+    public Guid Id { get; init; }
+    public Guid BudgetId { get; init; }
+    public string Name { get; init; }
+    public string? Description { get; init; }
+    public IEnumerable<AssignmentDataModel> Assignments { get; init; }
+    public int? TargetUpToMonthMonth { get; init; }
+    public int? TargetUpToMonthYear { get; init; }
+    public int? TargetStartedAtMonth { get; init; }
+    public int? TargetStartedAtYear { get; init; }
+    public decimal? TargetTargetAmount { get; init; }
+    public string? TargetTargetCurrency { get; init; }
+    public decimal? TargetCollectedAmount { get; init; }
+    public string? TargetCollectedCurrency { get; init; }
 
-    public static SubcategoryDataModel FromDomainModel(Subcategory subcategory)
+    private SubcategoryDataModel(Document doc)
     {
-        return new SubcategoryDataModel
-        {
-            Id = subcategory.Id.Value,
-            BudgetId = subcategory.BudgetId.Value,
-            Name = subcategory.Name.Value,
-            Description = subcategory.Description?.Value,
-            Assignments = subcategory.Assignments.Select(AssignmentDataModel.FromDomainModel),
-            TargetUpToMonthMonth = subcategory.Target?.UpToMonth?.Month,
-            TargetUpToMonthYear = subcategory.Target?.UpToMonth?.Year,
-            TargetStartedAtMonth = subcategory.Target?.StartedAt?.Month,
-            TargetStartedAtYear = subcategory.Target?.StartedAt?.Year,
-            TargetTargetAmount = subcategory.Target?.TargetAmount?.Amount,
-            TargetTargetCurrency = subcategory.Target?.TargetAmount?.Currency.Code,
-            TargetCollectedAmount = subcategory.Target?.CollectedAmount?.Amount,
-            TargetCollectedCurrency = subcategory.Target?.CollectedAmount?.Currency.Code,
-        };
+        Id = doc[nameof(Id)].AsGuid();
+        BudgetId = doc[nameof(BudgetId)].AsGuid();
+        Name = doc[nameof(Name)];
+        Description = doc[nameof(Description)];
+        Assignments = doc[nameof(Assignments)]
+            .AsArrayOfDynamoDBEntry()
+            .Select(entry => AssignmentDataModel.FromDocument(entry.AsDocument()));
+        TargetUpToMonthMonth = doc[nameof(TargetUpToMonthMonth)].AsInt();
+        TargetUpToMonthYear = doc[nameof(TargetUpToMonthYear)].AsInt();
+        TargetStartedAtMonth = doc[nameof(TargetStartedAtMonth)].AsInt();
+        TargetStartedAtYear = doc[nameof(TargetStartedAtYear)].AsInt();
+        TargetTargetAmount = doc[nameof(TargetTargetAmount)].AsDecimal();
+        TargetTargetCurrency = doc[nameof(TargetTargetCurrency)];
+        TargetCollectedAmount = doc[nameof(TargetCollectedAmount)].AsInt();
+        TargetCollectedCurrency = doc[nameof(TargetCollectedCurrency)];
     }
+    private SubcategoryDataModel(Subcategory subcategory)
+    {
+        Id = subcategory.Id.Value;
+        BudgetId = subcategory.BudgetId.Value;
+        Name = subcategory.Name.Value;
+        Description = subcategory.Description?.Value;
+        Assignments = subcategory.Assignments.Select(AssignmentDataModel.FromDomainModel);
+        TargetUpToMonthMonth = subcategory.Target?.UpToMonth?.Month;
+        TargetUpToMonthYear = subcategory.Target?.UpToMonth?.Year;
+        TargetStartedAtMonth = subcategory.Target?.StartedAt?.Month;
+        TargetStartedAtYear = subcategory.Target?.StartedAt?.Year;
+        TargetTargetAmount = subcategory.Target?.TargetAmount?.Amount;
+        TargetTargetCurrency = subcategory.Target?.TargetAmount?.Currency.Code;
+        TargetCollectedAmount = subcategory.Target?.CollectedAmount?.Amount;
+        TargetCollectedCurrency = subcategory.Target?.CollectedAmount?.Currency.Code;
+    }
+
+    public static SubcategoryDataModel FromDomainModel(Subcategory subcategory) => new(subcategory);
 
     public Type GetDomainModelType() => typeof(Subcategory);
 
@@ -63,14 +81,14 @@ internal sealed class SubcategoryDataModel : IDataModel<Subcategory>
         var description = Description is null ?
             null :
             Activator.CreateInstance(
-                       typeof(SubcategoryName),
+                       typeof(SubcategoryDescription),
                        BindingFlags.Instance | BindingFlags.NonPublic,
                        null,
                        [Description],
                        null) as SubcategoryDescription ??
                    throw new DataModelConversionException(
                        Name,
-                       typeof(SubcategoryName),
+                       typeof(SubcategoryDescription),
                        this);
 
         var assignments = Assignments.Select(_ => ToDomainModel());
@@ -171,4 +189,6 @@ internal sealed class SubcategoryDataModel : IDataModel<Subcategory>
                          typeof(Target),
                          typeof(SubcategoryDataModel));
     }
+
+    public static SubcategoryDataModel FromDocument(Document doc) => new(doc);
 }

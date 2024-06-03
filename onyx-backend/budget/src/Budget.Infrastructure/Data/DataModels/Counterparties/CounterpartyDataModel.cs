@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
 using SharedDAL.DataModels.Abstractions;
@@ -7,19 +8,28 @@ namespace Budget.Infrastructure.Data.DataModels.Counterparties;
 
 internal sealed class CounterpartyDataModel : IDataModel<Counterparty>
 {
-    public Guid Id { get; set; }
-    public Guid BudgetId { get; set; }
-    public string Name { get; set; }
-    public string Type { get; set; }
+    public Guid Id { get; init; }
+    public Guid BudgetId { get; init; }
+    public string Name { get; init; }
+    public string Type { get; init; }
 
-    public static CounterpartyDataModel FromDomainModel(Counterparty counterparty) =>
-        new()
-        {
-            Id = counterparty.Id.Value,
-            BudgetId = counterparty.BudgetId.Value,
-            Name = counterparty.Name.Value,
-            Type = counterparty.Type.Value,
-        };
+    private CounterpartyDataModel(Counterparty counterparty)
+    {
+        Id = counterparty.Id.Value;
+        BudgetId = counterparty.BudgetId.Value;
+        Name = counterparty.Name.Value;
+        Type = counterparty.Type.Value;
+    }
+
+    private CounterpartyDataModel(Document doc)
+    {
+        Id = doc[nameof(Id)].AsGuid();
+        BudgetId = doc[nameof(BudgetId)].AsGuid();
+        Name = doc[nameof(Name)];
+        Type = doc[nameof(Type)];
+    }
+
+    public static CounterpartyDataModel FromDomainModel(Counterparty counterparty) => new(counterparty);
 
     public Type GetDomainModelType() => typeof(Counterparty);
 
@@ -60,4 +70,6 @@ internal sealed class CounterpartyDataModel : IDataModel<Counterparty>
                    this,
                    typeof(Counterparty));
     }
+
+    public static CounterpartyDataModel FromDocument(Document doc) => new(doc);
 }

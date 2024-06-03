@@ -5,7 +5,6 @@ using Amazon.DynamoDBv2.Model;
 using Models.Responses;
 using Newtonsoft.Json;
 using SharedDAL.DataModels.Abstractions;
-using Expression = Amazon.DynamoDBv2.DocumentModel.Expression;
 
 namespace SharedDAL;
 
@@ -40,10 +39,7 @@ public abstract class Repository<TEntity, TEntityId>
             docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
         while (!scanner.IsDone);
 
-        var records = docs.Select(
-            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
-                   throw new InvalidCastException(
-                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);
@@ -54,11 +50,15 @@ public abstract class Repository<TEntity, TEntityId>
         CancellationToken cancellationToken = default)
     {
         var doc = await _table.GetItemAsync(new Primitive(id.Value.ToString()), cancellationToken);
-        var record = JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson());
+
+        if (doc is null)
+        {
+            return DataAccessErrors<TEntity>.NotFound;
+        }
         
-        return record is null ? 
-            Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-            record.ToDomainModel();
+        var record = _dataModelService.ConvertDocumentToDataModel(doc);
+
+        return record.ToDomainModel();
     }
 
     //TODO Implement
@@ -69,7 +69,7 @@ public abstract class Repository<TEntity, TEntityId>
     ///     Must contain only logical part of query (without SELECT FROM statement) </param>
     /// <param name="cancellationToken"></param>
     /// <returns>List of TEntity type</returns>
-    public virtual async Task<Result<IEnumerable<TEntity>>> GetWhere(
+    public virtual async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
@@ -87,10 +87,7 @@ public abstract class Repository<TEntity, TEntityId>
         var items = response.Items;
         var docs = items.Select(Document.FromAttributeMap);
 
-        var records = docs.Select(
-            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
-                   throw new InvalidCastException(
-                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);
@@ -105,7 +102,7 @@ public abstract class Repository<TEntity, TEntityId>
     /// <param name="cancellationToken"></param>
     /// <returns>Object of TEntity type, which is first found<br/>
     /// Failure when no record was found</returns>
-    public virtual async Task<Result<TEntity>> GetFirst(
+    public virtual async Task<Result<TEntity>> GetFirstAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
@@ -129,9 +126,7 @@ public abstract class Repository<TEntity, TEntityId>
 
         var doc = Document.FromAttributeMap(item);
 
-        var record = JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc.ToJson()) ??
-                     throw new InvalidCastException(
-                         $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}");
+        var record = _dataModelService.ConvertDocumentToDataModel(doc);
         var entity = record.ToDomainModel();
 
         return entity;
@@ -148,10 +143,7 @@ public abstract class Repository<TEntity, TEntityId>
         await batch.ExecuteAsync(cancellationToken);
 
         var docs = batch.Results;
-        var records = docs.Select(
-            doc => JsonConvert.DeserializeObject<IDataModel<TEntity>>(doc) ??
-                   throw new InvalidCastException(
-                       $"Cannot convert DynamoDb record to {typeof(IDataModel<TEntity>).Name}"));
+        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);

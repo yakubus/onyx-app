@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Domain.Budgets;
 using Budget.Domain.Categories;
 using Budget.Domain.Subcategories;
@@ -8,19 +9,28 @@ namespace Budget.Infrastructure.Data.DataModels.Categories;
 
 internal sealed class CategoryDataModel : IDataModel<Category>
 {
-    public Guid Id { get; set; }
-    public Guid BudgetId { get; set; }
-    public string Name { get; set; }
-    public IEnumerable<Guid> SubcategoriesId { get; set; }
+    public Guid Id { get; init; }
+    public Guid BudgetId { get; init; }
+    public string Name { get; init; }
+    public IEnumerable<Guid> SubcategoriesId { get; init; }
 
-    public static CategoryDataModel FromDomainModel(Category category) =>
-        new()
-        {
-            Id = category.Id.Value,
-            BudgetId = category.BudgetId.Value,
-            Name = category.Name.Value,
-            SubcategoriesId = category.SubcategoriesId.Select(sid => sid.Value)
-        };
+    private CategoryDataModel(Category category)
+    {
+        Id = category.Id.Value;
+        BudgetId = category.BudgetId.Value;
+        Name = category.Name.Value;
+        SubcategoriesId = category.SubcategoriesId.Select(sid => sid.Value);
+    }
+
+    private CategoryDataModel(Document doc)
+    {
+        Id = doc[nameof(Id)].AsGuid();
+        BudgetId = doc[nameof(BudgetId)].AsGuid();
+        Name = doc[nameof(Name)];
+        SubcategoriesId = doc[nameof(SubcategoriesId)].AsArrayOfString().Select(Guid.Parse);
+    }
+
+    public static CategoryDataModel FromDomainModel(Category category) => new(category);
 
     public Type GetDomainModelType() => typeof(Category);
 
@@ -51,4 +61,6 @@ internal sealed class CategoryDataModel : IDataModel<Category>
                    typeof(CategoryDataModel),
                    typeof(Category));
     }
+
+    public static CategoryDataModel FromDocument(Document doc) => new(doc);
 }

@@ -24,7 +24,7 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
         _budgetContext = budgetContext;
     }
 
-    public override async Task<Result<TEntity>> GetFirst(string query, CancellationToken cancellationToken = default)
+    public override async Task<Result<TEntity>> GetFirstAsync(string query, CancellationToken cancellationToken = default)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
 
@@ -37,7 +37,7 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
 
-        return await base.GetFirst(combinedQuery, cancellationToken);
+        return await base.GetFirstAsync(combinedQuery, cancellationToken);
     }
 
     public override async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
@@ -51,10 +51,10 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        return await GetWhere($"BudgetId = '{budgetId.Value}'", cancellationToken);
+        return await GetWhereAsync($"BudgetId = '{budgetId.Value}'", cancellationToken);
     }
 
-    public override async Task<Result<IEnumerable<TEntity>>> GetWhere(
+    public override async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
@@ -69,6 +69,6 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
 
-        return await base.GetWhere(combinedQuery, cancellationToken);
+        return await base.GetWhereAsync(combinedQuery, cancellationToken);
     }
 }
