@@ -1,4 +1,9 @@
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import {
+  Link,
+  Outlet,
+  createFileRoute,
+  redirect,
+} from "@tanstack/react-router";
 
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
@@ -16,6 +21,16 @@ const navLinks = [
 
 export const Route = createFileRoute("/_dashboard-layout")({
   component: Layout,
+  beforeLoad: ({ context: { user }, location }) => {
+    if (!user || !user.id) {
+      throw redirect({
+        to: "/",
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+  },
 });
 
 function Layout() {
