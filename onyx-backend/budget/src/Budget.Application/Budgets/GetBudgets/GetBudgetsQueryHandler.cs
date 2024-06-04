@@ -35,6 +35,6 @@ internal sealed class GetBudgetsQueryHandler : IQueryHandler<GetBudgetsQuery, IE
             return budgetsGetResult.Error;
         }
 
-        return Result.Create(budgetsGetResult.Value.Select(BudgetModel.FromDomainModel));
+        return Result.Create(budgetsGetResult.Value.Select(b => BudgetModel.FromDomainModel(b)));
     }
 }

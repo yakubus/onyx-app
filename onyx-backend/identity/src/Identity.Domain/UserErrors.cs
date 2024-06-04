@@ -23,6 +23,12 @@ internal static class UserErrors
     internal static readonly Error NotLoggedIn = new (
         "User.NotLoggedIn",
         "User is not logged in");
+    internal static readonly Error VerificationCodeCannotBeReGenerated = new(
+        "User.VerificationCode.CannotReGenerate",
+        "The verification code was not previously requested");
+    internal static readonly Error BudgetAlreadyAdded = new(
+        "User.BudgetIds.BudgetAlreadyAdded",
+        "User is already a member of this budget");
 
     internal static Error UserLocked(int seconds) => new (
         "User.Locked",

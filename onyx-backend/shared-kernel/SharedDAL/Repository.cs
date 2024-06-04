@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Models.Responses;

@@ -27,27 +27,27 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
 
         if (subcategoryGetResult.IsFailure)
         {
-            return Result.Failure(subcategoryGetResult.Error);
+            return subcategoryGetResult.Error;
         }
 
         var subcategory = subcategoryGetResult.Value;
 
-        var categoryGetResult = _categoryRepository.GetFirst(
-            category => category.SubcategoriesId.Any(sId => sId == subcategory.Id), 
+        var categoryGetResult = await _categoryRepository.GetFirstAsync(
+            $"CONTAINS (SubcategoriesId, '{subcategory.Id.Value}')",
             cancellationToken);
 
         if (categoryGetResult.IsFailure)
         {
-            return Result.Failure(categoryGetResult.Error);
+            return categoryGetResult.Error;
         }
 
-        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
-            t => t.SubcategoryId == subcategoryId,
+        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
+            $"SubcategoryId = '{subcategoryId.Value}'",
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)
         {
-            return Result.Failure(relatedTransactionsGetResult.Error);
+            return relatedTransactionsGetResult.Error;
         }
 
         var relatedTransactions = relatedTransactionsGetResult.Value.ToList();
@@ -67,7 +67,7 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
 
         if (categoryUpdateResult.IsFailure)
         {
-            return Result.Failure(categoryUpdateResult.Error);
+            return categoryUpdateResult.Error;
         }
 
         var transactionsUpdateResult =
@@ -75,14 +75,14 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
 
         if (transactionsUpdateResult.IsFailure)
         {
-            return Result.Failure(transactionsUpdateResult.Error);
+            return transactionsUpdateResult.Error;
         }
 
         var subcategoryRemoveResult = await _subcategoryRepository.RemoveAsync(subcategory.Id, cancellationToken);
 
         if (subcategoryRemoveResult.IsFailure)
         {
-            return Result.Failure(subcategoryRemoveResult.Error);
+            return subcategoryRemoveResult.Error;
         }
 
         return Result.Success();

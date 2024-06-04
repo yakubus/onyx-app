@@ -11,10 +11,10 @@ internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
     {
     }
 
-    public Result<User> GetByEmailAsync(
+    public async Task<Result<User>> GetByEmailAsync(
         Domain.Email email,
         CancellationToken cancellationToken) =>
-        GetFirstAsync(
-            u => u.Email == email,
+        await GetFirstAsync(
+            $"Email = '{email.Value}'",
             cancellationToken);
 }

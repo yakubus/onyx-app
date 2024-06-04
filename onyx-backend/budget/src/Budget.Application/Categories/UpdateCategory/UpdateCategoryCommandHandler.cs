@@ -23,7 +23,7 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
 
         if (categoryGetResult.IsFailure)
         {
-            return Result.Failure<CategoryModel>(categoryGetResult.Error);
+            return categoryGetResult.Error;
         }
 
         var category = categoryGetResult.Value;
@@ -32,21 +32,21 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
 
         if (categoryChangeNameResult.IsFailure)
         {
-            return Result.Failure<CategoryModel>(categoryChangeNameResult.Error);
+            return categoryChangeNameResult.Error;
         }
 
-        var categoryIsNotUniqueResult = _categoryRepository.GetByName(category.Name, cancellationToken);
+        var categoryIsNotUniqueResult = await _categoryRepository.GetByNameAsync(category.Name, cancellationToken);
 
         if (categoryIsNotUniqueResult.IsSuccess)
         {
-            return Result.Failure<CategoryModel>(UpdateCategoryErrors.CategoryAlreadyExistsError);
+            return UpdateCategoryErrors.CategoryAlreadyExistsError;
         }
 
         var categoryUpdateResult = await _categoryRepository.UpdateAsync(category, cancellationToken);
 
         if (categoryUpdateResult.IsFailure)
         {
-            return Result.Failure<CategoryModel>(categoryUpdateResult.Error);
+            return categoryUpdateResult.Error;
         }
 
         category = categoryUpdateResult.Value;
@@ -57,7 +57,7 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
 
         if (subcategoriesGetResult.IsFailure)
         {
-            return Result.Failure<CategoryModel>(subcategoriesGetResult.Error);
+            return subcategoriesGetResult.Error;
         }
 
         var subcategories = subcategoriesGetResult.Value;

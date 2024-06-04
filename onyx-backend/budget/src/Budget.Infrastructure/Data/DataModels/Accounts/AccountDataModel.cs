@@ -2,6 +2,7 @@
 using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
 using Models.DataTypes;
+using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
 using BindingFlags = System.Reflection.BindingFlags;
 

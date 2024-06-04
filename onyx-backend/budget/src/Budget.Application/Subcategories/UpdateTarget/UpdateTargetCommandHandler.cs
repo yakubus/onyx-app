@@ -59,7 +59,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
 
         var newTarget = subcategory.Target!;
 
-        var targetTransactResult = AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
+        var targetTransactResult = await AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
 
         if (targetTransactResult.IsFailure)
         {
@@ -77,18 +77,20 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
     }
 
 
-    private Result AddExistingTransactionsForTarget(
+    private async Task<Result> AddExistingTransactionsForTarget(
         Subcategory subcategory,
         Target target,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
-            t => t.SubcategoryId != null &&
-                 t.SubcategoryId == subcategory.Id &&
-                 t.TransactedAt.Month >= target.StartedAt.Month &&
-                 t.TransactedAt.Year >= target.StartedAt.Year &&
-                 t.TransactedAt.Month <= target.UpToMonth.Month &&
-                 t.TransactedAt.Year <= target.UpToMonth.Year,
+        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
+            $"""
+             SubcategoryId IS NOT NULL
+             AND SubcategoryId = '{subcategory.Id.Value}'
+             AND TransactedAtMonth >= {target.StartedAt.Month}
+             AND TransactedAtYear >= {target.StartedAt.Year}
+             AND TransactedAtMonth <= {target.UpToMonth.Month}
+             AND TransactedAtYear <= {target.UpToMonth.Year}
+             """,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

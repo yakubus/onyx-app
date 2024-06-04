@@ -1,5 +1,4 @@
 ﻿using Models.Responses;
-using System.Linq.Expressions;
 
 namespace Budget.Domain.Counterparties;
 
@@ -24,4 +23,6 @@ public interface ICounterpartyRepository
     Task<Result<IEnumerable<Counterparty>>> GetManyByIdAsync(
         IEnumerable<CounterpartyId> ids,
         CancellationToken cancellationToken = default);
+
+    Task<Result<IEnumerable<Counterparty>>> GetAllAsync(CancellationToken cancellationToken);
 }

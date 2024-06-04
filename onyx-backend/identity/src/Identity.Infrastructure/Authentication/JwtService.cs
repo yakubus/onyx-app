@@ -52,6 +52,27 @@ internal sealed class JwtService : IJwtService
                 Result.Success(tokenValue);
     }
 
+    public Result<string> GenerateLongLivedToken()
+    {
+        var signingCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            _options.Issuer,
+            _options.Audience,
+            null,
+            null,
+            DateTime.UtcNow.AddMinutes(_options.ExpireInLongMinutes));
+
+        var tokenValue = new JwtSecurityTokenHandler()
+            .WriteToken(token);
+
+        return tokenValue is null ?
+            Result.Failure<string>(AuthenticationFailedError) :
+            Result.Success(tokenValue);
+    }
+
     public Result<string> GetUserIdFromToken(string encodedToken)
     {
         try

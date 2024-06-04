@@ -31,10 +31,11 @@ public sealed class SubcategoriesController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetToAssignAmount(
-        [FromRoute] Guid budgetId,
+        [FromQuery] int month,
+        [FromQuery] int year,
         CancellationToken cancellationToken)
     {
-        var command = new GetToAssignQuery();
+        var command = new GetToAssignQuery(month, year);
 
         var result = await _sender.Send(command, cancellationToken);
 

@@ -49,7 +49,7 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
 
         var filter = GetTransactionFilters.GetFilter(query, request);
 
-        var transactionsGetResult = _transactionRepository.GetWhere(filter, cancellationToken);
+        var transactionsGetResult = await _transactionRepository.GetWhereAsync(filter, cancellationToken);
 
         if (transactionsGetResult.IsFailure)
         {

@@ -4,12 +4,11 @@ using Models.Responses;
 
 namespace Budget.Infrastructure.Contexts;
 
-//TODO change to internal
-public sealed class UserContext : IUserContext
+internal sealed class UserContext : IUserContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private const string userIdClaimName = "Id";
-    private const string userCurrencyClaimName = "BalanceCurrency";
+    private const string userCurrencyClaimName = "Currency";
     private readonly Error _userIdClaimNotFound = new(
         "UserContext.UserIdNotFound",
         "Cannot retrieve user ID");

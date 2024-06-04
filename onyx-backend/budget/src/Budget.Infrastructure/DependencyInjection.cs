@@ -6,11 +6,14 @@ using Budget.Domain.Categories;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
+using Budget.Infrastructure.Authorization;
+using Budget.Infrastructure.Authorization.BudgetMember;
 using Budget.Infrastructure.Contexts;
 using Budget.Infrastructure.CurrencyServices;
 using Budget.Infrastructure.CurrencyServices.NbpClient;
 using Budget.Infrastructure.Data.Services;
 using Budget.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedDAL;
@@ -25,6 +28,7 @@ public static class DependencyInjection
         services.AddPersistence();
         services.AddCurrencyConverter(configuration);
         services.AddContexts();
+        //services.AddAuthorization(); TODO temporarly disabled
     }
 
     private static void AddPersistence(this IServiceCollection services)
@@ -57,5 +61,15 @@ public static class DependencyInjection
 
         services.AddScoped<IBudgetContext, BudgetContext>();
         services.AddScoped<IUserContext, UserContext>();
+    }
+
+    private static void AddAuthorization(this IServiceCollection services)
+    {
+        //Check if works
+        services.AddAuthorizationCore(AuthorizationPolicyProvider.Configure);
+
+        services.AddTransient<AuthorizationErrorWriter>();
+        services.AddTransient<IAuthorizationRequirement, BudgetMemberRequirement>();
+        services.AddTransient<IAuthorizationHandler, BudgetMemberAuthorizationHandler>();
     }
 }

@@ -39,7 +39,7 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
         }
 
         var category = categoryCreateResult.Value;
-        var categoryIsNotUniqueResult = _categoryRepository.GetByName(category.Name, cancellationToken);
+        var categoryIsNotUniqueResult = await _categoryRepository.GetByNameAsync(category.Name, cancellationToken);
 
         if (categoryIsNotUniqueResult.IsSuccess)
         {

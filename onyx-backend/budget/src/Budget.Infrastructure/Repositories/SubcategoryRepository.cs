@@ -16,4 +16,5 @@ internal sealed class SubcategoryRepository : BaseBudgetRepository<Subcategory, 
         dataModelService)
     {
     }
+
 }

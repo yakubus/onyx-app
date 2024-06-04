@@ -13,6 +13,14 @@ namespace Identity.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static void InjectInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddPersistence(configuration);
+        services.AddAuthentication(configuration);
+        services.AddContexts();
+        services.AddMessanger(configuration);
+    }
+
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<DbContext>();
@@ -24,6 +32,14 @@ public static class DependencyInjection
         services.ConfigureOptions<MessangerOptionsSetup>();
         services.AddSingleton<MessangerClient>();
         services.AddScoped<IEmailService, EmailService>();
+    }
+
+    private static void AddContexts(this IServiceCollection services)
+    {
+        //TODO consider
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IUserContext, UserContext>();
     }
 
     private static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)

@@ -23,10 +23,17 @@ public sealed record UserRepresentationModel
     public static readonly string CurrencyClaimName = nameof(Currency);
     public string Currency { get; init; }
 
-    public static readonly string IsAuthenticatedClaimName = nameof(IsAuthenticated);
-    public string IsAuthenticated { get; init; }
+    public static readonly string BudgetIdsClaimName = nameof(BudgetIdsClaimName);
+    public string BudgetIds { get; init; }
 
-    private UserRepresentationModel(long tokenCreatedTimestamp, string email, bool emailVerified, string id, string username, string currency, string isAuthenticated)
+    private UserRepresentationModel(
+        long tokenCreatedTimestamp,
+        string email,
+        bool emailVerified,
+        string id,
+        string username,
+        string currency,
+        string budgetIds)
     {
         TokenCreatedTimestamp = tokenCreatedTimestamp;
         Email = email;
@@ -34,7 +41,7 @@ public sealed record UserRepresentationModel
         Id = id;
         Username = username;
         Currency = currency;
-        IsAuthenticated = isAuthenticated;
+        BudgetIds = budgetIds;
     }
 
     internal static UserRepresentationModel FromUser(User user) =>
@@ -45,7 +52,7 @@ public sealed record UserRepresentationModel
             user.Id.Value.ToString(),
             user.Email.Value,
             user.Currency.Code,
-            user.IsAuthenticated.ToString());
+            ""/*string.Join(',', user.BudgetIds)*/);
 
     internal Claim[] ToClaims()
     {
@@ -57,7 +64,7 @@ public sealed record UserRepresentationModel
             new Claim(IdClaimName, Id),
             new Claim(UsernameClaimName, Username),
             new Claim(CurrencyClaimName, Currency),
-            new Claim(IsAuthenticatedClaimName, IsAuthenticated)
+            new Claim(BudgetIdsClaimName, BudgetIds),
         };
     }
 }

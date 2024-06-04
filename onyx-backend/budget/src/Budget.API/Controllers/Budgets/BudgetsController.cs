@@ -1,5 +1,6 @@
 ﻿using Budget.API.Controllers.Budgets.Requests;
 using Budget.Application.Budgets.AddBudget;
+using Budget.Application.Budgets.GetBudgetDetails;
 using Budget.Application.Budgets.GetBudgets;
 using Budget.Application.Budgets.Models;
 using Budget.Application.Budgets.RemoveBudget;
@@ -41,6 +42,24 @@ public sealed class BudgetsController : ControllerBase
             NotFound(result);
     }
 
+    [HttpGet("{budgetId}")]
+    [ProducesResponseType(typeof(Result<BudgetModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
+    [Consumes(typeof(UpdateBudgetRequest), "application/json")]
+    public async Task<IActionResult> GetBudgetDetails(
+        [FromRoute] Guid budgetId,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetBudgetDetailsQuery(budgetId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.IsSuccess ?
+            Ok(result) :
+            NotFound(result);
+    }
 
     [HttpPost]
     [ProducesResponseType(typeof(Result<BudgetModel>), StatusCodes.Status200OK)]

@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
+using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Counterparties;

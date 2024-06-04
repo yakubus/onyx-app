@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Abstractions.Messaging;
+﻿using Abstractions.Messaging;
 using Budget.Application.Abstractions.Currency;
 using Budget.Application.Abstractions.Identity;
 using Budget.Application.Shared.Models;
@@ -37,6 +32,15 @@ internal sealed class GetToAssignQueryHandler : IQueryHandler<GetToAssignQuery, 
 
     public async Task<Result<MoneyModel>> Handle(GetToAssignQuery request, CancellationToken cancellationToken)
     {
+        var forMonthCreateResult = MonthDate.Create(request.Month, request.Year);
+
+        if (forMonthCreateResult.IsFailure)
+        {
+            return forMonthCreateResult.Error;
+        }
+
+        var forMonth = forMonthCreateResult.Value;
+
         var accountsGetResult = await _accountRepository.GetAllAsync(cancellationToken);
 
         if (accountsGetResult.IsFailure)
@@ -98,7 +102,10 @@ internal sealed class GetToAssignQueryHandler : IQueryHandler<GetToAssignQuery, 
         var subcategories = subcategoriesGetResult.Value;
 
         var overallAssignedAmount = new Money(
-            subcategories.SelectMany(s => s.Assignments).Select(a => a.AssignedAmount).Sum(m => m.Amount),
+            subcategories.SelectMany(s => s.Assignments)
+                .Where(a => a.Month == forMonth)
+                .Select(a => a.AssignedAmount)
+                .Sum(m => m.Amount),
             budgetCurrency);
 
         var toAssign = overallBalance - overallAssignedAmount;

@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Budget.Functions": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7059",
-      "launchBrowser": false
-    }
-  }
-}

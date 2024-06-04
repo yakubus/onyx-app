@@ -6,6 +6,7 @@ using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
+using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Data.DataModels.Transactions;
@@ -17,8 +18,12 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
     public Guid AccountId { get; init; }
     public Guid? SubcategoryId { get; init; }
     public Guid? CounterpartyId { get; init; }
-    //[JsonConverter(typeof(DateTimeConverter))] TODO consider using object DateTime
-    public DateTime TransactedAt { get; init; }
+    public int TransactedAtDay { get; init; }
+    public int TransactedAtMonth { get; init; }
+    public int TransactedAtYear { get; init; }
+    public int TransactedAtHour { get; init; }
+    public int TransactedAtMinute { get; init; }
+    public int TransactedAtSecond { get; init; }
     public decimal AmountAmount { get; init; }
     public string AmountCurrency { get; init; }
     public decimal BudgetAmountAmount { get; init; }
@@ -28,12 +33,18 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
 
     public TransactionDataModel(Transaction transaction)
     {
+        var transactedAt = transaction.TransactedAt.ToUniversalTime();
         Id = transaction.Id.Value;
         BudgetId = transaction.BudgetId.Value;
         AccountId = transaction.AccountId.Value;
         SubcategoryId = transaction.SubcategoryId?.Value;
         CounterpartyId = transaction.CounterpartyId?.Value;
-        TransactedAt = transaction.TransactedAt;
+        TransactedAtDay = transactedAt.Day;
+        TransactedAtMonth = transactedAt.Month;
+        TransactedAtYear = transactedAt.Year;
+        TransactedAtHour = transactedAt.Hour;
+        TransactedAtMinute = transactedAt.Minute;
+        TransactedAtSecond = transactedAt.Second;
         AmountAmount = transaction.Amount.Amount;
         AmountCurrency = transaction.Amount.Currency.Code;
         BudgetAmountAmount = transaction.BudgetAmount.Amount;
@@ -49,7 +60,12 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
         AccountId = doc[nameof(AccountId)].AsGuid();
         SubcategoryId = doc[nameof(SubcategoryId)].AsGuid();
         CounterpartyId = doc[nameof(CounterpartyId)].AsGuid();
-        TransactedAt = doc[nameof(TransactedAt)].AsDateTime();
+        TransactedAtDay = doc[nameof(TransactedAtDay)].AsInt();
+        TransactedAtMonth = doc[nameof(TransactedAtMonth)].AsInt();
+        TransactedAtYear = doc[nameof(TransactedAtYear)].AsInt();
+        TransactedAtHour = doc[nameof(TransactedAtHour)].AsInt();
+        TransactedAtMinute = doc[nameof(TransactedAtMinute)].AsInt();
+        TransactedAtSecond = doc[nameof(TransactedAtSecond)].AsInt();
         AmountAmount = doc[nameof(AmountAmount)].AsDecimal();
         AmountCurrency = doc[nameof(AmountCurrency)];
         BudgetAmountAmount = doc[nameof(BudgetAmountAmount)].AsDecimal();
@@ -115,6 +131,15 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
             new Money(BudgetAmountAmount, budgetAmountCurrency),
             new Money(OriginalAmountAmount, originalAmountCurrency));
 
+        var transactedAt = new DateTime(
+            TransactedAtYear,
+            TransactedAtMonth,
+            TransactedAtDay,
+            TransactedAtHour,
+            TransactedAtMinute,
+            TransactedAtSecond,
+            DateTimeKind.Utc);
+
         return Activator.CreateInstance(
                    typeof(Transaction),
                    BindingFlags.Instance | BindingFlags.NonPublic,
@@ -123,7 +148,7 @@ internal sealed class TransactionDataModel : IDataModel<Transaction>
                        accountId,
                        amount,
                        originalAmount,
-                       TransactedAt,
+                       transactedAt,
                        subcategoryId,
                        counterpartyId,
                        budgetAmount,

@@ -12,17 +12,17 @@ public sealed class User : Entity<UserId>
     public Username Username { get; private set; }
     public Password PasswordHash { get; private set; }
     [JsonConverter(typeof(DateTimeConverter))]
-    public DateTime? LastLoggedInAt { get; private set; }
+    public DateTime LastLoggedInAt { get; private set; }
     [JsonConverter(typeof(DateTimeConverter))]
     public DateTime RegisteredAt { get; init; }
-    //TODO Convert to Refresh Tokens
-    public bool IsAuthenticated { get; private set; }
+    public string? LongLivedToken { get; private set; }
     public Currency Currency { get; private set; }
     public bool IsEmailVerified { get; private set; }
     public LoggingGuard Guard { get; init; }
     public bool IsPasswordForgotten { get; private set; }
     public bool IsEmailChangeRequested { get; private set; }
     public VerificationCode? VerificationCode { get; private set; }
+    
 
     [JsonConstructor]
     [System.Text.Json.Serialization.JsonConstructor]
@@ -30,15 +30,15 @@ public sealed class User : Entity<UserId>
         Email email,
         Username username,
         Password passwordHash,
-        DateTime? lastLoggedInAt,
+        DateTime lastLoggedInAt,
         DateTime registeredAt,
-        bool isAuthenticated,
         Currency currency,
         bool isEmailVerified,
         bool isPasswordForgotten,
         bool isEmailChangeRequested,
         VerificationCode? verificationCode,
         LoggingGuard guard,
+        string? longLivedToken,
         UserId? userId = null) : base(userId ?? new UserId())
     {
         Email = email;
@@ -46,13 +46,13 @@ public sealed class User : Entity<UserId>
         PasswordHash = passwordHash;
         LastLoggedInAt = lastLoggedInAt;
         RegisteredAt = registeredAt;
-        IsAuthenticated = isAuthenticated;
         Currency = currency;
         IsEmailVerified = isEmailVerified;
         IsPasswordForgotten = isPasswordForgotten;
         IsEmailChangeRequested = isEmailChangeRequested;
         VerificationCode = verificationCode;
         Guard = guard;
+        LongLivedToken = longLivedToken;
     }
 
     public static Result<User> Register(
@@ -82,30 +82,41 @@ public sealed class User : Entity<UserId>
             return Result.Failure<User>(passwordCreateResult.Error);
         }
 
-        var currencyCreateResult = Models.DataTypes.Currency.FromCode(currency);
+        var currencyCreateResult = Currency.FromCode(currency);
 
         if (currencyCreateResult.IsFailure)
         {
             return Result.Failure<User>(currencyCreateResult.Error);
         }
 
-        return new User(
+        var user = new User(
             emailCreateResult.Value,
             usernameCreateResult.Value,
             passwordCreateResult.Value,
-            null,
             DateTime.UtcNow,
-            false,
+            DateTime.UtcNow,
             currencyCreateResult.Value,
             false,
             false,
             false,
             null,
-            LoggingGuard.Create());
+            LoggingGuard.Create(),
+            null);
+
+        var verificationCode = user.GenerateVerificationCode();
+
+        user.SetVerificationCode(verificationCode);
+
+        return user;
     }
 
-    public Result LogIn(string passwordPlainText)
+    public Result LogIn(string passwordPlainText, string longLivedToken)
     {
+        if (!IsEmailVerified)
+        {
+            return UserErrors.EmailNotVerified;
+        }
+
         if (Guard.IsLocked)
         {
             return UserErrors.UserLocked(Guard.RemainingLockSeconds);
@@ -119,16 +130,16 @@ public sealed class User : Entity<UserId>
             return Result.Failure(passwordVerifyResult.Error);
         }
 
-        IsAuthenticated = true;
         LastLoggedInAt = DateTime.UtcNow;
         Guard.LoginSucceeded();
+        LongLivedToken = longLivedToken;
 
         return Result.Success();
     }
 
     public Result LogOut()
     {
-        IsAuthenticated = false;
+        LongLivedToken = null;
 
         return Result.Success();
     }
@@ -236,7 +247,7 @@ public sealed class User : Entity<UserId>
         return Result.Success(verificationCode);
     }
 
-    public Result VerifyEmail(string verificationCode)
+    public Result VerifyEmail(string verificationCode, string longLivedToken)
     {
         var verificationCodeResult = VerifyCode(verificationCode);
 
@@ -246,6 +257,7 @@ public sealed class User : Entity<UserId>
         }
 
         IsEmailVerified = true;
+        LongLivedToken = longLivedToken;
 
         return Result.Success();
     }
@@ -266,11 +278,6 @@ public sealed class User : Entity<UserId>
 
     public Result Remove(string passwordPlainText)
     {
-        if (!IsAuthenticated)
-        {
-            return UserErrors.NotLoggedIn;
-        }
-
         var passwordVerifyResult = PasswordHash.VerifyPassword(passwordPlainText);
 
         if (passwordVerifyResult.IsFailure)
@@ -290,6 +297,22 @@ public sealed class User : Entity<UserId>
         return code;
     }
 
+    public Result<VerificationCode> ReGenerateVerificationCode()
+    {
+        if (VerificationCode is null)
+        {
+            return UserErrors.VerificationCodeCannotBeReGenerated;
+        }
+
+        var code = VerificationCode.Generate();
+
+        VerificationCode = code;
+
+        return code;
+    }
+
+    public void SetLongLivedToken(string token) => LongLivedToken = token;
+
     private Result VerifyCode(string code)
     {
         var isSuccess = VerificationCode?.Verify(code) ?? false;
@@ -303,4 +326,6 @@ public sealed class User : Entity<UserId>
             Result.Success() :
             Result.Failure(UserErrors.VerificationCodeInvalid);
     }
+
+    private void SetVerificationCode(VerificationCode code) => VerificationCode = code;
 }
