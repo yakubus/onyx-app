@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import HeroImageBackground from "@/assets/images/hero/hero-bg.png";
 import HeroImage from "@//assets/images/hero/hero-img.svg";
 
+
 const Hero = () => {
     return (
         <div className="container max-w-full lg:h-screen lg:max-w-1440px p-0 m-0 ml-0 mx-auto lg:ml-122px mt-28 mb-10">

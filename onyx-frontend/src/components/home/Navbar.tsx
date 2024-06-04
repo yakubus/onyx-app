@@ -6,7 +6,10 @@ const Navbar = () => {
       <div className="flex h-30px cursor-pointer items-center text-xl font-bold leading-7 text-foreground">
         ONYX
       </div>
-      <LoginButton />
+      <div className="z-30">
+        <LoginButton />
+      </div>
+      
     </div>
   );
 };
