@@ -74,7 +74,7 @@ const LoginButton = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="mx-auto mt-16 h-16 w-56 rounded-full text-base font-semibold lg:mx-0"
+          className="mt-0 h-30px w-26 rounded-full text-base font-semibold lg:mx-0"
         >
           Login
         </Button>
