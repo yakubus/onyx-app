@@ -32,40 +32,35 @@ internal sealed class GetToAssignQueryHandler : IQueryHandler<GetToAssignQuery, 
 
     public async Task<Result<MoneyModel>> Handle(GetToAssignQuery request, CancellationToken cancellationToken)
     {
-        var forMonthCreateResult = MonthDate.Create(request.Month, request.Year);
+        var (forMonthCreateResult, getBudgetIdResult) = (
+            MonthDate.Create(request.Month, request.Year), 
+            _budgetContext.GetBudgetId()
+            );
 
-        if (forMonthCreateResult.IsFailure)
+        if (Result.Aggregate([forMonthCreateResult, getBudgetIdResult]) 
+                is var createResult && createResult.IsFailure)
         {
-            return forMonthCreateResult.Error;
+            return createResult.Error;
         }
 
-        var forMonth = forMonthCreateResult.Value;
+        var (forMonth, budgetId) = (forMonthCreateResult.Value, new BudgetId(getBudgetIdResult.Value));
+        
+        var (accountsGetTask, subcategoriesGetTask) = (
+            _accountRepository.GetAllAsync(cancellationToken),
+            _subcategoryRepository.GetAllAsync(cancellationToken)
+            );
 
-        var accountsGetResult = await _accountRepository.GetAllAsync(cancellationToken);
+        await Task.WhenAll(accountsGetTask, subcategoriesGetTask);
 
-        if (accountsGetResult.IsFailure)
+        var (accountsGetResult, subcategoriesGetResult) = (accountsGetTask.Result, subcategoriesGetTask.Result);
+
+        if (Result.Aggregate([accountsGetResult, subcategoriesGetResult]) 
+                is var getResult && getResult.IsFailure)
         {
-            return accountsGetResult.Error;
+            return getResult.Error;
         }
 
-        var categoriesGetResult = await _categoryRepository.GetAllAsync(cancellationToken);
-
-        if (categoriesGetResult.IsFailure)
-        {
-            return categoriesGetResult.Error;
-        }
-
-        var accounts = accountsGetResult.Value;
-        var categories = categoriesGetResult.Value;
-
-        var getBudgetIdResult = _budgetContext.GetBudgetId();
-
-        if (getBudgetIdResult.IsFailure)
-        {
-            return getBudgetIdResult.Error;
-        }
-
-        var budgetId = new BudgetId(getBudgetIdResult.Value);
+        var (accounts, subcategories) = (accountsGetResult.Value, subcategoriesGetResult.Value);
 
         var budgetGetResult = await _budgetRepository.GetByIdAsync(budgetId, cancellationToken);
 
@@ -89,17 +84,6 @@ internal sealed class GetToAssignQueryHandler : IQueryHandler<GetToAssignQuery, 
         }
 
         var overallBalance = new Money(overallBalanceGetResult.Select(r => r.Value).Sum(m => m.Amount), budgetCurrency);
-
-        var subcategoriesGetResult = await _subcategoryRepository.GetManyByIdAsync(
-            categories.SelectMany(c => c.SubcategoriesId),
-            cancellationToken);
-
-        if (subcategoriesGetResult.IsFailure)
-        {
-            return subcategoriesGetResult.Error;
-        }
-
-        var subcategories = subcategoriesGetResult.Value;
 
         var overallAssignedAmount = new Money(
             subcategories.SelectMany(s => s.Assignments)

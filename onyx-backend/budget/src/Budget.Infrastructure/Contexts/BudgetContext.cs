@@ -1,13 +1,19 @@
 ﻿using System.Text.RegularExpressions;
 using Budget.Application.Abstractions.Identity;
+using Budget.Domain.Budgets;
 using Microsoft.AspNetCore.Http;
 using Models.Responses;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Budget.Infrastructure.Contexts;
 
 internal sealed class BudgetContext : IBudgetContext
 {
-    private static readonly Regex budgetIdRegex = new (@"^/api/v1/(?<budgetId>[^/]+)(/.*)?$", RegexOptions.Compiled);
+    private static readonly IReadOnlyCollection<Regex> budgetIdPathRegexes =
+    [
+        new(@"^/api/v1/(?<budgetId>[^/]+)(/.*)?$", RegexOptions.Compiled),
+        new(@"^/api/v1/budgets/(?<budgetId>[^/]+)(/.*)?$", RegexOptions.Compiled),
+    ];
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public BudgetContext(IHttpContextAccessor httpContextAccessor)
@@ -36,11 +42,23 @@ internal sealed class BudgetContext : IBudgetContext
 
     private static Guid? MatchPath(string path)
     {
-        var budgetId = Guid.Empty;
+        foreach (var regex in budgetIdPathRegexes)
+        {
+            var isValid = regex.Match(path) is var match && match.Success;
 
-        _ = budgetIdRegex.Match(path) is { Success: true } match &&
-            Guid.TryParse(match.Groups["budgetId"].Value, out budgetId);
-            
-        return budgetId == Guid.Empty ? null : budgetId;
+            if (!isValid)
+            {
+                continue;
+            }
+
+            var isGuid = Guid.TryParse(match.Groups["budgetId"].Value, out var budgetId);
+
+            if (isGuid)
+            {
+                return budgetId;
+            }
+        }
+
+        return null;
     }
 }
