@@ -4,7 +4,6 @@ using Budget.Application.Abstractions.Identity;
 using Budget.Application.Shared.Models;
 using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
-using Budget.Domain.Categories;
 using Budget.Domain.Subcategories;
 using Models.DataTypes;
 using Models.Responses;
@@ -13,17 +12,20 @@ namespace Budget.Application.Subcategories.GetToAssign;
 
 internal sealed class GetToAssignQueryHandler : IQueryHandler<GetToAssignQuery, MoneyModel>
 {
-    private readonly ICategoryRepository _categoryRepository;
     private readonly ISubcategoryRepository _subcategoryRepository;
     private readonly IAccountRepository _accountRepository;
     private readonly ICurrencyConverter _currencyConverter;
     private readonly IBudgetContext _budgetContext;
     private readonly IBudgetRepository _budgetRepository;
 
-    public GetToAssignQueryHandler(IAccountRepository accountRepository, ICategoryRepository categoryRepository, ICurrencyConverter currencyConverter, IBudgetContext budgetContext, IBudgetRepository budgetRepository, ISubcategoryRepository subcategoryRepository)
+    public GetToAssignQueryHandler(
+        IAccountRepository accountRepository,
+        ICurrencyConverter currencyConverter,
+        IBudgetContext budgetContext,
+        IBudgetRepository budgetRepository,
+        ISubcategoryRepository subcategoryRepository)
     {
         _accountRepository = accountRepository;
-        _categoryRepository = categoryRepository;
         _currencyConverter = currencyConverter;
         _budgetContext = budgetContext;
         _budgetRepository = budgetRepository;
