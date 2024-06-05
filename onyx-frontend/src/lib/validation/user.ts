@@ -14,7 +14,7 @@ export type User = z.infer<typeof UserSchema>;
 export const UserWithTokenSchema = UserSchema.extend({
   accessToken: z.string(),
 });
-export type UserWithToken = z.infer<typeof UserSchema>;
+export type UserWithToken = z.infer<typeof UserWithTokenSchema>;
 
 export const UserWithTokenResultSchema = ResultSchema.extend({
   value: UserWithTokenSchema,

@@ -21,8 +21,8 @@ const navLinks = [
 
 export const Route = createFileRoute("/_dashboard-layout")({
   component: Layout,
-  beforeLoad: ({ context: { user }, location }) => {
-    if (!user || !user.id) {
+  beforeLoad: ({ context: { auth }, location }) => {
+    if (!auth.isAuthenticated) {
       throw redirect({
         to: "/",
         search: {

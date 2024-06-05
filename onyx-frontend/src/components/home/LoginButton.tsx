@@ -1,8 +1,7 @@
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import useSignIn from "react-auth-kit/hooks/useSignIn";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,10 +15,14 @@ import {
 } from "@/components/ui/dialog";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { UserWithTokenResult } from "@/lib/validation/user";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { sleep } from "@/lib/utils";
 
 const LoginButton = () => {
+  const router = useRouter();
   const navigate = useNavigate();
-  const signIn = useSignIn();
+  const auth = useAuth();
+
   const form = useForm<FieldValues>({
     defaultValues: {
       email: "",
@@ -42,23 +45,11 @@ const LoginButton = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
-      const { accessToken, id, budgetIds, currency, email, username } =
-        data.value;
-      signIn({
-        auth: {
-          token: accessToken,
-          type: "Bearer",
-        },
-        userState: {
-          id,
-          budgetIds,
-          currency,
-          email,
-          username,
-        },
-      });
-      navigate({ to: "/budget" });
+    onSuccess: async (data) => {
+      await auth.login(data.value);
+      await sleep(1);
+      await router.invalidate();
+      await navigate({ to: "/budget" });
     },
   });
 

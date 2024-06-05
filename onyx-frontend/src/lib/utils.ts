@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import type { UserWithToken } from "@/lib/validation/user";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -23,3 +25,21 @@ export const getErrorMessage = (error: unknown): string => {
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function getStoredUser(key: string): UserWithToken | null {
+  return localStorage.getItem(key)
+    ? JSON.parse(localStorage.getItem(key)!)
+    : null;
+}
+
+export function setStoredUser(user: UserWithToken | null, key: string) {
+  if (user) {
+    localStorage.setItem(key, JSON.stringify(user));
+  } else {
+    localStorage.removeItem(key);
+  }
+}
