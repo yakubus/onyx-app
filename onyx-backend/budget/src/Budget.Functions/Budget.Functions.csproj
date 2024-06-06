@@ -21,6 +21,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.7.0" />
     <PackageReference Include="Amazon.Lambda.Core" Version="2.2.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
@@ -31,6 +32,7 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\shared-kernel\LambdaKernel\LambdaKernel.csproj" />
 		<ProjectReference Include="..\Budget.Application\Budget.Application.csproj" />
 		<ProjectReference Include="..\Budget.Infrastructure\Budget.Infrastructure.csproj" />
 	</ItemGroup>

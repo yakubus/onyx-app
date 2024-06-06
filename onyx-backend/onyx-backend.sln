@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messanger.Lambda", "messang
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Functions", "budget\src\Budget.Functions\Budget.Functions.csproj", "{8692EA88-B603-4CDC-93A4-0303350DB23F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaKernel", "shared-kernel\LambdaKernel\LambdaKernel.csproj", "{F8B0A1F2-5C34-430B-98D2-B2589729A8C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{8692EA88-B603-4CDC-93A4-0303350DB23F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8692EA88-B603-4CDC-93A4-0303350DB23F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8692EA88-B603-4CDC-93A4-0303350DB23F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +152,7 @@ Global
 		{7ABD2F44-EAE5-414D-9073-FD059068C3F6} = {82F02935-DD11-48AC-AB03-6B1C545BB661}
 		{2FFBA381-B867-4A11-B290-00EAF8C5244A} = {6714003C-61CF-4DFD-B468-778FDF651BC6}
 		{8692EA88-B603-4CDC-93A4-0303350DB23F} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
+		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {515E49A0-2D84-477F-A6B4-623EDA0F5216}
