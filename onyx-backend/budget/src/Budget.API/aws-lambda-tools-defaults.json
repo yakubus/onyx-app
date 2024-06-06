@@ -15,7 +15,7 @@
     "function-handler"     : "Budget.API",
     "function-url-enable"  : true,
     "framework"            : "net8.0",
-    "function-name"        : "OnyxBudget",
+    "function-name"        : "budget",
     "package-type"         : "Zip",
     "function-role"        : "arn:aws:iam::975049887576:role/lambda_exec_OnyxBudget",
     "function-architecture" : "x86_64",

@@ -1,8 +1,6 @@
 ﻿using Abstractions.Messaging;
 using Identity.Application.Abstractions.Authentication;
-using Identity.Application.Contracts.Errors;
 using Identity.Application.Contracts.Models;
-using Identity.Application.Contracts.Shared;
 using Identity.Domain;
 using Models.Responses;
 

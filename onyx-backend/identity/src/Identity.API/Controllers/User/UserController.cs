@@ -1,5 +1,4 @@
 ﻿using Identity.API.Controllers.User.Requests;
-using Identity.Application.Auth.RegisterUser;
 using Identity.Application.Contracts.Models;
 using Identity.Application.User.GetUser;
 using Identity.Application.User.LogoutUser;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Application.Abstractions.Authentication;
+﻿using Identity.Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Http;
 using Models.Responses;
 
