@@ -6,6 +6,7 @@ export const CategorySchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   subcategories: z.array(SubcategorySchema),
+  optimistic: z.boolean().optional(),
 });
 
 export const CategoryResultSchema = ResultSchema.extend({

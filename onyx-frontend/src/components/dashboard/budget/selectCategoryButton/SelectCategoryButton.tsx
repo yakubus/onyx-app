@@ -1,14 +1,12 @@
 import { FC, useState } from "react";
-import { useMutationState } from "@tanstack/react-query";
 
 import { ChevronDown } from "lucide-react";
-
-import { type Category } from "@/lib/validation/category";
 import LeftNavigation from "@/components/dashboard/budget/selectCategoryButton/LeftNavigation";
 import MiddleSection from "@/components/dashboard/budget/selectCategoryButton/MiddleSection";
 
 import { cn } from "@/lib/utils";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
+import { type Category } from "@/lib/validation/category";
 
 interface SelectCategoryButtonProps {
   activeCategoryId: string;
@@ -29,12 +27,8 @@ const SelectCategoryButton: FC<SelectCategoryButtonProps> = ({
   onSelect,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const { id } = category;
+  const { id, optimistic } = category;
   const isSelected = activeCategoryId === id;
-  const isDeleting = useMutationState({
-    filters: { mutationKey: ["deleteCategory", id], status: "pending" },
-    select: (mutation) => mutation.state.status,
-  });
 
   const selectRef = useClickOutside<HTMLLIElement>(() => {
     setIsEdit(false);
@@ -47,7 +41,7 @@ const SelectCategoryButton: FC<SelectCategoryButtonProps> = ({
         "cursor-pointer rounded-lg border border-input hover:bg-accent hover:text-accent-foreground",
         isSelected &&
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-        isDeleting.length && "bg-primary/50",
+        optimistic && "cursor-not-allowed opacity-70",
       )}
       onClick={onSelect}
     >

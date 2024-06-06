@@ -1,44 +1,58 @@
-import axios from "axios";
 import { queryOptions } from "@tanstack/react-query";
 
-import { CategoryResultSchema } from "@/lib/validation/category";
+import { privateApi } from "@/lib/axios";
 import { getErrorMessage } from "@/lib/utils";
+import { CategoryResultSchema } from "@/lib/validation/category";
 
-export const getCategories = async () => {
+export const getCategories = async (budgetId: string) => {
   try {
-    const { data } = await axios.get("/api/categories");
-    const result = CategoryResultSchema.safeParse(data);
-
-    if (!result.success) {
-      throw new Error("Validation failed.");
+    const { data } = await privateApi.get(`/${budgetId}/categories`);
+    const validatedData = CategoryResultSchema.safeParse(data);
+    if (!validatedData.success) {
+      console.log(validatedData.error.flatten());
+      throw new Error("Invalid data type.");
     }
 
-    const { value, isFailure, error } = result.data;
+    const { value, isFailure, error } = validatedData.data;
     if (isFailure) {
       throw new Error(error.message);
     }
 
     return value;
   } catch (error) {
+    console.error(getErrorMessage(error));
     throw new Error(getErrorMessage(error));
   }
 };
 
-export const getCategoriesQueryOptions = queryOptions({
-  queryKey: ["categories"],
-  queryFn: getCategories,
-});
+export const getCategoriesQueryOptions = (budgetId: string) =>
+  queryOptions({
+    queryKey: ["categories", budgetId],
+    queryFn: () => getCategories(budgetId),
+  });
 
-export const createCategory = (name: string) =>
-  axios.post("/api/categories", { name });
+export const createCategory = ({
+  budgetId,
+  name,
+}: {
+  budgetId: string;
+  name: string;
+}) => privateApi.post(`/${budgetId}/categories`, { name });
 
-export const deleteCategory = (id: string) =>
-  axios.delete(`/api/categories/${id}`);
+export const deleteCategory = ({
+  budgetId,
+  categoryId,
+}: {
+  budgetId: string;
+  categoryId: string;
+}) => privateApi.delete(`/${budgetId}/categories/${categoryId}`);
 
 export const editCategoryName = ({
-  id,
+  budgetId,
+  categoryId,
   newName,
 }: {
-  id: string;
+  budgetId: string;
+  categoryId: string;
   newName: string;
-}) => axios.put(`/api/categories/${id}`, { newName });
+}) => privateApi.put(`${budgetId}/categories/${categoryId}`, { newName });
