@@ -58,8 +58,8 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
           <TooltipTrigger asChild>
             <li className={cn("border-t", isPending && "opacity-50")}>
               <Link
-                to="/budget/$id"
-                params={{ id: budget.id }}
+                to="/budget/$budgetId"
+                params={{ budgetId: budget.id }}
                 className="grid w-full grid-cols-4 px-4 py-8 hover:bg-accent"
               >
                 <p>{budget.name}</p>

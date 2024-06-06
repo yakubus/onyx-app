@@ -16,7 +16,7 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ subcategories }) => {
         <p>Subcategory</p>
         <p>Assigned</p>
       </div>
-      {subcategories?.length && (
+      {subcategories && (
         <ul className="p-1">
           {subcategories.map((subcategory) => (
             <li

@@ -1,13 +1,10 @@
 import { FC } from "react";
-import { useMutationState } from "@tanstack/react-query";
 
-import { ChevronDown } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SelectCategoryButton from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
 import AddCategoryButton from "@/components/dashboard/budget/CreateCategoryButton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Category } from "@/lib/validation/category";
-import { capitalize } from "@/lib/utils";
 
 interface CategoriesCardProps {
   categories: Category[];
@@ -20,41 +17,28 @@ const CategoriesCard: FC<CategoriesCardProps> = ({
   activeCategoryId,
   setActiveCategoryId,
 }) => {
-  const optimisticallyAddedCategory = useMutationState({
-    filters: { mutationKey: ["createCategory"], status: "pending" },
-    select: (mutation) => mutation.state.variables,
-  });
+  const onSelect = (categoryId: string, optimistic?: boolean) => {
+    if (optimistic) return;
+    setActiveCategoryId(categoryId);
+  };
+
   return (
-    <Card className="h-full flex-grow overflow-y-auto scrollbar-none">
-      <CardHeader className="sticky top-0 z-10 border-b bg-card text-center">
-        <CardTitle>Categories</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-4 py-6">
-          {categories.map((category) => (
-            <SelectCategoryButton
-              key={category.id}
-              activeCategoryId={activeCategoryId}
-              category={category}
-              onSelect={() => setActiveCategoryId(category.id)}
-            />
-          ))}
-          {optimisticallyAddedCategory.length > 0 && (
-            <li className="cursor-pointer rounded-lg border border-input opacity-50 hover:bg-accent hover:text-accent-foreground">
-              <div className="flex h-16 w-full items-center px-6">
-                <div className="flex flex-1 items-center truncate">
-                  <p className="w-full truncate pr-6">
-                    {capitalize(optimisticallyAddedCategory[0] as string)}
-                  </p>
-                </div>
-                <ChevronDown className="block flex-shrink-0 -rotate-90 text-muted-foreground transition-all duration-200 ease-in-out lg:rotate-0" />
-              </div>
-            </li>
-          )}
-          <AddCategoryButton categoriesCount={categories.length} />
-        </ul>
-      </CardContent>
-    </Card>
+    <ScrollArea className="h-full flex-grow rounded-lg border bg-card">
+      <h2 className="sticky top-0 z-10 border-b bg-card p-6 text-center text-2xl font-semibold">
+        Categories
+      </h2>
+      <ul className="space-y-4 p-6">
+        {categories.map((category) => (
+          <SelectCategoryButton
+            key={category.id}
+            activeCategoryId={activeCategoryId}
+            category={category}
+            onSelect={() => onSelect(category.id, category.optimistic)}
+          />
+        ))}
+        <AddCategoryButton categoriesCount={categories.length} />
+      </ul>
+    </ScrollArea>
   );
 };
 

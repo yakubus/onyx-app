@@ -2,6 +2,7 @@ import { FC, useEffect, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 
 import { Check } from "lucide-react";
 import {
@@ -31,11 +32,13 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
   category,
   setIsEdit,
 }) => {
-  const { name, id } = category;
+  const { budgetId } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId",
+  });
   const form = useForm<CreateCategory>({
     resolver: zodResolver(CreateCategorySchema),
     defaultValues: {
-      name: name,
+      name: category.name,
     },
   });
   const {
@@ -55,7 +58,7 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
   }, [isEdit]);
 
   const { mutate, isPending, variables } = useMutation({
-    mutationKey: ["editCategory", id],
+    mutationKey: ["editCategory", category.id],
     mutationFn: editCategoryName,
     onError: () => {
       setError("name", {
@@ -67,15 +70,16 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
       if (!error) {
         setIsEdit(false);
       }
-      return await queryClient.invalidateQueries({
-        queryKey: getCategoriesQueryOptions.queryKey,
+      return queryClient.invalidateQueries({
+        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
       });
     },
   });
 
   const onSubmit: SubmitHandler<CreateCategory> = (data) => {
     mutate({
-      id,
+      budgetId,
+      categoryId: category.id,
       newName: data.name,
     });
   };
@@ -126,7 +130,7 @@ const MiddleSection: FC<SelectCategorySectionProps> = ({
         isPending && "opacity-50",
       )}
     >
-      {isPending ? capitalize(variables.newName) : name}
+      {isPending ? capitalize(variables.newName) : category.name}
     </p>
   );
 };

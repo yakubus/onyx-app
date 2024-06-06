@@ -2,6 +2,7 @@ import { FC } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,12 +20,16 @@ import {
   type CreateCategory,
   CreateCategorySchema,
 } from "@/lib/validation/category";
+import { capitalize } from "@/lib/utils";
 
 interface Props {
   categoriesCount: number;
 }
 
 const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
+  const { budgetId } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId",
+  });
   const form = useForm<CreateCategory>({
     resolver: zodResolver(CreateCategorySchema),
     defaultValues: {
@@ -44,9 +49,37 @@ const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
   const { mutate } = useMutation({
     mutationKey: ["createCategory"],
     mutationFn: createCategory,
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: getCategoriesQueryOptions.queryKey,
+    onMutate: async (newCategory) => {
+      await queryClient.cancelQueries({
+        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
+      });
+
+      const previousBudgetWithPayload = queryClient.getQueryData(
+        getCategoriesQueryOptions(budgetId).queryKey,
+      );
+
+      queryClient.setQueryData(
+        getCategoriesQueryOptions(budgetId).queryKey,
+        (old) => {
+          if (!old) return old;
+
+          return [
+            ...old,
+            {
+              id: "12345",
+              name: capitalize(newCategory.name),
+              subcategories: [],
+              optimistic: true,
+            },
+          ];
+        },
+      );
+
+      return { previousBudgetWithPayload };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
       });
     },
     onError: () => {
@@ -63,7 +96,7 @@ const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     if (categoriesCount >= 10) return;
     const { name } = data;
-    mutate(name);
+    mutate({ name, budgetId: budgetId });
   };
 
   const formRef = useClickOutside<HTMLFormElement>(() => {

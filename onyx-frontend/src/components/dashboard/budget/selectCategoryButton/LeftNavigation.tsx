@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 
 import { Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,24 +30,53 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
   isSelected,
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { budgetId } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId",
+  });
   const queryClient = useQueryClient();
-  const { id } = category;
 
   const { mutate, isError } = useMutation({
-    mutationKey: ["deleteCategory", id],
+    mutationKey: ["deleteCategory"],
     mutationFn: deleteCategory,
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: getCategoriesQueryOptions.queryKey,
+    onMutate: (deletedCategory) => {
+      queryClient.cancelQueries({
+        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
       });
+      const previousCategories = queryClient.getQueryData(
+        getCategoriesQueryOptions(budgetId).queryKey,
+      );
+
+      queryClient.setQueryData(
+        getCategoriesQueryOptions(budgetId).queryKey,
+        (old) => {
+          if (!old || !Array.isArray(old)) return old;
+
+          return old.map((category) => {
+            if (category.id === deletedCategory.categoryId) {
+              return {
+                ...category,
+                optimistic: true,
+              };
+            }
+            return category;
+          });
+        },
+      );
+
+      return { previousCategories };
     },
     onError: () => {
       setIsDeleteDialogOpen(true);
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
+      });
+    },
   });
 
   const onDelete = () => {
-    mutate(id);
+    mutate({ budgetId, categoryId: category.id });
     setIsDeleteDialogOpen(false);
   };
 

@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_dashboard-layout/budget/")({
 function Budget() {
   const {
     auth: { user },
-  } = Route.useRouteContext({});
+  } = Route.useRouteContext();
   const [isCreating, setIsCreating] = useState(false);
 
   const budgetsQuery = useSuspenseQuery(getBudgetsQueryOptions);
