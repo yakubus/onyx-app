@@ -7,6 +7,7 @@ import RouteLoadingError from "@/components/RouteLoadingError";
 import { Button } from "@/components/ui/button";
 import CreateBudgetForm from "@/components/dashboard/budget/CreateBudgetForm";
 import BudgetTableRow from "@/components/dashboard/budget/BudgetTableRow";
+import BudgetsLoadingSkeleton from "@/components/dashboard/budget/BudgetsLoadingSkeleton";
 
 import { getBudgetsQueryOptions } from "@/lib/api/budget";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_dashboard-layout/budget/")({
   component: Budget,
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(getBudgetsQueryOptions),
+  pendingComponent: () => <BudgetsLoadingSkeleton />,
   errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
 });
 

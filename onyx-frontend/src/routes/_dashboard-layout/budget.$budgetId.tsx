@@ -6,7 +6,7 @@ import { Undo2 } from "lucide-react";
 import BudgetAssigmentCard from "@/components/dashboard/budget/BudgetAssigmentCard";
 import CategoriesCard from "@/components/dashboard/budget/CategoriesCard";
 import SubcategoriesCard from "@/components/dashboard/budget/SubcategoriesCard";
-import BudgetLoadingSkeleton from "@/components/dashboard/budget/BudgetLoadingSkeleton";
+import SingleBudgetLoadingSkeleton from "@/components/dashboard/budget/SingleBudgetLoadingSkeleton";
 import RouteLoadingError from "@/components/RouteLoadingError";
 import { Button } from "@/components/ui/button";
 
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId")({
   loader: ({ context: { queryClient }, params: { budgetId } }) =>
     queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
   component: SingleBudget,
-  pendingComponent: () => <BudgetLoadingSkeleton />,
+  pendingComponent: () => <SingleBudgetLoadingSkeleton />,
   errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
 });
 

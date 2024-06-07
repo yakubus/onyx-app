@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { privateApi } from "@/lib/axios";
-import { getErrorMessage } from "@/lib/utils";
+import { getErrorMessage, sleep } from "@/lib/utils";
 import {
   BudgetResultSchema,
   BudgetWithPayloadResultSchema,
@@ -21,6 +21,7 @@ const getBudgets = async () => {
       throw new Error(error.message);
     }
 
+    await sleep(5000);
     return value;
   } catch (error) {
     throw new Error(getErrorMessage(error));
