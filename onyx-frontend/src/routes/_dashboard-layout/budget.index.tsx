@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutationState, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -35,9 +35,23 @@ function Budget() {
     select: (mutation) => mutation.state.variables,
   });
 
-  const createBudgetFormRef = useClickOutside<HTMLLIElement>(() =>
-    setIsCreating(false),
-  );
+  const noBudgets = budgets.length === 0 || !budgets;
+
+  useEffect(() => {
+    if (noBudgets) {
+      setIsCreating(true);
+    }
+  }, [budgets, noBudgets]);
+
+  const handleCreateBudgetButtonClick = () => {
+    if (noBudgets) return;
+    setIsCreating(!isCreating);
+  };
+
+  const createBudgetFormRef = useClickOutside<HTMLLIElement>(() => {
+    if (noBudgets) return;
+    setIsCreating(false);
+  });
 
   return (
     <div className="h-full overflow-auto py-8 scrollbar-none md:pl-14 md:pr-10 md:pt-14">
@@ -80,7 +94,8 @@ function Budget() {
             variant="outline"
             className={cn("rounded-full", isCreating && "bg-secondary")}
             size="icon"
-            onClick={() => setIsCreating(!isCreating)}
+            onClick={handleCreateBudgetButtonClick}
+            disabled={noBudgets}
           >
             <Plus />
           </Button>
