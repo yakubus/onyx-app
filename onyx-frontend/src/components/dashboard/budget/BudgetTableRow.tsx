@@ -34,7 +34,7 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
   const { id } = budget;
 
   const { mutate, isError, isPending } = useMutation({
-    mutationKey: ["deleteCategory", id],
+    mutationKey: ["deleteBudget", id],
     mutationFn: deleteBudget,
     onSettled: async () => {
       return await queryClient.invalidateQueries({
@@ -60,6 +60,7 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
               <Link
                 to="/budget/$budgetId"
                 params={{ budgetId: budget.id }}
+                preload="intent"
                 className="grid w-full grid-cols-4 px-4 py-8 hover:bg-accent"
               >
                 <p>{budget.name}</p>

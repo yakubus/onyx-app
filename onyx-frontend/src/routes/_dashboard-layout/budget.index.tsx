@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutationState, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -7,6 +7,7 @@ import RouteLoadingError from "@/components/RouteLoadingError";
 import { Button } from "@/components/ui/button";
 import CreateBudgetForm from "@/components/dashboard/budget/CreateBudgetForm";
 import BudgetTableRow from "@/components/dashboard/budget/BudgetTableRow";
+import BudgetsLoadingSkeleton from "@/components/dashboard/budget/BudgetsLoadingSkeleton";
 
 import { getBudgetsQueryOptions } from "@/lib/api/budget";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_dashboard-layout/budget/")({
   component: Budget,
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(getBudgetsQueryOptions),
+  pendingComponent: () => <BudgetsLoadingSkeleton />,
   errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
 });
 
@@ -33,9 +35,23 @@ function Budget() {
     select: (mutation) => mutation.state.variables,
   });
 
-  const createBudgetFormRef = useClickOutside<HTMLLIElement>(() =>
-    setIsCreating(false),
-  );
+  const noBudgets = budgets.length === 0 || !budgets;
+
+  useEffect(() => {
+    if (noBudgets) {
+      setIsCreating(true);
+    }
+  }, [budgets, noBudgets]);
+
+  const handleCreateBudgetButtonClick = () => {
+    if (noBudgets) return;
+    setIsCreating(!isCreating);
+  };
+
+  const createBudgetFormRef = useClickOutside<HTMLLIElement>(() => {
+    if (noBudgets) return;
+    setIsCreating(false);
+  });
 
   return (
     <div className="h-full overflow-auto py-8 scrollbar-none md:pl-14 md:pr-10 md:pt-14">
@@ -78,7 +94,8 @@ function Budget() {
             variant="outline"
             className={cn("rounded-full", isCreating && "bg-secondary")}
             size="icon"
-            onClick={() => setIsCreating(!isCreating)}
+            onClick={handleCreateBudgetButtonClick}
+            disabled={noBudgets}
           >
             <Plus />
           </Button>

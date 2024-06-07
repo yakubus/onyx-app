@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 
-const BudgetLoadingSkeleton = () => {
+const SingleBudgetLoadingSkeleton = () => {
   return (
     <div className="grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md lg:grid-cols-5">
       <div className="flex h-full animate-pulse flex-col space-y-4 overflow-hidden lg:col-span-2">
@@ -39,4 +39,4 @@ const BudgetLoadingSkeleton = () => {
   );
 };
 
-export default BudgetLoadingSkeleton;
+export default SingleBudgetLoadingSkeleton;
