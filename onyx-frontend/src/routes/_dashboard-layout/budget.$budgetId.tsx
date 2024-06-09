@@ -24,9 +24,9 @@ function SingleBudget() {
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const { budgetId } = Route.useParams();
   const { data } = useSuspenseQuery(getCategoriesQueryOptions(budgetId));
-  const subcategories = data.find(
+  const activeCategoryData = data.find(
     (category) => category.id === activeCategoryId,
-  )?.subcategories;
+  );
 
   return (
     <div className="relative grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md lg:grid-cols-5">
@@ -49,7 +49,9 @@ function SingleBudget() {
           categories={data}
         />
       </div>
-      {activeCategoryId && <SubcategoriesCard subcategories={subcategories} />}
+      {activeCategoryData && (
+        <SubcategoriesCard activeCategory={activeCategoryData} />
+      )}
     </div>
   );
 }
