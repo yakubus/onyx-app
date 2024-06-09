@@ -43,3 +43,6 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  assets:
+    - lib\assets\logo_white.png
+    - lib\assets\logo_black.png

@@ -13,5 +13,8 @@
     "currency": "waluta",
     "checking": "płatnicze",
     "saving": "oszczędościowe",
-    "add": "dodaj"
-  }
+    "add": "dodaj",
+    "settings": "ustawienia",
+    "login" : "logowanie",
+    "logout": "wyloguj"
+  } 

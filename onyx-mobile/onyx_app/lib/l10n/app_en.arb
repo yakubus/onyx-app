@@ -13,5 +13,8 @@
     "currency": "currency",
     "checking": "checking",
     "saving": "saving",
-    "add": "add"
+    "add": "add",
+    "settings": "settings",
+    "login" : "login",
+    "logout": "logout"
   }
