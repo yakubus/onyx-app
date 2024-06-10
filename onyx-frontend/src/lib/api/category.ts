@@ -4,6 +4,11 @@ import { privateApi } from "@/lib/axios";
 import { getErrorMessage } from "@/lib/utils";
 import { CategoryResultSchema } from "@/lib/validation/category";
 
+export interface CreateCategoryProps {
+  budgetId: string;
+  name: string;
+}
+
 export const getCategories = async (budgetId: string) => {
   try {
     const { data } = await privateApi.get(`/${budgetId}/categories`);
@@ -31,13 +36,8 @@ export const getCategoriesQueryOptions = (budgetId: string) =>
     queryFn: () => getCategories(budgetId),
   });
 
-export const createCategory = ({
-  budgetId,
-  name,
-}: {
-  budgetId: string;
-  name: string;
-}) => privateApi.post(`/${budgetId}/categories`, { name });
+export const createCategory = async ({ budgetId, name }: CreateCategoryProps) =>
+  privateApi.post(`/${budgetId}/categories`, { name });
 
 export const deleteCategory = ({
   budgetId,

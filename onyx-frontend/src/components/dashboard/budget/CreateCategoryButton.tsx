@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
 import { Plus } from "lucide-react";
@@ -15,12 +14,11 @@ import {
 } from "@/components/ui/form";
 
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
-import { createCategory, getCategoriesQueryOptions } from "@/lib/api/category";
 import {
   type CreateCategory,
   CreateCategorySchema,
 } from "@/lib/validation/category";
-import { capitalize } from "@/lib/utils";
+import { useCreateCategoryMutation } from "@/lib/hooks/mutations/useCreateCategoryMutation";
 
 interface Props {
   categoriesCount: number;
@@ -44,53 +42,22 @@ const AddCategoryButton: FC<Props> = ({ categoriesCount }) => {
     reset,
     setError,
   } = form;
-  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
-    mutationKey: ["createCategory"],
-    mutationFn: createCategory,
-    onMutate: async (newCategory) => {
-      await queryClient.cancelQueries({
-        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
-      });
+  const onMutationError = () => {
+    setError("name", {
+      type: "network",
+      message: "Something went wrong. Please try again.",
+    });
+  };
 
-      const previousBudgetWithPayload = queryClient.getQueryData(
-        getCategoriesQueryOptions(budgetId).queryKey,
-      );
+  const onMutationSuccess = () => {
+    reset();
+  };
 
-      queryClient.setQueryData(
-        getCategoriesQueryOptions(budgetId).queryKey,
-        (old) => {
-          if (!old) return old;
-
-          return [
-            ...old,
-            {
-              id: "12345",
-              name: capitalize(newCategory.name),
-              subcategories: [],
-              optimistic: true,
-            },
-          ];
-        },
-      );
-
-      return { previousBudgetWithPayload };
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
-      });
-    },
-    onError: () => {
-      setError("name", {
-        type: "network",
-        message: "Something went wrong. Please try again.",
-      });
-    },
-    onSuccess: () => {
-      reset();
-    },
+  const { mutate } = useCreateCategoryMutation({
+    budgetId,
+    onMutationError,
+    onMutationSuccess,
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
