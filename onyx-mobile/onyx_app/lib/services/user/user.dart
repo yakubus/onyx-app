@@ -1,7 +1,13 @@
+import 'dart:async';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onyx_app/models/error.dart';
+import 'package:onyx_app/services/user/user_repo.dart';
+
 class UserServiceModel {
   final bool isSuccess;
   final bool isFailure;
-  final Error error;
+  final ErrorOnyx error;
   final UserData value;
 
   UserServiceModel(
@@ -14,22 +20,8 @@ class UserServiceModel {
     return UserServiceModel(
       isSuccess: json['isSuccess'],
       isFailure: json['isFailure'],
-      error: Error.fromJson(json['error']),
+      error: ErrorOnyx.fromJson(json['error']),
       value: UserData.fromJson(json['value']),
-    );
-  }
-}
-
-class Error {
-  final String code;
-  final String message;
-
-  Error({required this.code, required this.message});
-
-  factory Error.fromJson(Map<String, dynamic> json) {
-    return Error(
-      code: json['code'],
-      message: json['message'],
     );
   }
 }
@@ -59,5 +51,50 @@ class UserData {
       accessToken: json['accessToken'],
       budgetIds: List<String>.from(json['budgetIds'].map((x) => x)),
     );
+  }
+}
+
+class UserNotifier extends AsyncNotifier<UserServiceModel> {
+  UserNotifier(this.token);
+
+  String token;
+
+  @override
+  FutureOr<UserServiceModel> build() {
+    if (token.isEmpty) {
+      return UserServiceModel(
+          isSuccess: false,
+          isFailure: true,
+          error: const ErrorOnyx(message: 'Token is empty', code: "401"),
+          value: UserData(
+              accessToken: '',
+              budgetIds: [],
+              currency: '',
+              email: '',
+              id: '',
+              username: ''));
+    }
+    return ref.read(userServiceProvider).getUserData(token);
+  }
+
+  Future<void> refresh() async {
+    state = await AsyncValue.guard(
+        () => ref.watch(userServiceProvider).getUserData(token));
+  }
+
+  Future<UserServiceModel> login(String email, String password) async {
+    UserServiceModel user =
+        await ref.read(userServiceProvider).loginUser(email, password);
+    token = user.value.accessToken;
+    refresh();
+    return user;
+  }
+
+  Future<void> register(
+      String email, String password, String currency, String username) async {
+    ref
+        .read(userServiceProvider)
+        .registerUser(email, password, currency, username);
+    refresh();
   }
 }

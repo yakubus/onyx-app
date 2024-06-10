@@ -12,6 +12,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'routing/routing.dart';
 
+final usetToken = StateProvider<String>((ref) => '');
+
 final settingsProvider =
     AsyncNotifierProvider<Settings, SettingsData>(Settings.new);
 
@@ -29,7 +31,7 @@ checkTheme(bool setTheme) {
   return darkThemes;
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends HookConsumerWidget {
   final AdaptiveThemeMode? savedThemeMode;
   const MyApp({
     Key? key,

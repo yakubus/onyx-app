@@ -16,5 +16,6 @@
     "add": "Dodaj",
     "settings": "Ustawienia",
     "login" : "Logowanie",
-    "logout": "Wyloguj"
+    "logout": "Wyloguj",
+    "password": "hasło"
   } 

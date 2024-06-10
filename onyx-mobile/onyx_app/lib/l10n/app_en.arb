@@ -16,5 +16,6 @@
     "add": "Add",
     "settings": "Settings",
     "login" : "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "password": "password"
   }
