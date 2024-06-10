@@ -63,22 +63,22 @@ function Layout() {
                   search={(prev) => prev}
                   mask={{ to: `/${href}` }}
                   className={cn(
-                    "rounded-l-full py-4 pl-9 transition-all duration-300 ease-in-out hover:bg-background hover:text-foreground",
-
-                    !selectedBudget && "h-0 -translate-y-full opacity-0",
+                    "grid grid-rows-[0fr] rounded-l-full pl-9 transition-all duration-300 ease-in-out hover:bg-background hover:text-foreground",
+                    selectedBudget && "grid-rows-[1fr] py-4",
                   )}
                   activeProps={{
                     className: "bg-background text-foreground",
                   }}
                   preload="intent"
                 >
-                  {label}
+                  <span className="block overflow-hidden">{label}</span>
                 </Link>
               ))}
             </div>
             <div className="flex flex-col space-y-4 py-16 pl-10">
               {SIDEBAR_BOTTOM_LINKS.map(({ label, href }) => (
                 <Link
+                  key={label}
                   to={href}
                   className="rounded-l-full py-4 pl-9 transition-all duration-300 hover:bg-background hover:text-foreground"
                   activeProps={{
