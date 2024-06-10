@@ -78,6 +78,7 @@ function Layout() {
             <div className="flex flex-col space-y-4 py-16 pl-10">
               {SIDEBAR_BOTTOM_LINKS.map(({ label, href }) => (
                 <Link
+                  key={label}
                   to={href}
                   className="rounded-l-full py-4 pl-9 transition-all duration-300 hover:bg-background hover:text-foreground"
                   activeProps={{
