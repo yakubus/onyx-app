@@ -14,21 +14,31 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-interface NavLink {
-  readonly href: string;
-  readonly label: string;
-}
-
+import { BUDGET_LINKS, SIDEBAR_BOTTOM_LINKS } from "@/lib/constants/links";
 interface MobileNavigationProps {
-  navLinks: readonly NavLink[];
+  selectedBudget: string | undefined;
 }
 
-const MobileNavigation: FC<MobileNavigationProps> = ({ navLinks }) => {
+const MobileNavigation: FC<MobileNavigationProps> = ({ selectedBudget }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const onLinkClick = (href: string) => {
+  const onBudgetLinkClick = (href: string) => {
+    navigate({ to: href, search: (prev) => prev, mask: { to: `/${href}` } });
+    setIsNavOpen(false);
+  };
+
+  const onButgetsLinkClick = () => {
+    navigate({
+      to: selectedBudget ? `/budget/${selectedBudget}` : "/budget",
+      search: (prev) => prev,
+      mask: selectedBudget && { to: `/budget/${selectedBudget}` },
+    });
+    setIsNavOpen(false);
+  };
+
+  const onBottomLinkClick = (href: string) => {
     navigate({ to: href });
     setIsNavOpen(false);
   };
@@ -42,28 +52,59 @@ const MobileNavigation: FC<MobileNavigationProps> = ({ navLinks }) => {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="bg-primaryDark pr-0 text-primaryDark-foreground"
+        className="flex h-full flex-col bg-primaryDark pr-0 text-primaryDark-foreground"
       >
         <SheetHeader>
           <SheetTitle className="flex justify-center text-center">
             <Logo />
           </SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col space-y-8 py-12">
-          {navLinks.map(({ label, href }) => (
+        <div className="flex flex-grow flex-col justify-between py-12">
+          <div className="flex flex-col space-y-8">
             <Button
-              key={label}
-              onClick={() => onLinkClick(href)}
+              onClick={onButgetsLinkClick}
               size="lg"
               variant="primaryDark"
               className={cn(
                 "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
-                pathname === href && "bg-background text-foreground",
+                pathname.startsWith("/budget") &&
+                  "bg-background text-foreground",
               )}
             >
-              {label}
+              Budget
             </Button>
-          ))}
+            {BUDGET_LINKS.map(({ label, href }) => (
+              <Button
+                key={label}
+                onClick={() => onBudgetLinkClick(href)}
+                size="lg"
+                variant="primaryDark"
+                className={cn(
+                  "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
+                  pathname === href && "bg-background text-foreground",
+                  !selectedBudget && "hidden",
+                )}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+          <div className="flex flex-col space-y-4">
+            {SIDEBAR_BOTTOM_LINKS.map(({ label, href }) => (
+              <Button
+                key={label}
+                onClick={() => onBottomLinkClick(href)}
+                size="lg"
+                variant="primaryDark"
+                className={cn(
+                  "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
+                  pathname === href && "bg-background text-foreground",
+                )}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
         </div>
       </SheetContent>
     </Sheet>
