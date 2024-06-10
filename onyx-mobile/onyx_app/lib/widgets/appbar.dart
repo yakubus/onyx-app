@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:onyx_app/config.dart';
 import 'package:onyx_app/widgets/main_menu/main_menu.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

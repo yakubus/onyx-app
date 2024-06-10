@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 ShadThemeData lightThemes = ShadThemeData(
     colorScheme: const ShadSlateColorScheme.light(
-      background: Color.fromARGB(255, 255, 255, 255),
-      primary: Color.fromARGB(255, 255, 255, 255),
-    ),
+        background: Color.fromARGB(255, 255, 255, 255),
+        primary: Color.fromARGB(255, 255, 255, 255),
+        secondary: Color.fromRGBO(135, 203, 181, 0.5)),
     brightness: Brightness.light,
     cardTheme:
         const ShadCardTheme(backgroundColor: Color.fromARGB(255, 35, 73, 35)),
