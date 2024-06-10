@@ -2,6 +2,7 @@
 using Budget.Application.Abstractions.Identity;
 using Budget.Application.Budgets.Models;
 using Budget.Domain.Budgets;
+using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Budgets.AddBudget;
@@ -37,16 +38,7 @@ internal sealed class AddBudgetCommandHandler : ICommandHandler<AddBudgetCommand
 
         var userId = userIdGetResult.Value;
 
-        var userCurrencyGetResult = _userContext.GetUserCurrency();
-
-        if (userCurrencyGetResult.IsFailure)
-        {
-            return userCurrencyGetResult.Error;
-        }
-
-        var userCurrency = userCurrencyGetResult.Value;
-
-        var budgetCreateResult = Domain.Budgets.Budget.Create(request.BudgetName, userId, userCurrency);
+        var budgetCreateResult = Domain.Budgets.Budget.Create(request.BudgetName, userId, request.BudgetCurrency);
 
         if (budgetCreateResult.IsFailure)
         {

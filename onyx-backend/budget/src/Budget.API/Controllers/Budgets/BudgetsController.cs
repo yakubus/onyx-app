@@ -29,7 +29,7 @@ public sealed class BudgetsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [Consumes(typeof(UpdateBudgetRequest), "application/json")]
+    [Consumes(typeof(RemoveUserFromBudgetRequest), "application/json")]
     public async Task<IActionResult> GetBudgets(
         CancellationToken cancellationToken)
     {
@@ -47,7 +47,7 @@ public sealed class BudgetsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [Consumes(typeof(UpdateBudgetRequest), "application/json")]
+    [Consumes(typeof(RemoveUserFromBudgetRequest), "application/json")]
     public async Task<IActionResult> GetBudgetDetails(
         [FromRoute] Guid budgetId,
         CancellationToken cancellationToken)
@@ -70,7 +70,7 @@ public sealed class BudgetsController : ControllerBase
     [FromBody] AddBudgetRequest request,
     CancellationToken cancellationToken)
     {
-        var command = new AddBudgetCommand(request.BudgetName);
+        var command = new AddBudgetCommand(request.BudgetName, request.BudgetCurrency);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -84,13 +84,13 @@ public sealed class BudgetsController : ControllerBase
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [Consumes(typeof(UpdateBudgetRequest), "application/json")]
+    [Consumes(typeof(RemoveUserFromBudgetRequest), "application/json")]
     public async Task<IActionResult> UpdateBudget(
         [FromRoute] Guid budgetId,
-        [FromBody] UpdateBudgetRequest request,
+        [FromBody] RemoveUserFromBudgetRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateBudgetCommand(budgetId, request.UserIdToAdd, request.UserIdToRemove);
+        var command = new RemoveUserFromBudgetCommand(budgetId, request.UserIdToRemove);
 
         var result = await _sender.Send(command, cancellationToken);
 

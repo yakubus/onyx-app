@@ -5,7 +5,7 @@ using Models.Responses;
 
 namespace Budget.Application.Budgets.UpdateBudget;
 
-internal sealed class UpdateBudgetCommandHandler : ICommandHandler<UpdateBudgetCommand, BudgetModel>
+internal sealed class RemoveUserFromBudgetCommandHandler : ICommandHandler<RemoveUserFromBudgetCommand, BudgetModel>
 {
     private readonly IBudgetRepository _repository;
     private static readonly Error _invalidInputError = new Error(
@@ -13,13 +13,13 @@ internal sealed class UpdateBudgetCommandHandler : ICommandHandler<UpdateBudgetC
         "Specify either user to add or user to remove"
         );
 
-    public UpdateBudgetCommandHandler(IBudgetRepository repository)
+    public RemoveUserFromBudgetCommandHandler(IBudgetRepository repository)
     {
         _repository = repository;
     }
 
     //TODO Send event when user added or removed
-    public async Task<Result<BudgetModel>> Handle(UpdateBudgetCommand request, CancellationToken cancellationToken)
+    public async Task<Result<BudgetModel>> Handle(RemoveUserFromBudgetCommand request, CancellationToken cancellationToken)
     {
         var budgetId = new BudgetId(request.BudgetId);
         var getBudgetResult = await _repository.GetByIdAsync(budgetId, cancellationToken);
@@ -31,15 +31,7 @@ internal sealed class UpdateBudgetCommandHandler : ICommandHandler<UpdateBudgetC
 
         var budget = getBudgetResult.Value;
 
-        var updateBudgetResult = (
-                string.IsNullOrWhiteSpace(request.UserIdToAdd),
-                string.IsNullOrWhiteSpace(request.UserIdToRemove)
-                ) switch
-        {
-            (false, true) => budget.AddUser(request.UserIdToAdd!),
-            (true, false) => budget.ExcludeUser(request.UserIdToRemove!),
-            _ => _invalidInputError
-        };
+        var updateBudgetResult = budget.ExcludeUser(request.UserIdToRemove);
 
         if (updateBudgetResult.IsFailure)
         {
