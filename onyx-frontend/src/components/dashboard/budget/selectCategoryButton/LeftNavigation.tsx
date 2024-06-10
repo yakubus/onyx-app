@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
 import { Settings, X } from "lucide-react";
@@ -20,8 +19,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { deleteCategory, getCategoriesQueryOptions } from "@/lib/api/category";
 import { type SelectCategorySectionProps } from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
+import { useDeleteCategoryMutation } from "@/lib/hooks/mutations/useDeleteCategoryMutation";
 
 const LeftNavigation: FC<SelectCategorySectionProps> = ({
   category,
@@ -33,46 +32,14 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
   const { budgetId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId",
   });
-  const queryClient = useQueryClient();
 
-  const { mutate, isError } = useMutation({
-    mutationKey: ["deleteCategory"],
-    mutationFn: deleteCategory,
-    onMutate: (deletedCategory) => {
-      queryClient.cancelQueries({
-        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
-      });
-      const previousCategories = queryClient.getQueryData(
-        getCategoriesQueryOptions(budgetId).queryKey,
-      );
+  const onMutationError = () => {
+    setIsDeleteDialogOpen(true);
+  };
 
-      queryClient.setQueryData(
-        getCategoriesQueryOptions(budgetId).queryKey,
-        (old) => {
-          if (!old || !Array.isArray(old)) return old;
-
-          return old.map((category) => {
-            if (category.id === deletedCategory.categoryId) {
-              return {
-                ...category,
-                optimistic: true,
-              };
-            }
-            return category;
-          });
-        },
-      );
-
-      return { previousCategories };
-    },
-    onError: () => {
-      setIsDeleteDialogOpen(true);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: getCategoriesQueryOptions(budgetId).queryKey,
-      });
-    },
+  const { mutate, isError } = useDeleteCategoryMutation({
+    budgetId,
+    onMutationError,
   });
 
   const onDelete = () => {

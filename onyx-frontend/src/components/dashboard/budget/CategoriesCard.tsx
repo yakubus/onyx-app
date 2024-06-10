@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import SelectCategoryButton from "@/components/dashboard/budget/selectCategoryButton/SelectCategoryButton";
-import AddCategoryButton from "@/components/dashboard/budget/CreateCategoryButton";
+import CreateCategoryButton from "@/components/dashboard/budget/CreateCategoryButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Category } from "@/lib/validation/category";
@@ -36,7 +36,7 @@ const CategoriesCard: FC<CategoriesCardProps> = ({
             onSelect={() => onSelect(category.id, category.optimistic)}
           />
         ))}
-        <AddCategoryButton categoriesCount={categories.length} />
+        <CreateCategoryButton categoriesCount={categories.length} />
       </ul>
     </ScrollArea>
   );

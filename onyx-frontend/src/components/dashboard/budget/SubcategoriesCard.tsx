@@ -32,7 +32,10 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
       {activeCategory?.subcategories && (
         <Accordion type="single" collapsible>
           {activeCategory.subcategories.map((subcategory) => (
-            <AccordionItem value={subcategory.id}>
+            <AccordionItem
+              value={subcategory.id}
+              disabled={subcategory.optimistic}
+            >
               <AccordionTrigger className="space-x-5 pl-3 pr-4">
                 <div className="flex flex-1 justify-between">
                   <span>{subcategory.name}</span>
