@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Abstractions.Messaging;
 using Budget.Application.Budgets.Models;
 
-namespace Budget.Application.Budgets.AddUserToBudget;
+namespace Budget.Application.Budgets.GetBudgetInvitation;
 
-public sealed record AddUserToBudgetCommand(Guid BudgetId, string Token) : ICommand<BudgetModel>;
+public sealed record GetBudgetInvitationQuery(Guid BudgetId, string BaseUrl) : IQuery<InvitationUrl>
+{
+}

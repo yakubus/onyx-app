@@ -1,4 +1,7 @@
-﻿using Abstractions.DomainBaseTypes;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
+using Abstractions.DomainBaseTypes;
 using Models.DataTypes;
 using Models.Responses;
 
@@ -10,6 +13,7 @@ public sealed class Budget : Entity<BudgetId>
     public Currency BaseCurrency { get; private set; }
     private readonly List<string> _userIds;
     public IReadOnlyCollection<string> UserIds => _userIds.AsReadOnly();
+    public BudgetInvitationToken? InvitationToken { get; private set; }
     private const int maxUsers = 10;
     public int MaxAccounts => 8 + 2 * (_userIds.Count - 1);
     public int MaxCategories => 15 + 5 * (_userIds.Count - 1);
@@ -20,10 +24,12 @@ public sealed class Budget : Entity<BudgetId>
         BudgetName name,
         Currency baseCurrency,
         List<string> userIds,
+        BudgetInvitationToken? invitationToken,
         BudgetId? id = null) : base(id ?? new BudgetId())
     {
         Name = name;
         BaseCurrency = baseCurrency;
+        InvitationToken = invitationToken;
         _userIds = userIds;
     }
 
@@ -43,10 +49,10 @@ public sealed class Budget : Entity<BudgetId>
             return currencyCreateResult.Error;
         }
 
-        return new Budget(budgetNameCreateResult.Value, currencyCreateResult.Value, [userId]);
+        return new Budget(budgetNameCreateResult.Value, currencyCreateResult.Value, [userId], null);
     }
 
-    public Result AddUser(string userId)
+    public Result AddUser(string userId, string token)
     {
         if (_userIds.Count >= maxUsers)
         {
@@ -56,6 +62,18 @@ public sealed class Budget : Entity<BudgetId>
         if (_userIds.Any(id => id == userId))
         {
             return BudgetErrors.UserAlreadyAdded;
+        }
+
+        if (InvitationToken is null)
+        {
+            return BudgetErrors.InvitationTokenNotGenerated;
+        }
+
+        var validationResult = InvitationToken.Validate(token);
+
+        if (validationResult.IsFailure)
+        {
+            return validationResult.Error;
         }
 
         _userIds.Add(userId);
@@ -79,4 +97,7 @@ public sealed class Budget : Entity<BudgetId>
 
         return Result.Success();
     }
+
+    public BudgetInvitationToken GetInvitationToken() => 
+        InvitationToken ??= BudgetInvitationToken.Generate();
 }

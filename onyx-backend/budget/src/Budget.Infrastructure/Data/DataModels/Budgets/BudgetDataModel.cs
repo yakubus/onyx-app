@@ -12,6 +12,13 @@ internal sealed class BudgetDataModel : IDataModel<Domain.Budgets.Budget>
     public Guid Id { get; init; }
     public string Name { get; init; }
     public string BaseCurrency { get; init; }
+    public string? InvitationTokenValue { get; init; }
+    public int? InvitationTokenExpirationDateDay { get; init; }
+    public int? InvitationTokenExpirationDateMonth { get; init; }
+    public int? InvitationTokenExpirationDateYear { get; init; }
+    public int? InvitationTokenExpirationDateHour { get; init; }
+    public int? InvitationTokenExpirationDateMinute { get; init; }
+    public int? InvitationTokenExpirationDateSecond { get; init; }
     public IEnumerable<string> UserIds { get; init; }
 
     private BudgetDataModel(Document doc)
@@ -20,14 +27,40 @@ internal sealed class BudgetDataModel : IDataModel<Domain.Budgets.Budget>
         Name = doc[nameof(Name)];
         BaseCurrency = doc[nameof(BaseCurrency)];
         UserIds = doc[nameof(UserIds)].AsArrayOfString();
+        InvitationTokenValue = doc[nameof(InvitationTokenValue)];
+        InvitationTokenExpirationDateDay = doc[nameof(InvitationTokenExpirationDateDay)].AsInt();
+        InvitationTokenExpirationDateMonth = doc[nameof(InvitationTokenExpirationDateMonth)].AsInt();
+        InvitationTokenExpirationDateYear = doc[nameof(InvitationTokenExpirationDateYear)].AsInt();
+        InvitationTokenExpirationDateHour = doc[nameof(InvitationTokenExpirationDateHour)].AsInt();
+        InvitationTokenExpirationDateMinute = doc[nameof(InvitationTokenExpirationDateMinute)].AsInt();
+        InvitationTokenExpirationDateSecond = doc[nameof(InvitationTokenExpirationDateSecond)].AsInt();
     }
 
     private BudgetDataModel(Domain.Budgets.Budget budget)
     {
+        var invitationTokenExpirationDate = budget.InvitationToken?.ExpirationDate.ToUniversalTime();
+
         Id = budget.Id.Value;
         Name = budget.Name.Value;
         BaseCurrency = budget.BaseCurrency.Code;
         UserIds = budget.UserIds;
+        InvitationTokenValue = budget.InvitationToken?.Value;
+        (
+            InvitationTokenExpirationDateDay,
+            InvitationTokenExpirationDateMonth,
+            InvitationTokenExpirationDateYear,
+            InvitationTokenExpirationDateHour,
+            InvitationTokenExpirationDateMinute,
+            InvitationTokenExpirationDateSecond
+        ) = 
+        (
+            invitationTokenExpirationDate?.Day,
+            invitationTokenExpirationDate?.Month,
+            invitationTokenExpirationDate?.Year,
+            invitationTokenExpirationDate?.Hour,
+            invitationTokenExpirationDate?.Minute,
+            invitationTokenExpirationDate?.Second
+        );
     }
 
     public static BudgetDataModel FromDomainModel(Domain.Budgets.Budget budget) => new(budget);
@@ -59,6 +92,37 @@ internal sealed class BudgetDataModel : IDataModel<Domain.Budgets.Budget>
                                typeof(string),
                                typeof(Currency),
                                typeof(BudgetDataModel));
+
+        if (InvitationTokenExpirationDateYear is not null &&
+        InvitationTokenExpirationDateMonth is not null &&
+        InvitationTokenExpirationDateDay is not null &&
+        InvitationTokenExpirationDateHour is not null &&
+        InvitationTokenExpirationDateMinute is not null &&
+        InvitationTokenExpirationDateSecond is not null)
+        {
+            var invitationTokenExpirationDate = new DateTime(
+                InvitationTokenExpirationDateYear.Value,
+                InvitationTokenExpirationDateMonth.Value,
+                InvitationTokenExpirationDateDay.Value,
+                InvitationTokenExpirationDateHour.Value,
+                InvitationTokenExpirationDateMinute.Value,
+                InvitationTokenExpirationDateSecond.Value
+            );
+
+            var invitationToken = Activator.CreateInstance(
+                                      typeof(BudgetInvitationToken),
+                                      BindingFlags.Instance | BindingFlags.NonPublic,
+                                      null,
+                                      [
+                                          InvitationTokenValue,
+                                          invitationTokenExpirationDate
+                                      ],
+                                      null) ??
+                                  throw new DataModelConversionException(
+                                      typeof(string),
+                                      typeof(BudgetInvitationToken),
+                                      typeof(BudgetDataModel));
+        }
 
         return Activator.CreateInstance(
                    typeof(Domain.Budgets.Budget),

@@ -7,12 +7,12 @@ namespace Budget.Functions.Functions.Shared;
 
 public abstract class BaseFunction
 {
-    protected readonly ISender _sender;
+    protected readonly ISender Sender;
 
     protected BaseFunction()
     {
         var serviceProvider = Startup.ConfigureFunction().Build();
-        _sender = serviceProvider.GetRequiredService<ISender>();
+        Sender = serviceProvider.GetRequiredService<ISender>();
     }
 
     protected abstract Task<APIGatewayProxyResponse> HandleAsync(
