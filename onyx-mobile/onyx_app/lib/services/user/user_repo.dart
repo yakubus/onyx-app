@@ -31,7 +31,6 @@ class UserService {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"email": email, "password": password}),
     );
-
     if (response.statusCode == 200) {
       log('login response.body: ${response.body}');
       return UserServiceModel.fromJson(jsonDecode(response.body));

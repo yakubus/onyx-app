@@ -17,5 +17,11 @@
     "settings": "Settings",
     "login" : "Login",
     "logout": "Logout",
-    "password": "password"
+    "password": "password",
+    "registrations": "registrations",
+
+
+    "start_tekst": "The only budget planner you'll ever need."
+
+  
   }

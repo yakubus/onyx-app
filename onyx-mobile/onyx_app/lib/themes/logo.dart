@@ -15,14 +15,18 @@ class Logo extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    double scaaling = size / 50;
     return Column(
       children: [
         ShadImage.square(
           'lib\\assets\\logo_white.png',
           size: size,
         ),
-        const Text(
-          style: TextStyle(color: Colors.white),
+        Text(
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20 * scaaling),
           'ONYX',
           textAlign: TextAlign.center,
         )

@@ -17,5 +17,10 @@
     "settings": "Ustawienia",
     "login" : "Logowanie",
     "logout": "Wyloguj",
-    "password": "hasło"
+    "password": "hasło",
+    "registrations": "rejestracja",
+
+
+    
+    "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować."
   } 

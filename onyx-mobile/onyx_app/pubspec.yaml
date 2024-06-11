@@ -30,6 +30,7 @@ dependencies:
   http: ^1.2.1
   carousel_slider_plus: ^5.0.1+1
   shadcn_ui: ^0.5.2
+  google_fonts: ^6.2.1
 
 
 dev_dependencies:
@@ -46,3 +47,4 @@ flutter:
   assets:
     - lib\assets\logo_white.png
     - lib\assets\logo_black.png
+    - lib\assets\home_bg.png
