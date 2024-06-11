@@ -19,3 +19,12 @@ export const CreateSubcategorySchema = z.object({
 });
 
 export type CreateSubcategory = z.infer<typeof CreateSubcategorySchema>;
+
+export const CreateAssignmentSchema = z.object({
+  amount: z
+    .string()
+    .min(1, "Please provide subcategory name.")
+    .regex(/\b\d+(?:\.\d{1,2})?\b/, "Invalid amount."),
+});
+
+export type CreateAssignment = z.infer<typeof CreateAssignmentSchema>;

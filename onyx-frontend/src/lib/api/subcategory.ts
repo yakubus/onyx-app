@@ -6,6 +6,12 @@ interface CreateSubcategory {
   subcategoryName: string;
 }
 
+interface EditSubcategoryName {
+  budgetId: string;
+  subcategoryId: string;
+  subcategoryName: string;
+}
+
 export const createSubcategory = ({
   budgetId,
   parentCategoryId,
@@ -14,4 +20,13 @@ export const createSubcategory = ({
   privateApi.post(`/${budgetId}/subcategories`, {
     parentCategoryId,
     subcategoryName,
+  });
+
+export const editSubcategoryName = ({
+  budgetId,
+  subcategoryId,
+  subcategoryName,
+}: EditSubcategoryName) =>
+  privateApi.put(`/${budgetId}/subcategories/${subcategoryId}`, {
+    newName: subcategoryName,
   });
