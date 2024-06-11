@@ -6,6 +6,7 @@ import 'package:onyx_app/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onyx_app/widgets/register_user.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class Home extends HookConsumerWidget {
@@ -85,7 +86,7 @@ class Home extends HookConsumerWidget {
                       showDialog(
                         context: context,
                         builder: (context) {
-                          return const LogInDialog();
+                          return const RegisterUserDialog();
                         },
                       );
                     },

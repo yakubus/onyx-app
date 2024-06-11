@@ -19,7 +19,8 @@
     "logout": "Logout",
     "password": "password",
     "registrations": "registrations",
-
+    "register": "rejestruj",
+    "user_name": "user name",
 
     "start_tekst": "The only budget planner you'll ever need."
 
