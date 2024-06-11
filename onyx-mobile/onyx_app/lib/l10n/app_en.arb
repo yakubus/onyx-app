@@ -1,17 +1,28 @@
 {
     "sampleText": "simple text",
-    "transactions": "transactions",
-    "budget_plans": "budget plans",
-    "account": "account",
-    "goals": "goals",
-    "statistic":  "statistic",
-    "language": "language",
+    "transactions": "Transactions",
+    "budget_plans": "Budget",
+    "account": "Account",
+    "goals": "Goals",
+    "statistic":  "Statistic",
+    "language": "Language",
     "dark_mode": "dark mode",
     "account_name": "account name",
     "account_type": "account type",
-    "balance": "balance",
-    "currency": "currency",
+    "balance": "Balance",
+    "currency": "Currency",
     "checking": "checking",
     "saving": "saving",
-    "add": "add"
+    "add": "Add",
+    "settings": "Settings",
+    "login" : "Login",
+    "logout": "Logout",
+    "password": "password",
+    "registrations": "registrations",
+    "register": "rejestruj",
+    "user_name": "user name",
+
+    "start_tekst": "The only budget planner you'll ever need."
+
+  
   }

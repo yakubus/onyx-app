@@ -1,17 +1,28 @@
 {
     "sampleText": "Jakiś przykładowy tekst",
-    "transactions": "transakcje",
-    "budget_plans": "plany budżetowe",
-    "account": "konta",
-    "goals": "cele",
-    "statistic":  "statystyki",
+    "transactions": "Transakcje",
+    "budget_plans": "Budżety",
+    "account": "Konta",
+    "goals": "Cele",
+    "statistic":  "Statystyki",
     "language": "język",
     "dark_mode": "ciemny motyw",
     "account_name": "nazwa konta",
     "account_type": "rodzaj konta",
-    "balance": "saldo",
-    "currency": "waluta",
+    "balance": "Saldo",
+    "currency": "Waluta",
     "checking": "płatnicze",
     "saving": "oszczędościowe",
-    "add": "dodaj"
-  }
+    "add": "Dodaj",
+    "settings": "Ustawienia",
+    "login" : "Logowanie",
+    "logout": "Wyloguj",
+    "password": "hasło",
+    "registrations": "rejestracja",
+    "register": "rejestruj",
+    "user_name": "nazwa użytkownika",
+
+
+    
+    "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować."
+  } 
