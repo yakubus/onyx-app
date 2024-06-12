@@ -7,8 +7,10 @@ export const ErrorSchema = z.object({
 
 export const MoneySchema = z.object({
   currency: z.string().min(1),
-  amount: z.number().min(1),
+  amount: z.number(),
 });
+
+export type Money = z.infer<typeof MoneySchema>;
 
 export const MonthDateSchema = z.object({
   month: z.number(),

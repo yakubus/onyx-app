@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { Undo2 } from "lucide-react";
 import BudgetAssigmentCard from "@/components/dashboard/budget/BudgetAssigmentCard";
@@ -11,20 +11,40 @@ import RouteLoadingError from "@/components/RouteLoadingError";
 import { Button } from "@/components/ui/button";
 
 import { getCategoriesQueryOptions } from "@/lib/api/category";
+import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
+import { getToAssignQueryOptions } from "@/lib/api/subcategory";
 
 export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId")({
-  loader: ({ context: { queryClient }, params: { budgetId } }) =>
-    queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
+  loaderDeps: ({ search: { month, year } }) => ({ month, year }),
+  loader: ({
+    context: { queryClient },
+    params: { budgetId },
+    deps: { month, year },
+  }) => {
+    Promise.all([
+      queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
+      queryClient.ensureQueryData(
+        getToAssignQueryOptions({ budgetId, month, year }),
+      ),
+    ]);
+  },
   component: SingleBudget,
   pendingComponent: () => <SingleBudgetLoadingSkeleton />,
   errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
+  validateSearch: SingleBudgetPageParamsSchema,
 });
 
 function SingleBudget() {
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const { budgetId } = Route.useParams();
-  const { data } = useSuspenseQuery(getCategoriesQueryOptions(budgetId));
-  const activeCategoryData = data.find(
+  const { month, year } = Route.useSearch();
+  const [{ data: categories }, { data: toAssign }] = useSuspenseQueries({
+    queries: [
+      getCategoriesQueryOptions(budgetId),
+      getToAssignQueryOptions({ budgetId, month, year }),
+    ],
+  });
+  const activeCategoryData = categories.find(
     (category) => category.id === activeCategoryId,
   );
 
@@ -42,11 +62,11 @@ function SingleBudget() {
         </Link>
       </Button>
       <div className="flex h-full flex-col space-y-4 overflow-hidden lg:col-span-2">
-        <BudgetAssigmentCard />
+        <BudgetAssigmentCard toAssign={toAssign} />
         <CategoriesCard
           activeCategoryId={activeCategoryId}
           setActiveCategoryId={setActiveCategoryId}
-          categories={data}
+          categories={categories}
         />
       </div>
       {activeCategoryData && (

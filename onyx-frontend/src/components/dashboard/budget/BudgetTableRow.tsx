@@ -60,7 +60,11 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
               <Link
                 to="/budget/$budgetId"
                 params={{ budgetId: budget.id }}
-                search={{ selectedBudget: budget.id }}
+                search={{
+                  selectedBudget: budget.id,
+                  month: String(new Date().getMonth() + 1),
+                  year: String(new Date().getFullYear()),
+                }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"
                 className="grid w-full grid-cols-4 px-4 py-8 hover:bg-accent"

@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { AssignmentSchema, TargetSchema } from "@/lib/validation/base";
+import {
+  AssignmentSchema,
+  MoneySchema,
+  ResultSchema,
+  TargetSchema,
+} from "@/lib/validation/base";
 
 export const SubcategorySchema = z.object({
   id: z.string().min(1),
@@ -28,3 +33,7 @@ export const CreateAssignmentSchema = z.object({
 });
 
 export type CreateAssignment = z.infer<typeof CreateAssignmentSchema>;
+
+export const ToAssignSchema = ResultSchema.extend({
+  value: MoneySchema,
+});
