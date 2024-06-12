@@ -3,7 +3,7 @@ using Budget.Application.Budgets.Models;
 using Budget.Domain.Budgets;
 using Models.Responses;
 
-namespace Budget.Application.Budgets.UpdateBudget;
+namespace Budget.Application.Budgets.RemoveUserFromBudgetBudget;
 
 internal sealed class RemoveUserFromBudgetCommandHandler : ICommandHandler<RemoveUserFromBudgetCommand, BudgetModel>
 {

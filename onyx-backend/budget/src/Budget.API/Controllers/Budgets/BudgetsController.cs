@@ -5,13 +5,13 @@ using Budget.Application.Budgets.GetBudgetInvitation;
 using Budget.Application.Budgets.GetBudgets;
 using Budget.Application.Budgets.Models;
 using Budget.Application.Budgets.RemoveBudget;
-using Budget.Application.Budgets.UpdateBudget;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
 using System.IO;
 using Budget.Application.Budgets.AddUserToBudget;
+using Budget.Application.Budgets.RemoveUserFromBudgetBudget;
 
 namespace Budget.API.Controllers.Budgets;
 
