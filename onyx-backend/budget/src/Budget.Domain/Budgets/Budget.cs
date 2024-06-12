@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
-using System.Text;
-using Abstractions.DomainBaseTypes;
+﻿using Abstractions.DomainBaseTypes;
 using Models.DataTypes;
 using Models.Responses;
 

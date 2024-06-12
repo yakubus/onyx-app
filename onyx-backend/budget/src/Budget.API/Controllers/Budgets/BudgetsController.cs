@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Responses;
-using System.IO;
 using Budget.Application.Budgets.AddUserToBudget;
 using Budget.Application.Budgets.RemoveUserFromBudgetBudget;
 

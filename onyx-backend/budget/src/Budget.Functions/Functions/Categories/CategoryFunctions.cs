@@ -8,37 +8,38 @@ using Budget.Functions.Functions.Categories.Requests;
 using MediatR;
 using Models.Responses;
 
+//[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+
 namespace Budget.Functions.Functions.Categories;
 
 //TODO: Add query for GET to load assignments only for month
-public sealed class CategoriesController
+public sealed class CategoryFunctions
 {
-    private const string baseRoute = "/api/v1/{budgetId}/categories";
+    private const string baseRoute = "/api/v1/{budgetId}/categories/";
     private readonly ISender _sender;
 
-    public CategoriesController(ISender sender) => _sender = sender;
+    public CategoryFunctions(ISender sender) => _sender = sender;
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetCategories([FromRoute]Guid budgetId, CancellationToken cancellationToken)
+    public async Task<Result> GetCategories(Guid budgetId)
     {
         var query = new GetCategoriesQuery(budgetId);
 
-        var result = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query);
 
         return result;
     }
 
     [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Get, baseRoute)]
+    [HttpApi(LambdaHttpMethod.Post, baseRoute)]
     public async Task<Result> AddCategory(
-        [FromRoute] Guid budgetId,
-        [FromBody] AddCategoryRequest request,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        [FromBody] AddCategoryRequest request)
     {
         var command = new AddCategoryCommand(request.Name, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }
@@ -46,14 +47,13 @@ public sealed class CategoriesController
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{categoryId}}")]
     public async Task<Result> UpdateCategory(
-        [FromRoute] Guid budgetId,
-        [FromRoute] Guid categoryId,
-        [FromBody] UpdateCategoryRequest request,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        Guid categoryId,
+        [FromBody] UpdateCategoryRequest request)
     {
         var command = new UpdateCategoryCommand(categoryId, request.NewName, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }
@@ -61,13 +61,12 @@ public sealed class CategoriesController
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{categoryId}}")]
     public async Task<Result> RemoveCategory(
-        [FromRoute] Guid budgetId,
-        [FromRoute] Guid categoryId,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        Guid categoryId)
     {
         var command = new RemoveCategoryCommand(categoryId, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }

@@ -2,7 +2,6 @@
 using Budget.Application.Abstractions.Identity;
 using Budget.Application.Budgets.Models;
 using Budget.Domain.Budgets;
-using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Budgets.AddBudget;

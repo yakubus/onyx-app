@@ -22,11 +22,11 @@ public sealed class AccountFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetAccounts([FromRoute] Guid budgetId, CancellationToken cancellationToken)
+    public async Task<Result> GetAccounts(Guid budgetId)
     {
         var query = new GetAccountsQuery(budgetId);
 
-        var result = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query);
 
         return result;
     }
@@ -34,13 +34,12 @@ public sealed class AccountFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
     public async Task<Result> AddAccount(
-        [FromRoute] Guid budgetId,
-        [FromBody] AddAccountRequest request,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        [FromBody] AddAccountRequest request)
     {
         var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }
@@ -48,14 +47,13 @@ public sealed class AccountFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{accountId}}")]
     public async Task<Result> UpdateAccount(
-        [FromRoute] Guid budgetId,
-        [FromRoute] Guid accountId,
-        [FromBody] UpdateAccountRequest request,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        Guid accountId,
+        [FromBody] UpdateAccountRequest request)
     {
         var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }
@@ -63,13 +61,12 @@ public sealed class AccountFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{accountId}}")]
     public async Task<Result> RemoveAccount(
-        [FromRoute] Guid budgetId,
-        [FromRoute] Guid accountId,
-        CancellationToken cancellationToken)
+        Guid budgetId,
+        Guid accountId)
     {
         var command = new RemoveAccountCommand(accountId, budgetId);
 
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command);
 
         return result;
     }
