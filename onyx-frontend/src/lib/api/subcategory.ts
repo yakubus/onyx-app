@@ -22,7 +22,7 @@ interface GetToAssign {
   budgetId: string;
 }
 
-export interface Assignment {
+export interface FormAssignment {
   assignedAmount: number;
   assignmentMonth: MonthDate;
 }
@@ -30,7 +30,7 @@ export interface Assignment {
 interface Assign {
   budgetId: string;
   subcategoryId: string;
-  assignment: Assignment;
+  assignment: FormAssignment;
 }
 
 export const createSubcategory = ({

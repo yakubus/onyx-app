@@ -38,3 +38,5 @@ export const AssignmentSchema = z.object({
   assignedAmount: MoneySchema,
   actualAmount: MoneySchema,
 });
+
+export type Assignment = z.infer<typeof AssignmentSchema>;

@@ -13,9 +13,12 @@ interface SubcategoriesCardProps {
 const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
   return (
     <Card className="lg:col-span-3">
-      <div className="flex justify-between rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
-        <p>Subcategory</p>
-        <p>Assigned</p>
+      <div className="grid grid-cols-3 rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
+        <p className="col-span-1">Subcategory</p>
+        <div className="col-span-2 grid grid-cols-2 justify-items-end">
+          <p>Actual Amount</p>
+          <p>Assigned</p>
+        </div>
       </div>
       {activeCategory?.subcategories && (
         <ul className="p-1">
@@ -23,7 +26,6 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
             <SubcategoryAccordion
               key={subcategory.id}
               subcategory={subcategory}
-              parentCategoryId={activeCategory.id}
             />
           ))}
           <CreateSubcategoryButton parentCategoryId={activeCategory.id} />

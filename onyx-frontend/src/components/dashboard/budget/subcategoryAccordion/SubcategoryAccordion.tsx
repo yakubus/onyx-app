@@ -1,24 +1,35 @@
 import { FC, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSearch } from "@tanstack/react-router";
+
+import { ChevronRight } from "lucide-react";
+import NameTooltip from "@/components/dashboard/budget/subcategoryAccordion/NameTooltip";
+import AssignmentTooltip from "@/components/dashboard/budget/subcategoryAccordion/AssignmentTooltip";
+import SubcategoryAccordionContent from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryAccordionContent";
 
 import { Subcategory } from "@/lib/validation/subcategory";
 import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
-import NameTooltip from "./NameTooltip";
-import AssignmentTooltip from "./AssignmentTooltip";
+import { Money } from "@/lib/validation/base";
 
 interface SubcategoryAccordionProps {
   subcategory: Subcategory;
-  parentCategoryId: string;
 }
 
 const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   subcategory,
-  parentCategoryId,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [isNameTooltipOpen, setIsNameTooltipOpen] = useState(false);
   const [isAssignmentTooltipOpen, setAssignmentTooltipOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { month, year, selectedBudget } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId",
+  });
+  const budgetToAssign = queryClient.getQueryData<Money>([
+    "toAssign",
+    selectedBudget,
+  ]);
 
   const accordionRef = useClickOutside<HTMLLIElement>(() => {
     setExpanded(false);
@@ -29,14 +40,27 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     setExpanded(!expanded);
   };
 
+  const currentlyAssigned = subcategory.assignments.find(
+    (asignment) =>
+      asignment.month.month === Number(month) &&
+      asignment.month.year === Number(year),
+  );
+  const currencyToDisplay =
+    currentlyAssigned?.actualAmount.currency || budgetToAssign?.currency || "";
+
   return (
     <li
       onClick={onExpandClick}
       ref={accordionRef}
-      className="cursor-pointer p-3 transition-all duration-200 hover:bg-accent"
+      className={cn(expanded && "border-b")}
     >
-      <div className="flex justify-between space-x-4">
-        <div className="flex space-x-6">
+      <div
+        className={cn(
+          "grid cursor-pointer grid-cols-3 space-x-4 p-3 transition-all duration-200 hover:bg-accent",
+          expanded && "border-b",
+        )}
+      >
+        <div className="col-span-1 flex space-x-6">
           <ChevronRight
             className={cn(
               "rotate-0 opacity-60 transition-all duration-300 ease-in-out",
@@ -49,11 +73,16 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
             subcategory={subcategory}
           />
         </div>
-        <div>
+        <div className="col-span-2 grid grid-cols-2 justify-items-end gap-x-4">
+          <p>
+            {currentlyAssigned?.actualAmount.amount || "0"} {currencyToDisplay}
+          </p>
           <AssignmentTooltip
             isAssignmentTooltipOpen={isAssignmentTooltipOpen}
             setIsAssignmentTooltipOpen={setAssignmentTooltipOpen}
-            subcategory={subcategory}
+            subcategoryId={subcategory.id}
+            currencyToDisplay={currencyToDisplay}
+            currentlyAssigned={currentlyAssigned}
           />
         </div>
       </div>
@@ -63,7 +92,9 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           expanded && "grid-rows-[1fr]",
         )}
       >
-        <div className="overflow-hidden">content</div>
+        <div className="overflow-hidden">
+          <SubcategoryAccordionContent subcategory={subcategory} />
+        </div>
       </div>
     </li>
   );

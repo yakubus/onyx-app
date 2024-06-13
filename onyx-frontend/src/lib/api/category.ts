@@ -14,7 +14,7 @@ export const getCategories = async (budgetId: string) => {
     const { data } = await privateApi.get(`/${budgetId}/categories`);
     const validatedData = CategoryResultSchema.safeParse(data);
     if (!validatedData.success) {
-      console.log(validatedData.error.flatten());
+      console.log(validatedData.error?.issues);
       throw new Error("Invalid data type.");
     }
 

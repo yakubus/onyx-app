@@ -23,22 +23,26 @@ import { Button } from "@/components/ui/button";
 import {
   CreateAssignment,
   CreateAssignmentSchema,
-  Subcategory,
 } from "@/lib/validation/subcategory";
 import { cn } from "@/lib/utils";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
-import { Assignment, assign } from "@/lib/api/subcategory";
+import { FormAssignment, assign } from "@/lib/api/subcategory";
+import { Assignment } from "@/lib/validation/base";
 
 interface AssignmentTooltipProps {
   isAssignmentTooltipOpen: boolean;
   setIsAssignmentTooltipOpen: (state: boolean) => void;
-  subcategory: Subcategory;
+  subcategoryId: string;
+  currentlyAssigned: Assignment | undefined;
+  currencyToDisplay: string;
 }
 
 const AssignmentTooltip: FC<AssignmentTooltipProps> = ({
   isAssignmentTooltipOpen,
   setIsAssignmentTooltipOpen,
-  subcategory,
+  subcategoryId,
+  currentlyAssigned,
+  currencyToDisplay,
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
@@ -47,19 +51,13 @@ const AssignmentTooltip: FC<AssignmentTooltipProps> = ({
   const { month, year } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId",
   });
-  const currentlyAssigned =
-    subcategory.assigments &&
-    subcategory.assigments.find(
-      (asignment) =>
-        asignment.month.month === Number(month) &&
-        asignment.month.year === Number(year),
-    );
-  const assignedAmount =
-    currentlyAssigned?.assignedAmount.amount.toString() || "0.00";
+
+  const amountToDisplay =
+    currentlyAssigned?.assignedAmount.amount.toString() || "0";
 
   const form = useForm<CreateAssignment>({
     defaultValues: {
-      amount: assignedAmount,
+      amount: amountToDisplay,
     },
     resolver: zodResolver(CreateAssignmentSchema),
   });
@@ -81,59 +79,69 @@ const AssignmentTooltip: FC<AssignmentTooltipProps> = ({
 
   const onSubmit: SubmitHandler<CreateAssignment> = (data) => {
     const { amount } = data;
-    const assignment: Assignment = {
+    const assignment: FormAssignment = {
       assignedAmount: Number(amount),
       assignmentMonth: {
         month: Number(month),
         year: Number(year),
       },
     };
-    mutate({ budgetId, subcategoryId: subcategory.id, assignment });
+    mutate({ budgetId, subcategoryId, assignment });
   };
 
   return (
-    <HoverCard
-      open={isAssignmentTooltipOpen}
-      onOpenChange={setIsAssignmentTooltipOpen}
-    >
-      <HoverCardTrigger>
-        <span className={cn(isPending && "opacity-50")}>
-          {isPending ? "" : assignedAmount}
-        </span>
-      </HoverCardTrigger>
-      <HoverCardContent>
-        <Form {...form}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex items-center px-1 py-2"
-          >
-            <FormField
-              control={control}
-              name="amount"
-              disabled={isPending}
-              render={({ field }) => (
-                <FormItem className="w-full space-y-1">
-                  <div className="flex space-x-2">
-                    <FormControl>
-                      <Input {...field} type="number" min="0" step="1" />
-                    </FormControl>
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="icon"
-                      className="w-12 rounded-lg"
-                    >
-                      <Check className="opacity-70" />
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-      </HoverCardContent>
-    </HoverCard>
+    <div>
+      <HoverCard
+        open={isAssignmentTooltipOpen}
+        onOpenChange={setIsAssignmentTooltipOpen}
+      >
+        <HoverCardTrigger>
+          <span className={cn(isPending && "opacity-50")}>
+            {isPending ? (
+              <span>
+                {variables.assignment.assignedAmount} {currencyToDisplay}
+              </span>
+            ) : (
+              <span>
+                {amountToDisplay} {currencyToDisplay}
+              </span>
+            )}
+          </span>
+        </HoverCardTrigger>
+        <HoverCardContent>
+          <Form {...form}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex items-center px-1 py-2"
+            >
+              <FormField
+                control={control}
+                name="amount"
+                disabled={isPending}
+                render={({ field }) => (
+                  <FormItem className="w-full space-y-1">
+                    <div className="flex space-x-2">
+                      <FormControl>
+                        <Input {...field} type="number" min="0" step="1" />
+                      </FormControl>
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="icon"
+                        className="w-12 rounded-lg"
+                      >
+                        <Check className="opacity-70" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </HoverCardContent>
+      </HoverCard>
+    </div>
   );
 };
 
