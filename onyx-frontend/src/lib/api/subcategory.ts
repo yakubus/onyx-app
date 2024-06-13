@@ -1,7 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
-import { privateApi } from "../axios";
-import { getErrorMessage } from "../utils";
-import { ToAssignSchema } from "../validation/subcategory";
+import { privateApi } from "@/lib/axios";
+import { getErrorMessage } from "@/lib/utils";
+import { ToAssignSchema } from "@/lib/validation/subcategory";
+import { MonthDate } from "@/lib/validation/base";
 
 interface CreateSubcategory {
   budgetId: string;
@@ -19,6 +20,17 @@ interface GetToAssign {
   month: string;
   year: string;
   budgetId: string;
+}
+
+export interface Assignment {
+  assignedAmount: number;
+  assignmentMonth: MonthDate;
+}
+
+interface Assign {
+  budgetId: string;
+  subcategoryId: string;
+  assignment: Assignment;
 }
 
 export const createSubcategory = ({
@@ -72,3 +84,9 @@ export const getToAssignQueryOptions = ({
     queryKey: ["toAssign", budgetId],
     queryFn: () => getToAssign({ month, year, budgetId }),
   });
+
+export const assign = ({ budgetId, subcategoryId, assignment }: Assign) =>
+  privateApi.put(
+    `/${budgetId}/subcategories/${subcategoryId}/assignment`,
+    assignment,
+  );

@@ -17,6 +17,8 @@ export const MonthDateSchema = z.object({
   year: z.number(),
 });
 
+export type MonthDate = z.infer<typeof MonthDateSchema>;
+
 export const ResultSchema = z.object({
   isSuccess: z.boolean(),
   isFailure: z.boolean(),
