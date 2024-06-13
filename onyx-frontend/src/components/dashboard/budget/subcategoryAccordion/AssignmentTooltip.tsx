@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useSearch } from "@tanstack/react-router";
@@ -62,7 +62,7 @@ const AssignmentTooltip: FC<AssignmentTooltipProps> = ({
     resolver: zodResolver(CreateAssignmentSchema),
   });
 
-  const { handleSubmit, control, setError } = form;
+  const { handleSubmit, control, setError, reset } = form;
 
   const { mutate, isPending, variables } = useMutation({
     mutationFn: assign,
@@ -76,6 +76,12 @@ const AssignmentTooltip: FC<AssignmentTooltipProps> = ({
       setError("amount", { message: "Error occured. Try again." });
     },
   });
+
+  useEffect(() => {
+    reset({
+      amount: amountToDisplay,
+    });
+  }, [currentlyAssigned, reset, amountToDisplay]);
 
   const onSubmit: SubmitHandler<CreateAssignment> = (data) => {
     const { amount } = data;
