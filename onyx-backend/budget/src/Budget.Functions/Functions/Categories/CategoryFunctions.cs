@@ -22,9 +22,9 @@ public sealed class CategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetCategories(Guid budgetId)
+    public async Task<Result> GetAll(string budgetId)
     {
-        var query = new GetCategoriesQuery(budgetId);
+        var query = new GetCategoriesQuery(Guid.Parse(budgetId));
 
         var result = await _sender.Send(query);
 
@@ -33,11 +33,11 @@ public sealed class CategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> AddCategory(
-        Guid budgetId,
+    public async Task<Result> Add(
+        string budgetId,
         [FromBody] AddCategoryRequest request)
     {
-        var command = new AddCategoryCommand(request.Name, budgetId);
+        var command = new AddCategoryCommand(request.Name, Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -46,12 +46,15 @@ public sealed class CategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> UpdateCategory(
-        Guid budgetId,
-        Guid categoryId,
+    public async Task<Result> Update(
+        string budgetId,
+        string categoryId,
         [FromBody] UpdateCategoryRequest request)
     {
-        var command = new UpdateCategoryCommand(categoryId, request.NewName, budgetId);
+        var command = new UpdateCategoryCommand(
+            Guid.Parse(categoryId),
+            request.NewName,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -60,11 +63,11 @@ public sealed class CategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> RemoveCategory(
-        Guid budgetId,
-        Guid categoryId)
+    public async Task<Result> Remove(
+        string budgetId,
+        string categoryId)
     {
-        var command = new RemoveCategoryCommand(categoryId, budgetId);
+        var command = new RemoveCategoryCommand(Guid.Parse(categoryId), Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 

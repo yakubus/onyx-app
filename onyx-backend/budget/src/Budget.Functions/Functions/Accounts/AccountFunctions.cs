@@ -22,9 +22,9 @@ public sealed class AccountFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetAccounts(Guid budgetId)
+    public async Task<Result> GetAll(string budgetId)
     {
-        var query = new GetAccountsQuery(budgetId);
+        var query = new GetAccountsQuery(Guid.Parse(budgetId));
 
         var result = await _sender.Send(query);
 
@@ -33,11 +33,11 @@ public sealed class AccountFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> AddAccount(
-        Guid budgetId,
+    public async Task<Result> Add(
+        string budgetId,
         [FromBody] AddAccountRequest request)
     {
-        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, budgetId);
+        var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -46,12 +46,12 @@ public sealed class AccountFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{accountId}}")]
-    public async Task<Result> UpdateAccount(
-        Guid budgetId,
-        Guid accountId,
+    public async Task<Result> Update(
+        string budgetId,
+        string accountId,
         [FromBody] UpdateAccountRequest request)
     {
-        var command = new UpdateAccountCommand(accountId, request.NewName, request.NewBalance, budgetId);
+        var command = new UpdateAccountCommand(Guid.Parse(accountId), request.NewName, request.NewBalance, Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -60,11 +60,11 @@ public sealed class AccountFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{accountId}}")]
-    public async Task<Result> RemoveAccount(
-        Guid budgetId,
-        Guid accountId)
+    public async Task<Result> Remove(
+        string budgetId,
+        string accountId)
     {
-        var command = new RemoveAccountCommand(accountId, budgetId);
+        var command = new RemoveAccountCommand(Guid.Parse(accountId), Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 

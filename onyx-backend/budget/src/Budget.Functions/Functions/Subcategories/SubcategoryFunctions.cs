@@ -26,7 +26,7 @@ public sealed class SubcategoryFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, $"{baseRoute}to-assign")]
     public async Task<Result> GetToAssignAmount(
-        Guid budgetId,
+        string budgetId,
         [FromQuery] int month,
         [FromQuery] int year)
     {
@@ -39,11 +39,14 @@ public sealed class SubcategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> AddSubcategory(
-        Guid budgetId,
+    public async Task<Result> Add(
+        string budgetId,
         [FromBody] AddSubcategoryRequest request)
     {
-        var command = new AddSubcategoryCommand(request.ParentCategoryId, request.SubcategoryName, budgetId);
+        var command = new AddSubcategoryCommand(
+            request.ParentCategoryId,
+            request.SubcategoryName,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -52,12 +55,16 @@ public sealed class SubcategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}")]
-    public async Task<Result> UpdateSubcategory(
-        Guid budgetId,
-        Guid subcategoryId,
+    public async Task<Result> Update(
+        string budgetId,
+        string subcategoryId,
         [FromBody] UpdateSubcategoryRequest request)
     {
-        var command = new UpdateSubcategoryCommand(subcategoryId, request.NewName, request.NewDescription, budgetId);
+        var command = new UpdateSubcategoryCommand(
+            Guid.Parse(subcategoryId),
+            request.NewName,
+            request.NewDescription,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -66,11 +73,11 @@ public sealed class SubcategoryFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{subcategoryId}}")]
-    public async Task<Result> RemoveSubcategory(
-        Guid budgetId,
-        Guid subcategoryId)
+    public async Task<Result> Remove(
+        string budgetId,
+        string subcategoryId)
     {
-        var command = new RemoveSubcategoryCommand(subcategoryId, budgetId);
+        var command = new RemoveSubcategoryCommand(Guid.Parse(subcategoryId), Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -80,11 +87,15 @@ public sealed class SubcategoryFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/assignment")]
     public async Task<Result> UpdateAssignment(
-        Guid budgetId,
-        Guid subcategoryId,
+        string budgetId,
+        string subcategoryId,
         [FromBody] UpdateAssignmentRequest request)
     {
-        var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount, budgetId);
+        var command = new UpdateAssignmentCommand(
+            Guid.Parse(subcategoryId),
+            request.AssignmentMonth,
+            request.AssignedAmount,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -94,11 +105,14 @@ public sealed class SubcategoryFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/assignment/remove")]
     public async Task<Result> RemoveAssignment(
-        Guid budgetId,
-        Guid subcategoryId,
+        string budgetId,
+        string subcategoryId,
         [FromBody] RemoveAssignmentRequest request)
     {
-        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth, budgetId);
+        var command = new RemoveAssignmentCommand(
+            Guid.Parse(subcategoryId),
+            request.AssignmentMonth,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -108,11 +122,16 @@ public sealed class SubcategoryFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/target")]
     public async Task<Result> UpdateTarget(
-        Guid budgetId,
-        Guid subcategoryId,
+        string budgetId,
+        string subcategoryId,
         [FromBody] UpdateTargetRequest request)
     {
-        var command = new UpdateTargetCommand(subcategoryId, request.StartedAt, request.TargetUpToMonth, request.TargetAmount, budgetId);
+        var command = new UpdateTargetCommand(
+            Guid.Parse(subcategoryId),
+            request.StartedAt,
+            request.TargetUpToMonth,
+            request.TargetAmount,
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -122,10 +141,10 @@ public sealed class SubcategoryFunctions
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/target/remove")]
     public async Task<Result> RemoveTarget(
-        Guid budgetId,
-        Guid subcategoryId)
+        string budgetId,
+        string subcategoryId)
     {
-        var command = new RemoveTargetCommand(subcategoryId, budgetId);
+        var command = new RemoveTargetCommand(Guid.Parse(subcategoryId), Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 

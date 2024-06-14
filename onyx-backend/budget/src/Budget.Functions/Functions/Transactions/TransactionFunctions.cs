@@ -20,7 +20,7 @@ public sealed class TransactionFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetTransactions(
+    public async Task<Result> Get(
         string budgetId,
         [FromQuery] string? query,
         [FromQuery] string? counterpartyId,
@@ -41,8 +41,8 @@ public sealed class TransactionFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> AddTransaction(
-        Guid budgetId,
+    public async Task<Result> Update(
+        string budgetId,
         [FromBody] AddTransactionRequest request)
     {
         var command = new AddTransactionCommand(
@@ -51,7 +51,7 @@ public sealed class TransactionFunctions
             request.TransactedAt,
             request.CounterpartyName,
             request.SubcategoryId,
-            budgetId);
+            Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
@@ -60,11 +60,11 @@ public sealed class TransactionFunctions
 
     [LambdaFunction()]
     [HttpApi(LambdaHttpMethod.Get, $"{baseRoute}{{transactionId}}")]
-    public async Task<Result> RemoveTransaction(
-        Guid budgetId,
-        Guid transactionId)
+    public async Task<Result> Remove(
+        string budgetId,
+        string transactionId)
     {
-        var command = new RemoveTransactionCommand(transactionId, budgetId);
+        var command = new RemoveTransactionCommand(Guid.Parse(transactionId), Guid.Parse(budgetId));
 
         var result = await _sender.Send(command);
 
