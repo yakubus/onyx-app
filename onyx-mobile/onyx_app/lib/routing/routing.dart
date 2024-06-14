@@ -4,7 +4,6 @@ import 'package:onyx_app/views/budget_palns/budget_palns_view.dart';
 import 'package:onyx_app/views/goals/goals_view.dart';
 import 'package:onyx_app/views/home/home_view.dart';
 
-import 'package:onyx_app/views/settings/setings_view.dart';
 import 'package:onyx_app/views/statistic/statistic.dart';
 import 'package:onyx_app/views/transactions/transactions_view.dart';
 import 'package:flutter/widgets.dart';
@@ -18,12 +17,6 @@ final GoRouter goRouter = GoRouter(
         return const Home();
       },
       routes: <RouteBase>[
-        GoRoute(
-          path: 'settings',
-          builder: (BuildContext context, GoRouterState state) {
-            return const SettingsView();
-          },
-        ),
         GoRoute(
           path: 'account',
           builder: (BuildContext context, GoRouterState state) {

@@ -3,9 +3,7 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:onyx_app/views/settings/settings_repo.dart';
-
-enum Language { en, pl }
+import 'package:onyx_app/services/app_settings/settings_repo.dart';
 
 class SettingsData {
   final String language;

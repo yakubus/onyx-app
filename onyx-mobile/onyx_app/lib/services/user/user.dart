@@ -1,20 +1,20 @@
 import 'dart:async';
-
+import 'dart:developer';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/error.dart';
 import 'package:onyx_app/services/user/user_repo.dart';
 
-class UserServiceModel {
-  final bool isSuccess;
-  final bool isFailure;
-  final ErrorOnyx error;
-  final UserData value;
+final userDataServiceProvider =
+    StateProvider<UserServiceModel>((ref) => UserServiceModel());
 
-  UserServiceModel(
-      {required this.isSuccess,
-      required this.isFailure,
-      required this.error,
-      required this.value});
+class UserServiceModel {
+  final bool? isSuccess;
+  final bool? isFailure;
+  final ErrorOnyx? error;
+  final UserData? value;
+
+  UserServiceModel({this.isSuccess, this.isFailure, this.error, this.value});
 
   factory UserServiceModel.fromJson(Map<String, dynamic> json) {
     return UserServiceModel(
@@ -55,12 +55,9 @@ class UserData {
 }
 
 class UserNotifier extends AsyncNotifier<UserServiceModel> {
-  UserNotifier(this.token);
-
-  String token;
-
   @override
-  FutureOr<UserServiceModel> build() {
+  FutureOr<UserServiceModel> build() async {
+    String token = ref.watch(userToken.notifier).state;
     if (token.isEmpty) {
       return UserServiceModel(
           isSuccess: false,
@@ -74,25 +71,32 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
               id: '',
               username: ''));
     }
+    ref.watch(userDataServiceProvider.notifier).state =
+        await ref.read(userServiceProvider).getUserData(token);
     return ref.read(userServiceProvider).getUserData(token);
   }
 
   Future<void> refresh() async {
+    String token = ref.watch(userToken.notifier).state;
     state = await AsyncValue.guard(
         () => ref.watch(userServiceProvider).getUserData(token));
   }
 
-  Future<UserServiceModel> login(String email, String password) async {
-    UserServiceModel user =
+  Future<void> login(String email, String password) async {
+    ref.watch(userDataServiceProvider.notifier).state =
         await ref.read(userServiceProvider).loginUser(email, password);
-    token = user.value.accessToken;
+
+    ref.read(userToken.notifier).state =
+        ref.watch(userDataServiceProvider.notifier).state.value?.accessToken ??
+            '';
     refresh();
-    return user;
+
+    log("userToken: ${ref.read(userToken.notifier).state}");
   }
 
   Future<void> register(
       String email, String password, String currency, String username) async {
-    ref
+    ref.watch(userDataServiceProvider.notifier).state = await ref
         .read(userServiceProvider)
         .registerUser(email, password, currency, username);
     refresh();

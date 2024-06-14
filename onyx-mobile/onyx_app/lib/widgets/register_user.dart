@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/currency_dict.dart';
+import 'package:onyx_app/services/user/user.dart';
 import 'package:onyx_app/services/user/user_repo.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -83,12 +85,13 @@ class RegisterUserDialog extends HookConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: ShadSelect<String>(
-                        placeholder: const Text('Select a currency'),
+                        placeholder:
+                            Text(AppLocalizations.of(context)!.select_currency),
                         options: [
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(32, 6, 6, 6),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 6, 6, 6),
                             child: Text(
-                              'Fruits',
+                              AppLocalizations.of(context)!.currency,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -115,11 +118,19 @@ class RegisterUserDialog extends HookConsumerWidget {
                   onPressed: () {
                     final selectedCurrency =
                         ref.read(selectedCurrencyProvider.notifier).state;
+
                     ref.watch(userServiceProvider).registerUser(
                         emailController.text,
                         passwordController.text,
                         selectedCurrency,
                         nameController.text);
+
+                    ref.read(userToken.notifier).state = ref
+                            .watch(userDataServiceProvider.notifier)
+                            .state
+                            .value
+                            ?.accessToken ??
+                        '';
                   },
                 )
               ])),

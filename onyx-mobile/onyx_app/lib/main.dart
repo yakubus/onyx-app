@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:onyx_app/services/user/user.dart';
 import 'package:onyx_app/themes/themes.dart';
-import 'package:onyx_app/views/settings/settings.dart';
+import 'package:onyx_app/services/app_settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,10 +13,13 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'routing/routing.dart';
 
-final usetToken = StateProvider<String>((ref) => '');
+final userToken = StateProvider<String>((ref) => '');
 
 final settingsProvider =
     AsyncNotifierProvider<Settings, SettingsData>(Settings.new);
+
+final userServiceDataProvider =
+    AsyncNotifierProvider<UserNotifier, UserServiceModel>(UserNotifier.new);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

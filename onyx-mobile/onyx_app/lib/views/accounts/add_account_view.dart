@@ -18,7 +18,7 @@ class AddAccountView extends HookConsumerWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 50, width: double.infinity),
+          const SizedBox(height: 50, width: double.infinity),
           Row(
             children: [
               Expanded(
