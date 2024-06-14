@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:onyx_app/services/user/user_repo.dart';
+import 'package:onyx_app/main.dart';
+import 'package:onyx_app/services/user/user.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -58,8 +59,16 @@ class LogInDialog extends HookConsumerWidget {
                 ShadButton.secondary(
                   text: Text(AppLocalizations.of(context)!.login),
                   onPressed: () {
-                    ref.watch(userServiceProvider).loginUser(
-                        emailController.text, passwordController.text);
+                    ref
+                        .read(userServiceDataProvider.notifier)
+                        .login(emailController.text, passwordController.text);
+
+                    ref.read(userToken.notifier).state = ref
+                            .watch(userDataServiceProvider.notifier)
+                            .state
+                            .value
+                            ?.accessToken ??
+                        '';
                   },
                 )
               ])),

@@ -21,8 +21,14 @@
     "registrations": "rejestracja",
     "register": "rejestruj",
     "user_name": "nazwa użytkownika",
+    "profile": "Profil",
+    "billing": "Biling",
+    "team": "Team",
+    "subscription": "Subskrypcja",
 
 
     
-    "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować."
+    "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować.",
+    "select_language":"wybierz język",
+    "select_currency":"wybierz walutę"
   } 

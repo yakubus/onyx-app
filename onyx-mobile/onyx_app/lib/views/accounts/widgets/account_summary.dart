@@ -11,7 +11,7 @@ class AccountSummary extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
+    return const Card(
         child: Column(
       children: [],
     ));

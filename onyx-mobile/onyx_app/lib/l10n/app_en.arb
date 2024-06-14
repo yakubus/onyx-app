@@ -21,8 +21,15 @@
     "registrations": "registrations",
     "register": "rejestruj",
     "user_name": "user name",
+    "profile": "Profile",
+    "billing": "Billing",
+    "team": "Team",
+    "subscription": "Subscription",
 
-    "start_tekst": "The only budget planner you'll ever need."
 
+    "start_tekst": "The only budget planner you'll ever need.",
+    "select_language":"Select a language",
+    "select_currency":"Select a Currency"
+  
   
   }
