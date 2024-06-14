@@ -8,23 +8,26 @@ using Budget.Application.Subcategories.RemoveTarget;
 using Budget.Application.Subcategories.UpdateAssignment;
 using Budget.Application.Subcategories.UpdateSubcategory;
 using Budget.Application.Subcategories.UpdateTarget;
+using Budget.Functions.Functions.Shared;
 using Budget.Functions.Functions.Subcategories.Requests;
 using MediatR;
 using Models.Responses;
 
-//[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+
 
 namespace Budget.Functions.Functions.Subcategories;
 
-public sealed class SubcategoryFunctions
+public sealed class SubcategoryFunctions : BaseFunction
 {
-    private const string baseRoute = "/api/v1/{budgetId}/subcategories/";
-    private readonly ISender _sender;
+    private const string subcategoryBaseRoute = $"{BaseRouteV1}{{budgetId}}/subcategories/";
 
-    public SubcategoryFunctions(ISender sender) => _sender = sender;
+    public SubcategoryFunctions(ISender sender) : base(sender)
+    {
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Get, $"{baseRoute}to-assign")]
+    }
+
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Get, $"{subcategoryBaseRoute}to-assign")]
     public async Task<Result> GetToAssignAmount(
         string budgetId,
         [FromQuery] int month,
@@ -32,13 +35,13 @@ public sealed class SubcategoryFunctions
     {
         var command = new GetToAssignQuery(month, year);
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Post, baseRoute)]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Post, subcategoryBaseRoute)]
     public async Task<Result> Add(
         string budgetId,
         [FromBody] AddSubcategoryRequest request)
@@ -48,13 +51,13 @@ public sealed class SubcategoryFunctions
             request.SubcategoryName,
             Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}")]
     public async Task<Result> Update(
         string budgetId,
         string subcategoryId,
@@ -66,26 +69,26 @@ public sealed class SubcategoryFunctions
             request.NewDescription,
             Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{subcategoryId}}")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Delete, $"{subcategoryBaseRoute}{{subcategoryId}}")]
     public async Task<Result> Remove(
         string budgetId,
         string subcategoryId)
     {
         var command = new RemoveSubcategoryCommand(Guid.Parse(subcategoryId), Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/assignment")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}/assignment")]
     public async Task<Result> UpdateAssignment(
         string budgetId,
         string subcategoryId,
@@ -97,13 +100,13 @@ public sealed class SubcategoryFunctions
             request.AssignedAmount,
             Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/assignment/remove")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}/assignment/remove")]
     public async Task<Result> RemoveAssignment(
         string budgetId,
         string subcategoryId,
@@ -114,13 +117,13 @@ public sealed class SubcategoryFunctions
             request.AssignmentMonth,
             Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/target")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}/target")]
     public async Task<Result> UpdateTarget(
         string budgetId,
         string subcategoryId,
@@ -133,22 +136,21 @@ public sealed class SubcategoryFunctions
             request.TargetAmount,
             Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{subcategoryId}}/target/remove")]
+    [LambdaFunction(Role = FullAccessRole)]
+    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}/target/remove")]
     public async Task<Result> RemoveTarget(
         string budgetId,
         string subcategoryId)
     {
         var command = new RemoveTargetCommand(Guid.Parse(subcategoryId), Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
-
 }

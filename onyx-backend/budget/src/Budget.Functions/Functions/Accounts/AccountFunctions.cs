@@ -6,32 +6,33 @@ using Budget.Application.Accounts.GetAccounts;
 using Budget.Application.Accounts.RemoveAccount;
 using Budget.Application.Accounts.UpdateAccount;
 using Budget.Functions.Functions.Accounts.Requests;
+using Budget.Functions.Functions.Shared;
 using MediatR;
 using Models.Responses;
 
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-
 namespace Budget.Functions.Functions.Accounts;
 
-public sealed class AccountFunctions
+public sealed class AccountFunctions : BaseFunction
 {
-    private const string baseRoute = "/api/v1/{budgetId}/accounts/";
-    private readonly ISender _sender;
+    private const string baseRoute = $"{BaseRouteV1}{{budgetId}}/accounts/";
 
-    public AccountFunctions(ISender sender) => _sender = sender;
+    public AccountFunctions(ISender sender) : base(sender)
+    {
+        
+    }
 
-    [LambdaFunction()]
+    [LambdaFunction(Role = FullAccessRole)]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
     public async Task<Result> GetAll(string budgetId)
     {
         var query = new GetAccountsQuery(Guid.Parse(budgetId));
 
-        var result = await _sender.Send(query);
+        var result = await Sender.Send(query);
 
         return result;
     }
 
-    [LambdaFunction()]
+    [LambdaFunction(Role = FullAccessRole)]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
     public async Task<Result> Add(
         string budgetId,
@@ -39,12 +40,12 @@ public sealed class AccountFunctions
     {
         var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
+    [LambdaFunction(Role = FullAccessRole)]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{accountId}}")]
     public async Task<Result> Update(
         string budgetId,
@@ -53,12 +54,12 @@ public sealed class AccountFunctions
     {
         var command = new UpdateAccountCommand(Guid.Parse(accountId), request.NewName, request.NewBalance, Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }
 
-    [LambdaFunction()]
+    [LambdaFunction(Role = FullAccessRole)]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{accountId}}")]
     public async Task<Result> Remove(
         string budgetId,
@@ -66,7 +67,7 @@ public sealed class AccountFunctions
     {
         var command = new RemoveAccountCommand(Guid.Parse(accountId), Guid.Parse(budgetId));
 
-        var result = await _sender.Send(command);
+        var result = await Sender.Send(command);
 
         return result;
     }

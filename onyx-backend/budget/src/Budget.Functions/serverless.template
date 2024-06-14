@@ -16,10 +16,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "FullAccess"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_GetToAssignAmount_Generated::GetToAssignAmount",
         "Events": {
@@ -30,7 +26,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateAssignmentGenerated": {
@@ -46,9 +43,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_UpdateAssignment_Generated::UpdateAssignment",
         "Events": {
@@ -59,7 +53,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveAssignmentGenerated": {
@@ -75,9 +70,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_RemoveAssignment_Generated::RemoveAssignment",
         "Events": {
@@ -88,7 +80,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateTargetGenerated": {
@@ -104,9 +97,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_UpdateTarget_Generated::UpdateTarget",
         "Events": {
@@ -117,7 +107,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveTargetGenerated": {
@@ -133,9 +124,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_RemoveTarget_Generated::RemoveTarget",
         "Events": {
@@ -146,7 +134,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsAddGenerated": {
@@ -162,20 +151,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Add_Generated::Add",
         "Events": {
           "RootPost": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/{budgetId}/counterparties/",
+              "Path": "/api/v1/{budgetId}/counterparties/",
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsUpdateGenerated": {
@@ -191,20 +178,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Update_Generated::Update",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/{budgetId}/counterparties/{counterpartyId}",
+              "Path": "/api/v1/{budgetId}/counterparties/{counterpartyId}",
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsRemoveGenerated": {
@@ -220,20 +205,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Remove_Generated::Remove",
         "Events": {
           "RootDelete": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/{budgetId}/counterparties/{counterpartyId}",
+              "Path": "/api/v1/{budgetId}/counterparties/{counterpartyId}",
               "Method": "DELETE"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsAddGenerated": {
@@ -249,9 +232,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Add_Generated::Add",
         "Events": {
@@ -262,7 +242,8 @@
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateGenerated": {
@@ -278,9 +259,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Update_Generated::Update",
         "Events": {
@@ -291,7 +269,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveGenerated": {
@@ -307,9 +286,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Remove_Generated::Remove",
         "Events": {
@@ -320,7 +296,8 @@
               "Method": "DELETE"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsTransactionsTransactionFunctionsGetGenerated": {
@@ -336,9 +313,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Get_Generated::Get",
         "Events": {
@@ -349,7 +323,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsTransactionsTransactionFunctionsUpdateGenerated": {
@@ -365,9 +340,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Update_Generated::Update",
         "Events": {
@@ -378,7 +350,8 @@
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsTransactionsTransactionFunctionsRemoveGenerated": {
@@ -394,9 +367,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Remove_Generated::Remove",
         "Events": {
@@ -407,7 +377,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCategoriesCategoryFunctionsUpdateGenerated": {
@@ -423,9 +394,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Update_Generated::Update",
         "Events": {
@@ -436,7 +404,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCategoriesCategoryFunctionsAddGenerated": {
@@ -452,9 +421,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Add_Generated::Add",
         "Events": {
@@ -465,7 +431,8 @@
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCategoriesCategoryFunctionsRemoveGenerated": {
@@ -481,9 +448,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Remove_Generated::Remove",
         "Events": {
@@ -494,7 +458,8 @@
               "Method": "DELETE"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetAllGenerated": {
@@ -510,20 +475,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetAll_Generated::GetAll",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/",
+              "Path": "/api/v1//budgets/",
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetDetailsGenerated": {
@@ -539,20 +502,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetDetails_Generated::GetDetails",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/{budgetId}",
+              "Path": "/api/v1//budgets/{budgetId}",
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetInvitationGenerated": {
@@ -568,20 +529,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetInvitation_Generated::GetInvitation",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/{budgetId}/invitation",
+              "Path": "/api/v1//budgets/{budgetId}/invitation",
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsAddGenerated": {
@@ -597,20 +556,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Add_Generated::Add",
         "Events": {
           "RootPost": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/",
+              "Path": "/api/v1//budgets/",
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsRemoveUserGenerated": {
@@ -626,20 +583,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_RemoveUser_Generated::RemoveUser",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/{budgetId}/remove/{userId}",
+              "Path": "/api/v1//budgets/{budgetId}/remove/{userId}",
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsJoinGenerated": {
@@ -655,20 +610,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Join_Generated::Join",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/{budgetId}/join/{token}",
+              "Path": "/api/v1//budgets/{budgetId}/join/{token}",
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsBudgetsBudgetFunctionsRemoveGenerated": {
@@ -684,20 +637,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Remove_Generated::Remove",
         "Events": {
           "RootDelete": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/budgets/{budgetId}",
+              "Path": "/api/v1//budgets/{budgetId}",
               "Method": "DELETE"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsAccountsAccountFunctionsGetAllGenerated": {
@@ -713,9 +664,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_GetAll_Generated::GetAll",
         "Events": {
@@ -726,7 +674,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsAccountsAccountFunctionsAddGenerated": {
@@ -742,9 +691,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Add_Generated::Add",
         "Events": {
@@ -755,7 +701,8 @@
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsAccountsAccountFunctionsUpdateGenerated": {
@@ -771,9 +718,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Update_Generated::Update",
         "Events": {
@@ -784,7 +728,8 @@
               "Method": "PUT"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsAccountsAccountFunctionsRemoveGenerated": {
@@ -800,9 +745,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Remove_Generated::Remove",
         "Events": {
@@ -813,7 +755,8 @@
               "Method": "DELETE"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCategoriesCategoryFunctionsGetAllGenerated": {
@@ -829,9 +772,6 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_GetAll_Generated::GetAll",
         "Events": {
@@ -842,7 +782,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
     "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsGetAllGenerated": {
@@ -858,20 +799,18 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
         "PackageType": "Zip",
         "Handler": "Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_GetAll_Generated::GetAll",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/{budgetId}/counterparties/",
+              "Path": "/api/v1/{budgetId}/counterparties/",
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     }
   },

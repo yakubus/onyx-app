@@ -376,7 +376,7 @@ mapped from the resource path. Checkout the list of Lambda attributes in the ref
 of the HTTP request to method parameters.
 
 ```csharp
-[LambdaFunction()]
+[LambdaFunction(Role = FullAccessRole)]
 [HttpApi(LambdaHttpMethod.Get, "/add/{x}/{y}")]
 public int Add(int x, int y, ILambdaContext context)
 {
@@ -384,7 +384,7 @@ public int Add(int x, int y, ILambdaContext context)
     return _calculatorService.Add(x, y);
 }
 
-[LambdaFunction()]
+[LambdaFunction(Role = FullAccessRole)]
 [HttpApi(LambdaHttpMethod.Get, "/subtract/{x}/{y}")]
 public int Subtract(int x, int y, ILambdaContext context)
 {
@@ -392,7 +392,7 @@ public int Subtract(int x, int y, ILambdaContext context)
     return _calculatorService.Subtract(x, y);
 }
 
-[LambdaFunction()]
+[LambdaFunction(Role = FullAccessRole)]
 [HttpApi(LambdaHttpMethod.Get, "/multiply/{x}/{y}")]
 public int Multiply(int x, int y, ILambdaContext context)
 {
@@ -400,7 +400,7 @@ public int Multiply(int x, int y, ILambdaContext context)
     return _calculatorService.Multiply(x, y);
 }
 
-[LambdaFunction()]
+[LambdaFunction(Role = FullAccessRole)]
 [HttpApi(LambdaHttpMethod.Get, "/divide/{x}/{y}")]
 public int Divide(int x, int y, ILambdaContext context)
 {
