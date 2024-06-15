@@ -1,4 +1,4 @@
-namespace Identity.Functions;
+namespace Identity.Functions.CalculatorService;
 
 /// <summary>
 /// An interface for a service that implements the business logic of our Lambda functions

@@ -74,10 +74,10 @@ public sealed class AuthController : ControllerBase
             BadRequest(result);
     }
 
-    [HttpPut("resend")]
+    [HttpPut("resend-email")]
     [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Resend(
+    public async Task<IActionResult> ResendEmail(
         [FromBody] ResendEmailRequest request,
         CancellationToken cancellationToken)
     {

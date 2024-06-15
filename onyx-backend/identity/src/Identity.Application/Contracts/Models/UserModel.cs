@@ -21,7 +21,7 @@ public sealed record UserModel
         AuthorizationToken = authorizationToken;
     }
 
-    internal static UserModel FromDomainModel(Domain.User domainModel, AuthorizationToken? authorizationToken = null) =>
+    public static UserModel FromDomainModel(Domain.User domainModel, AuthorizationToken? authorizationToken = null) =>
         new(
             domainModel.Id.Value,
             domainModel.Email.Value,

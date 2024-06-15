@@ -12,7 +12,7 @@ internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserC
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
-    private IEmailService _emailService;
+    private readonly IEmailService _emailService;
 
     public RegisterUserCommandHandler(IUserRepository userRepository, IJwtService jwtService, IEmailService emailService)
     {

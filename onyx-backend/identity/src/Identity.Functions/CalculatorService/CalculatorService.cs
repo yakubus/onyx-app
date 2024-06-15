@@ -1,4 +1,4 @@
-namespace Identity.Functions;
+namespace Identity.Functions.CalculatorService;
 
 /// <summary>
 /// The implementation of <see cref="ICalculatorService"/> 

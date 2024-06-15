@@ -1,10 +1,8 @@
 using Budget.Application;
-using Budget.Functions.Documentation;
 using Budget.Functions.Logger;
 using Budget.Functions.Middlewares;
 using Budget.Infrastructure;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 #pragma warning disable CS1591
@@ -20,7 +18,6 @@ public class Startup
         services.AddLogger();
         services.InjectApplication();
         services.InjectInfrastructure(configuration);
-        services.Document();
 
         //// Add AWS Systems Manager as a potential provider for the configuration. This is 
         //// available with the Amazon.Extensions.Configuration.SystemsManager NuGet package.
@@ -33,22 +30,6 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
-        app.UseHttpsRedirection();
-        app.UseRouting();
-
-        app.UseSwagger(c =>
-        {
-            c.RouteTemplate = "swagger/{documentName}/swagger.json";
-        });
-
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("v1/swagger.json", "Customers API V1");
-            c.RoutePrefix = "swagger";
-        });
-
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
-
         app.UseMiddleware<ExceptionMiddleware>();
     }
 

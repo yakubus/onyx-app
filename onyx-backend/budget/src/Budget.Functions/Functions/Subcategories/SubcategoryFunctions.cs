@@ -12,7 +12,6 @@ using Budget.Functions.Functions.Shared;
 using Budget.Functions.Functions.Subcategories.Requests;
 using MediatR;
 using Models.Responses;
-using Amazon.Lambda.Core;
 
 namespace Budget.Functions.Functions.Subcategories;
 

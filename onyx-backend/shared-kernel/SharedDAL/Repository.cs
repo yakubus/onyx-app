@@ -1,6 +1,7 @@
 ﻿using Abstractions.DomainBaseTypes;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime.Internal.Auth;
 using Models.Responses;
 using Newtonsoft.Json;
 using SharedDAL.DataModels.Abstractions;
@@ -60,7 +61,6 @@ public abstract class Repository<TEntity, TEntityId>
         return record.ToDomainModel();
     }
 
-    //TODO Implement
     /// <summary>
     /// Query the database with a custom query
     /// </summary>
@@ -92,7 +92,6 @@ public abstract class Repository<TEntity, TEntityId>
         return Result.Create(enitites);
     }
 
-    //TODO Implement
     /// <summary>
     /// Query the database with a custom query
     /// </summary>

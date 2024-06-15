@@ -14,7 +14,7 @@ namespace Budget.Functions.Functions.Accounts;
 
 public sealed class AccountFunctions : BaseFunction
 {
-    private const string baseRoute = $"{BaseRouteV1}{{budgetId}}/accounts/";
+    private const string accountsBaseRoute = $"{BaseRouteV1}{{budgetId}}/accounts/";
 
     public AccountFunctions(ISender sender) : base(sender)
     {
@@ -22,7 +22,7 @@ public sealed class AccountFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllAccounts))]
-    [HttpApi(LambdaHttpMethod.Get, baseRoute)]
+    [HttpApi(LambdaHttpMethod.Get, accountsBaseRoute)]
     public async Task<Result> GetAllAccounts(string budgetId)
     {
         var query = new GetAccountsQuery(Guid.Parse(budgetId));
@@ -33,7 +33,7 @@ public sealed class AccountFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddAccount))]
-    [HttpApi(LambdaHttpMethod.Post, baseRoute)]
+    [HttpApi(LambdaHttpMethod.Post, accountsBaseRoute)]
     public async Task<Result> AddAccount(
         string budgetId,
         [Amazon.Lambda.Annotations.APIGateway.FromBody] AddAccountRequest request)
@@ -46,7 +46,7 @@ public sealed class AccountFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateAccount))]
-    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{accountId}}")]
+    [HttpApi(LambdaHttpMethod.Put, $"{accountsBaseRoute}{{accountId}}")]
     public async Task<Result> UpdateAccount(
         string budgetId,
         string accountId,
@@ -60,7 +60,7 @@ public sealed class AccountFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveAccount))]
-    [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{accountId}}")]
+    [HttpApi(LambdaHttpMethod.Delete, $"{accountsBaseRoute}{{accountId}}")]
     public async Task<Result> RemoveAccount(
         string budgetId,
         string accountId)

@@ -148,7 +148,61 @@
         }
       }
     },
-    "IdentityFunctionsFunctionsDefaultGenerated": {
+    "Login": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPost"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_Login_Generated::Login",
+        "Events": {
+          "RootPost": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/login",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+    "Register": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPut"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_ForgotPassword_Generated::ForgotPassword",
+        "Events": {
+          "RootPut": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/forgot-password",
+              "Method": "PUT"
+            }
+          }
+        }
+      }
+    },
+    "GetUser": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -161,28 +215,26 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions_Default_Generated::Default",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_GetUser_Generated::GetUser",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/",
+              "Path": "/api/v1/user",
               "Method": "GET"
             }
           }
         }
       }
     },
-    "IdentityFunctionsFunctionsAddGenerated": {
+    "UpdateUser": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
         "SyncedEvents": [
-          "RootGet"
+          "RootPut"
         ]
       },
       "Properties": {
@@ -190,28 +242,26 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions_Add_Generated::Add",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_UpdateUser_Generated::UpdateUser",
         "Events": {
-          "RootGet": {
+          "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/add/{x}/{y}",
-              "Method": "GET"
+              "Path": "/api/v1/user",
+              "Method": "PUT"
             }
           }
         }
       }
     },
-    "IdentityFunctionsFunctionsSubtractGenerated": {
+    "RequestEmailChange": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
         "SyncedEvents": [
-          "RootGet"
+          "RootPut"
         ]
       },
       "Properties": {
@@ -219,28 +269,26 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions_Subtract_Generated::Subtract",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_RequestEmailChange_Generated::RequestEmailChange",
         "Events": {
-          "RootGet": {
+          "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/subtract/{x}/{y}",
-              "Method": "GET"
+              "Path": "/api/v1/userchange-email",
+              "Method": "PUT"
             }
           }
         }
       }
     },
-    "IdentityFunctionsFunctionsMultiplyGenerated": {
+    "Logout": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
         "SyncedEvents": [
-          "RootGet"
+          "RootPut"
         ]
       },
       "Properties": {
@@ -248,28 +296,26 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions_Multiply_Generated::Multiply",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_Logout_Generated::Logout",
         "Events": {
-          "RootGet": {
+          "RootPut": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/multiply/{x}/{y}",
-              "Method": "GET"
+              "Path": "/api/v1/userlogout",
+              "Method": "PUT"
             }
           }
         }
       }
     },
-    "IdentityFunctionsFunctionsDivideGenerated": {
+    "RemoveUser": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
         "SyncedEvents": [
-          "RootGet"
+          "RootDelete"
         ]
       },
       "Properties": {
@@ -277,17 +323,96 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions_Divide_Generated::Divide",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_RemoveUser_Generated::RemoveUser",
         "Events": {
-          "RootGet": {
+          "RootDelete": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/divide/{x}/{y}",
-              "Method": "GET"
+              "Path": "/api/v1/userremove",
+              "Method": "DELETE"
+            }
+          }
+        }
+      }
+    },
+    "VerifyEmail": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPut"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_VerifyEmail_Generated::VerifyEmail",
+        "Events": {
+          "RootPut": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/verify-email",
+              "Method": "PUT"
+            }
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPut"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_Refresh_Generated::Refresh",
+        "Events": {
+          "RootPut": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/refresh",
+              "Method": "PUT"
+            }
+          }
+        }
+      }
+    },
+    "ResendEmail": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPut"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_ResendEmail_Generated::ResendEmail",
+        "Events": {
+          "RootPut": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/resend-email",
+              "Method": "PUT"
             }
           }
         }
