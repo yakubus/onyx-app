@@ -3,7 +3,7 @@
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "An AWS Serverless Application. This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).",
   "Resources": {
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsGetToAssignAmountGenerated": {
+    "BudgetFunctionsFunctionsSubcategoriesSubcategoriesGetToAssignAmountGenerated": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -294,87 +294,6 @@
             "Properties": {
               "Path": "/api/v1/{budgetId}/subcategories/{subcategoryId}",
               "Method": "DELETE"
-            }
-          }
-        },
-        "Role": "arn:aws:iam::975049887576:role/FullAccess"
-      }
-    },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsGetGenerated": {
-      "Type": "AWS::Serverless::Function",
-      "Metadata": {
-        "Tool": "Amazon.Lambda.Annotations",
-        "SyncedEvents": [
-          "RootGet"
-        ]
-      },
-      "Properties": {
-        "Runtime": "dotnet8",
-        "CodeUri": ".",
-        "MemorySize": 512,
-        "Timeout": 30,
-        "PackageType": "Zip",
-        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Get_Generated::Get",
-        "Events": {
-          "RootGet": {
-            "Type": "HttpApi",
-            "Properties": {
-              "Path": "/api/v1/{budgetId}/transactions/",
-              "Method": "GET"
-            }
-          }
-        },
-        "Role": "arn:aws:iam::975049887576:role/FullAccess"
-      }
-    },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsUpdateGenerated": {
-      "Type": "AWS::Serverless::Function",
-      "Metadata": {
-        "Tool": "Amazon.Lambda.Annotations",
-        "SyncedEvents": [
-          "RootPost"
-        ]
-      },
-      "Properties": {
-        "Runtime": "dotnet8",
-        "CodeUri": ".",
-        "MemorySize": 512,
-        "Timeout": 30,
-        "PackageType": "Zip",
-        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Update_Generated::Update",
-        "Events": {
-          "RootPost": {
-            "Type": "HttpApi",
-            "Properties": {
-              "Path": "/api/v1/{budgetId}/transactions/",
-              "Method": "POST"
-            }
-          }
-        },
-        "Role": "arn:aws:iam::975049887576:role/FullAccess"
-      }
-    },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsRemoveGenerated": {
-      "Type": "AWS::Serverless::Function",
-      "Metadata": {
-        "Tool": "Amazon.Lambda.Annotations",
-        "SyncedEvents": [
-          "RootGet"
-        ]
-      },
-      "Properties": {
-        "Runtime": "dotnet8",
-        "CodeUri": ".",
-        "MemorySize": 512,
-        "Timeout": 30,
-        "PackageType": "Zip",
-        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Remove_Generated::Remove",
-        "Events": {
-          "RootGet": {
-            "Type": "HttpApi",
-            "Properties": {
-              "Path": "/api/v1/{budgetId}/transactions/{transactionId}",
-              "Method": "GET"
             }
           }
         },
@@ -811,6 +730,93 @@
           }
         },
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
+      }
+    },
+    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsGetGenerated": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootGet"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Policies": [
+          "AWSLambdaBasicExecutionRole"
+        ],
+        "PackageType": "Zip",
+        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Get_Generated::Get",
+        "Events": {
+          "RootGet": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/{budgetId}/transactions/",
+              "Method": "GET"
+            }
+          }
+        }
+      }
+    },
+    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsUpdateGenerated": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPost"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Policies": [
+          "AWSLambdaBasicExecutionRole"
+        ],
+        "PackageType": "Zip",
+        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Update_Generated::Update",
+        "Events": {
+          "RootPost": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/{budgetId}/transactions/",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsRemoveGenerated": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootGet"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Policies": [
+          "AWSLambdaBasicExecutionRole"
+        ],
+        "PackageType": "Zip",
+        "Handler": "Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Remove_Generated::Remove",
+        "Events": {
+          "RootGet": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/{budgetId}/transactions/{transactionId}",
+              "Method": "GET"
+            }
+          }
+        }
       }
     }
   },

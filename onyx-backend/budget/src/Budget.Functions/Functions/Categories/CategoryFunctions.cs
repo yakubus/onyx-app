@@ -22,9 +22,9 @@ public sealed class CategoryFunctions : BaseFunction
     {
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllCategories))]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetAll(string budgetId)
+    public async Task<Result> GetAllCategories(string budgetId)
     {
         var query = new GetCategoriesQuery(Guid.Parse(budgetId));
 
@@ -33,9 +33,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddCategory))]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> Add(
+    public async Task<Result> AddCategory(
         string budgetId,
         [FromBody] AddCategoryRequest request)
     {
@@ -46,9 +46,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateCategory))]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> Update(
+    public async Task<Result> UpdateCategory(
         string budgetId,
         string categoryId,
         [FromBody] UpdateCategoryRequest request)
@@ -63,9 +63,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveCategory))]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> Remove(
+    public async Task<Result> RemoveCategory(
         string budgetId,
         string categoryId)
     {

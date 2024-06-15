@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdaKernel", "shared-kern
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Budget.Functions", "budget\src\Budget.Functions\Budget.Functions.csproj", "{4FE14D39-A0CF-4B2B-8C09-2E941850B3AF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Functions", "identity\src\Identity.Functions\Identity.Functions.csproj", "{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{4FE14D39-A0CF-4B2B-8C09-2E941850B3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FE14D39-A0CF-4B2B-8C09-2E941850B3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FE14D39-A0CF-4B2B-8C09-2E941850B3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +159,7 @@ Global
 		{2FFBA381-B867-4A11-B290-00EAF8C5244A} = {6714003C-61CF-4DFD-B468-778FDF651BC6}
 		{F8B0A1F2-5C34-430B-98D2-B2589729A8C1} = {E3A52A73-6227-4DA8-9666-02E6301127C1}
 		{4FE14D39-A0CF-4B2B-8C09-2E941850B3AF} = {88E2BCDC-B5D6-4993-814B-D1060D4B21B9}
+		{BE49D1FE-5B3C-4EF5-A7CF-215FF18398ED} = {82F02935-DD11-48AC-AB03-6B1C545BB661}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {515E49A0-2D84-477F-A6B4-623EDA0F5216}

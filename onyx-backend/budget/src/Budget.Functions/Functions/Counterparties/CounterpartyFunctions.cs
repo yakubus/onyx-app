@@ -1,6 +1,5 @@
 ﻿using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.Annotations;
-using Amazon.Util.Internal.PlatformServices;
 using Budget.Application.Counterparties.AddCounterparty;
 using Budget.Application.Counterparties.GetCounterparties;
 using Budget.Application.Counterparties.RemoveCounterparty;
@@ -8,8 +7,6 @@ using Budget.Application.Counterparties.UpdateCounterparty;
 using Budget.Functions.Functions.Counterparties.Requests;
 using Budget.Functions.Functions.Shared;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Models.Responses;
 
 
@@ -24,9 +21,9 @@ public sealed class CounterpartyFunctions : BaseFunction
     {
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllCounterparties))]
     [HttpApi(LambdaHttpMethod.Get, counterpartyBaseRoute)]
-    public async Task<Result> GetAll(
+    public async Task<Result> GetAllCounterparties(
         Guid budgetId,
         [FromQuery] string type)
     {
@@ -37,9 +34,9 @@ public sealed class CounterpartyFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddCounterparty))]
     [HttpApi(LambdaHttpMethod.Post, counterpartyBaseRoute)]
-    public async Task<Result> Add(
+    public async Task<Result> AddCounterparty(
         Guid budgetId,
         [FromBody] AddCounterpartyRequest request)
     {
@@ -53,9 +50,9 @@ public sealed class CounterpartyFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateCounterparty))]
     [HttpApi(LambdaHttpMethod.Put, $"{counterpartyBaseRoute}{{counterpartyId}}")]
-    public async Task<Result> Update(
+    public async Task<Result> UpdateCounterparty(
         string budgetId,
         string counterpartyId,
         [FromBody] UpdateCounterpartyRequest request)
@@ -70,9 +67,9 @@ public sealed class CounterpartyFunctions : BaseFunction
         return result;
     }
 
-    [LambdaFunction(Role = FullAccessRole)]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveCounterparty))]
     [HttpApi(LambdaHttpMethod.Delete, $"{counterpartyBaseRoute}{{counterpartyId}}")]
-    public async Task<Result> Remove(
+    public async Task<Result> RemoveCounterparty(
         string budgetId,
         string counterpartyId)
     {

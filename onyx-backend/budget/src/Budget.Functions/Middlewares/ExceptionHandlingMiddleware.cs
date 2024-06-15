@@ -1,20 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Models.Exceptions;
 using Models.Responses;
+using Serilog;
+using Serilog.Context;
+#pragma warning disable CS1591
 
 namespace Budget.Functions.Middlewares;
 
 public sealed class ExceptionMiddleware
 {
-    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly ILogger _logger;
     private readonly RequestDelegate _next;
 
     public ExceptionMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger)
+        ILogger logger)
     {
         _next = next;
         _logger = logger;
@@ -89,10 +91,10 @@ public sealed class ExceptionMiddleware
 
     private void LogException(ExceptionDetails details, Exception exception)
     {
-        //using (LogContext.PushProperty("Exception", details.Type, true))
-        //{
-            _logger.LogError(exception, "{Exception} occurred: {Message}", details.Title, exception.Message);
-        //}
+        using (LogContext.PushProperty("Exception", details.Type, true))
+        {
+            _logger.Error(exception, "{Exception} occurred: {Message}", details.Title, exception.Message);
+        }
     }
 
     internal record ExceptionDetails(
