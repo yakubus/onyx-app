@@ -9,35 +9,35 @@ import SubcategoryAccordionContent from "@/components/dashboard/budget/subcatego
 
 import { Subcategory } from "@/lib/validation/subcategory";
 import { cn } from "@/lib/utils";
-import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { Money } from "@/lib/validation/base";
+import { getToAssignQueryKey } from "@/lib/api/budget";
 
 interface SubcategoryAccordionProps {
   subcategory: Subcategory;
+  setActiveSubcategory: (id: string | null) => void;
+  activeSubcategory: string | null;
 }
 
 const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   subcategory,
+  setActiveSubcategory,
+  activeSubcategory,
 }) => {
-  const [expanded, setExpanded] = useState(false);
   const [isNameTooltipOpen, setIsNameTooltipOpen] = useState(false);
   const [isAssignmentTooltipOpen, setAssignmentTooltipOpen] = useState(false);
   const queryClient = useQueryClient();
   const { month, year, selectedBudget } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId",
   });
-  const budgetToAssign = queryClient.getQueryData<Money>([
-    "toAssign",
-    selectedBudget,
-  ]);
+  const budgetToAssign = queryClient.getQueryData<Money>(
+    getToAssignQueryKey(selectedBudget),
+  );
 
-  const accordionRef = useClickOutside<HTMLLIElement>(() => {
-    setExpanded(false);
-  });
+  const isActive = activeSubcategory === subcategory.id;
 
   const onExpandClick = () => {
     if (isNameTooltipOpen || isAssignmentTooltipOpen) return;
-    setExpanded(!expanded);
+    setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
   const currentlyAssigned = subcategory.assignments.find(
@@ -49,22 +49,19 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     currentlyAssigned?.actualAmount.currency || budgetToAssign?.currency || "";
 
   return (
-    <li
-      onClick={onExpandClick}
-      ref={accordionRef}
-      className={cn(expanded && "border-b")}
-    >
+    <li className={cn(isActive && "border-b")}>
       <div
+        onClick={onExpandClick}
         className={cn(
           "grid cursor-pointer grid-cols-3 space-x-4 p-3 transition-all duration-200 hover:bg-accent",
-          expanded && "border-b",
+          isActive && "border-b",
         )}
       >
         <div className="col-span-1 flex space-x-6">
           <ChevronRight
             className={cn(
               "rotate-0 opacity-60 transition-all duration-300 ease-in-out",
-              expanded && "rotate-90",
+              isActive && "rotate-90",
             )}
           />
           <NameTooltip
@@ -89,11 +86,14 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
       <div
         className={cn(
           "grid grid-rows-[0fr] transition-all duration-300 ease-in-out",
-          expanded && "grid-rows-[1fr]",
+          isActive && "grid-rows-[1fr]",
         )}
       >
         <div className="overflow-hidden">
-          <SubcategoryAccordionContent subcategory={subcategory} />
+          <SubcategoryAccordionContent
+            subcategory={subcategory}
+            currencyToDisplay={currencyToDisplay}
+          />
         </div>
       </div>
     </li>

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
-import { getToAssignQueryOptions } from "@/lib/api/subcategory";
+import { getToAssignQueryOptions } from "@/lib/api/budget";
 
 export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId")({
   loaderDeps: ({ search: { month, year } }) => ({ month, year }),

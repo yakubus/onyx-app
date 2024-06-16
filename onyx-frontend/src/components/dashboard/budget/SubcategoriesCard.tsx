@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 
 import CreateSubcategoryButton from "@/components/dashboard/budget/CreateSubcategoryButton";
 import SubcategoryAccordion from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryAccordion";
@@ -11,6 +11,10 @@ interface SubcategoriesCardProps {
 }
 
 const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
+  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(
+    null,
+  );
+
   return (
     <Card className="lg:col-span-3">
       <div className="grid grid-cols-3 rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
@@ -26,6 +30,8 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
             <SubcategoryAccordion
               key={subcategory.id}
               subcategory={subcategory}
+              activeSubcategory={activeSubcategory}
+              setActiveSubcategory={setActiveSubcategory}
             />
           ))}
           <CreateSubcategoryButton parentCategoryId={activeCategory.id} />

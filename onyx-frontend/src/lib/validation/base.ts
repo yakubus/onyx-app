@@ -33,6 +33,8 @@ export const TargetSchema = z.object({
   amountAssignedEveryMonth: MoneySchema,
 });
 
+export type Target = z.infer<typeof TargetSchema>;
+
 export const AssignmentSchema = z.object({
   month: MonthDateSchema,
   assignedAmount: MoneySchema,
@@ -40,3 +42,22 @@ export const AssignmentSchema = z.object({
 });
 
 export type Assignment = z.infer<typeof AssignmentSchema>;
+
+export const MonthStringSchema = z
+  .string()
+  .regex(/^\d{1,2}$/)
+  .refine(
+    (val) => {
+      const monthNumber = parseInt(val, 10);
+      return monthNumber >= 1 && monthNumber <= 12;
+    },
+    {
+      message: "Month must be a number between 1 and 12",
+    },
+  );
+
+export const YearStringSchema = z
+  .string()
+  .refine((val) => Number(val) >= 2024, {
+    message: "Year must be at least 2024",
+  });
