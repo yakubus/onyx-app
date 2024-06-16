@@ -3,7 +3,6 @@ using Budget.Application.Shared.Models;
 using Budget.Application.Subcategories.AddSubcategory;
 using Budget.Application.Subcategories.GetToAssign;
 using Budget.Application.Subcategories.Models;
-using Budget.Application.Subcategories.RemoveAssignment;
 using Budget.Application.Subcategories.RemoveSubcategory;
 using Budget.Application.Subcategories.RemoveTarget;
 using Budget.Application.Subcategories.UpdateAssignment;
@@ -118,27 +117,6 @@ public sealed class SubcategoriesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new UpdateAssignmentCommand(subcategoryId, request.AssignmentMonth, request.AssignedAmount, budgetId);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        return result.IsSuccess ?
-            Ok(result) :
-            BadRequest(result);
-    }
-
-    [HttpPut("{subcategoryId}/assignment/remove")]
-    [ProducesResponseType(typeof(Result<SubcategoryModel>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Result), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(Result), StatusCodes.Status403Forbidden)]
-    [Consumes(typeof(RemoveAssignmentRequest), "application/json")]
-    public async Task<IActionResult> RemoveAssignment(
-        [FromRoute] Guid budgetId,
-        [FromRoute] Guid subcategoryId,
-        [FromBody] RemoveAssignmentRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new RemoveAssignmentCommand(subcategoryId, request.AssignmentMonth, budgetId);
 
         var result = await _sender.Send(command, cancellationToken);
 

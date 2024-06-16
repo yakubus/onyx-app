@@ -2,7 +2,6 @@
 using Amazon.Lambda.Annotations;
 using Budget.Application.Subcategories.AddSubcategory;
 using Budget.Application.Subcategories.GetToAssign;
-using Budget.Application.Subcategories.RemoveAssignment;
 using Budget.Application.Subcategories.RemoveSubcategory;
 using Budget.Application.Subcategories.RemoveTarget;
 using Budget.Application.Subcategories.UpdateAssignment;
@@ -96,23 +95,6 @@ public sealed class SubcategoryFunctions : BaseFunction
             Guid.Parse(subcategoryId),
             request.AssignmentMonth,
             request.AssignedAmount,
-            Guid.Parse(budgetId));
-
-        var result = await Sender.Send(command);
-
-        return result;
-    }
-
-    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveAssignment))]
-    [HttpApi(LambdaHttpMethod.Put, $"{subcategoryBaseRoute}{{subcategoryId}}/assignment/remove")]
-    public async Task<Result> RemoveAssignment(
-        string budgetId,
-        string subcategoryId,
-        [FromBody] RemoveAssignmentRequest request)
-    {
-        var command = new RemoveAssignmentCommand(
-            Guid.Parse(subcategoryId),
-            request.AssignmentMonth,
             Guid.Parse(budgetId));
 
         var result = await Sender.Send(command);
