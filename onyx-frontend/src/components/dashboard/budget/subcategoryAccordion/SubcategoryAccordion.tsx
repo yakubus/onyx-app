@@ -1,11 +1,11 @@
-import { FC, useState } from "react";
+import { FC, MouseEvent, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 
 import { ChevronRight } from "lucide-react";
-import NameTooltip from "@/components/dashboard/budget/subcategoryAccordion/NameTooltip";
-import AssignmentTooltip from "@/components/dashboard/budget/subcategoryAccordion/AssignmentTooltip";
 import SubcategoryAccordionContent from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryAccordionContent";
+import AssignmentForm from "@/components/dashboard/budget/subcategoryAccordion/AssignmentForm";
+import NameForm from "@/components/dashboard/budget/subcategoryAccordion/NameForm";
 
 import { Subcategory } from "@/lib/validation/subcategory";
 import { cn } from "@/lib/utils";
@@ -23,8 +23,6 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   setActiveSubcategory,
   activeSubcategory,
 }) => {
-  const [isNameTooltipOpen, setIsNameTooltipOpen] = useState(false);
-  const [isAssignmentTooltipOpen, setAssignmentTooltipOpen] = useState(false);
   const queryClient = useQueryClient();
   const { month, year, selectedBudget } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId",
@@ -33,14 +31,22 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     getToAssignQueryKey(selectedBudget),
   );
 
+  const assignFormRef = useRef<HTMLDivElement>(null);
+  const nameFormRef = useRef<HTMLDivElement>(null);
   const isActive = activeSubcategory === subcategory.id;
 
-  const onExpandClick = () => {
-    if (isNameTooltipOpen || isAssignmentTooltipOpen) return;
+  const onExpandClick = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
+  ) => {
+    const isAssignFormClicked = assignFormRef.current?.contains(
+      e.target as Node,
+    );
+    const isNameFormClicked = nameFormRef.current?.contains(e.target as Node);
+    if (isAssignFormClicked || isNameFormClicked) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
-  const currentlyAssigned = subcategory.assignments.find(
+  const currentlyAssigned = subcategory.assignments?.find(
     (asignment) =>
       asignment.month.month === Number(month) &&
       asignment.month.year === Number(year),
@@ -51,36 +57,36 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   return (
     <li className={cn(isActive && "border-b")}>
       <div
-        onClick={onExpandClick}
+        onClick={(e) => onExpandClick(e)}
         className={cn(
-          "grid cursor-pointer grid-cols-3 space-x-4 p-3 transition-all duration-200 hover:bg-accent",
+          "grid cursor-pointer grid-cols-3 items-center space-x-4 p-3 transition-all duration-200 hover:bg-accent",
           isActive && "border-b",
         )}
       >
-        <div className="col-span-1 flex space-x-6">
+        <div className="col-span-1 flex items-center space-x-6">
           <ChevronRight
             className={cn(
-              "rotate-0 opacity-60 transition-all duration-300 ease-in-out",
+              "flex-shrink-0 rotate-0 opacity-60 transition-all duration-300 ease-in-out",
               isActive && "rotate-90",
             )}
           />
-          <NameTooltip
-            isNameTooltipOpen={isNameTooltipOpen}
-            setIsNameTooltipOpen={setIsNameTooltipOpen}
-            subcategory={subcategory}
-          />
+          <div ref={nameFormRef}>
+            <NameForm subcategory={subcategory} />
+          </div>
         </div>
-        <div className="col-span-2 grid grid-cols-2 justify-items-end gap-x-4">
+        <div className="col-span-2 grid grid-cols-2 items-center justify-items-end gap-x-4">
           <p>
             {currentlyAssigned?.actualAmount.amount || "0"} {currencyToDisplay}
           </p>
-          <AssignmentTooltip
-            isAssignmentTooltipOpen={isAssignmentTooltipOpen}
-            setIsAssignmentTooltipOpen={setAssignmentTooltipOpen}
-            subcategoryId={subcategory.id}
-            currencyToDisplay={currencyToDisplay}
-            currentlyAssigned={currentlyAssigned}
-          />
+          <div className="ml-16" ref={assignFormRef}>
+            {currencyToDisplay && (
+              <AssignmentForm
+                defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
+                subcategoryId={subcategory.id}
+                currencyToDisplay={currencyToDisplay}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div

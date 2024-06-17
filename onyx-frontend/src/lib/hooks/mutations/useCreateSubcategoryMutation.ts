@@ -45,6 +45,9 @@ export const useCreateSubcategoryMutation = ({
                 id: "123456",
                 name: capitalize(newSubcategory.subcategoryName),
                 optimistic: true,
+                assignments: null,
+                target: null,
+                description: null,
               },
             ],
           };

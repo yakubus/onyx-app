@@ -79,8 +79,8 @@ const CreateSubcategoryButton: FC<CreateSubcategoryButtonProps> = ({
           render={({ field }) => (
             <FormItem className="w-full space-y-1">
               <div className="flex">
-                <FormLabel className="flex h-10 w-10 items-center justify-center opacity-60">
-                  <ChevronRight />
+                <FormLabel className="flex w-10 items-center justify-center opacity-60">
+                  <ChevronRight className="size-6" />
                 </FormLabel>
                 <FormControl>
                   <input
