@@ -1,6 +1,8 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Abstractions.Currency;
+using Budget.Application.Abstractions.Identity;
 using Budget.Application.Subcategories.Models;
+using Budget.Domain.Budgets;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
@@ -13,17 +15,37 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
     private readonly ISubcategoryRepository _subcategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ICurrencyConverter _currencyConverter;
+    private readonly IBudgetContext _budgetContext;
+    private readonly IBudgetRepository _budgetRepository;
 
-    public UpdateAssignmentCommandHandler(ISubcategoryRepository subcategoryRepository, ITransactionRepository transactionRepository, ICurrencyConverter currencyConverter)
+    public UpdateAssignmentCommandHandler(ISubcategoryRepository subcategoryRepository, ITransactionRepository transactionRepository, ICurrencyConverter currencyConverter, IBudgetContext budgetContext, IBudgetRepository budgetRepository)
     {
         _subcategoryRepository = subcategoryRepository;
         _transactionRepository = transactionRepository;
         _currencyConverter = currencyConverter;
+        _budgetContext = budgetContext;
+        _budgetRepository = budgetRepository;
     }
 
     public async Task<Result<SubcategoryModel>> Handle(UpdateAssignmentCommand request, CancellationToken cancellationToken)
     {
         var subcategoryId = new SubcategoryId(request.SubcategoryId);
+
+        var bugdetIdGetResult = _budgetContext.GetBudgetId();
+
+        if (bugdetIdGetResult.IsFailure)
+        {
+            return bugdetIdGetResult.Error;
+        }
+
+        var budgetGetResult = await _budgetRepository.GetByIdAsync(new (bugdetIdGetResult.Value), cancellationToken);
+
+        if (budgetGetResult.IsFailure)
+        {
+            return budgetGetResult.Error;
+        }
+
+        var budget = budgetGetResult.Value;
 
         var subcategoryGetResult = await _subcategoryRepository.GetByIdAsync(subcategoryId, cancellationToken);
 
@@ -36,7 +58,7 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
 
         var assignmentBeforeUpdate = subcategory.GetAssignmentForMonth(request.AssignmentMonth);
 
-        var budgetCurrency = Currency.Usd; //TODO Fix when authentication implemented
+        var budgetCurrency = budget.BaseCurrency;
 
         var assignedAmountMoney = new Money(request.AssignedAmount, budgetCurrency);
 
