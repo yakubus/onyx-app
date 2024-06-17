@@ -66,7 +66,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
         <div className="col-span-1 flex items-center space-x-6">
           <ChevronRight
             className={cn(
-              "size-7 rotate-0 opacity-60 transition-all duration-300 ease-in-out",
+              "flex-shrink-0 rotate-0 opacity-60 transition-all duration-300 ease-in-out",
               isActive && "rotate-90",
             )}
           />
@@ -78,12 +78,14 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           <p>
             {currentlyAssigned?.actualAmount.amount || "0"} {currencyToDisplay}
           </p>
-          <div className="flex items-center space-x-2 pl-4" ref={assignFormRef}>
-            <AssignmentForm
-              defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
-              subcategoryId={subcategory.id}
-            />
-            <p>{currencyToDisplay}</p>
+          <div className="ml-16" ref={assignFormRef}>
+            {currencyToDisplay && (
+              <AssignmentForm
+                defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
+                subcategoryId={subcategory.id}
+                currencyToDisplay={currencyToDisplay}
+              />
+            )}
           </div>
         </div>
       </div>

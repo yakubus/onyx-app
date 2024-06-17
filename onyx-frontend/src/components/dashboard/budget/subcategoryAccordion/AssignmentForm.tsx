@@ -5,7 +5,13 @@ import { useSearch } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
 import {
   CreateAssignment,
@@ -19,11 +25,13 @@ import { useToast } from "@/components/ui/use-toast";
 interface AssignmentFormProps {
   defaultAmount: string | undefined;
   subcategoryId: string;
+  currencyToDisplay: string;
 }
 
 const AssignmentForm: FC<AssignmentFormProps> = ({
   defaultAmount,
   subcategoryId,
+  currencyToDisplay,
 }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -100,7 +108,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
           control={control}
           name="amount"
           render={({ field }) => (
-            <FormItem className="space-y-0">
+            <FormItem className="flex items-center space-y-0">
               <FormControl>
                 <Input
                   type="number"
@@ -118,9 +126,12 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                     }
                     field.onChange(transformedValue);
                   }}
-                  className="h-8 border-none bg-transparent pb-2 pr-1 pt-1 text-right text-base font-semibold"
+                  className="h-8 border-none bg-transparent pb-2 pr-1 pt-1 text-right text-base"
                 />
               </FormControl>
+              <FormLabel className="pl-2 text-base">
+                {currencyToDisplay}
+              </FormLabel>
             </FormItem>
           )}
         />
