@@ -11,9 +11,9 @@ import {
 export const SubcategorySchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
-  description: z.string().nullish(),
-  assignments: z.array(AssignmentSchema),
-  target: TargetSchema.nullish(),
+  description: z.string().nullable(),
+  assignments: z.array(AssignmentSchema).nullable(),
+  target: TargetSchema.nullable(),
   optimistic: z.boolean().optional(),
 });
 export type Subcategory = z.infer<typeof SubcategorySchema>;

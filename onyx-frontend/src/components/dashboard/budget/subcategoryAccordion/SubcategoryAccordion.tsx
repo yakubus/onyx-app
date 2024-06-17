@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, MouseEvent, ReactNode, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 
@@ -11,6 +11,7 @@ import { Subcategory } from "@/lib/validation/subcategory";
 import { cn } from "@/lib/utils";
 import { Money } from "@/lib/validation/base";
 import { getToAssignQueryKey } from "@/lib/api/budget";
+import AssignmentForm from "./AssignmentForm";
 
 interface SubcategoryAccordionProps {
   subcategory: Subcategory;
@@ -24,7 +25,6 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   activeSubcategory,
 }) => {
   const [isNameTooltipOpen, setIsNameTooltipOpen] = useState(false);
-  const [isAssignmentTooltipOpen, setAssignmentTooltipOpen] = useState(false);
   const queryClient = useQueryClient();
   const { month, year, selectedBudget } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId",
@@ -33,14 +33,20 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     getToAssignQueryKey(selectedBudget),
   );
 
+  const assignFormRef = useRef<HTMLDivElement>(null);
   const isActive = activeSubcategory === subcategory.id;
 
-  const onExpandClick = () => {
-    if (isNameTooltipOpen || isAssignmentTooltipOpen) return;
+  const onExpandClick = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
+  ) => {
+    const isAssignFormClicked = assignFormRef.current?.contains(
+      e.target as Node,
+    );
+    if (isNameTooltipOpen || isAssignFormClicked) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
-  const currentlyAssigned = subcategory.assignments.find(
+  const currentlyAssigned = subcategory.assignments?.find(
     (asignment) =>
       asignment.month.month === Number(month) &&
       asignment.month.year === Number(year),
@@ -51,9 +57,9 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   return (
     <li className={cn(isActive && "border-b")}>
       <div
-        onClick={onExpandClick}
+        onClick={(e) => onExpandClick(e)}
         className={cn(
-          "grid cursor-pointer grid-cols-3 space-x-4 p-3 transition-all duration-200 hover:bg-accent",
+          "grid cursor-pointer grid-cols-3 items-center space-x-4 p-3 transition-all duration-200 hover:bg-accent",
           isActive && "border-b",
         )}
       >
@@ -70,17 +76,17 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
             subcategory={subcategory}
           />
         </div>
-        <div className="col-span-2 grid grid-cols-2 justify-items-end gap-x-4">
+        <div className="col-span-2 grid grid-cols-2 items-center justify-items-end gap-x-4">
           <p>
             {currentlyAssigned?.actualAmount.amount || "0"} {currencyToDisplay}
           </p>
-          <AssignmentTooltip
-            isAssignmentTooltipOpen={isAssignmentTooltipOpen}
-            setIsAssignmentTooltipOpen={setAssignmentTooltipOpen}
-            subcategoryId={subcategory.id}
-            currencyToDisplay={currencyToDisplay}
-            currentlyAssigned={currentlyAssigned}
-          />
+          <div className="flex items-center space-x-2 pl-4" ref={assignFormRef}>
+            <AssignmentForm
+              defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
+              subcategoryId={subcategory.id}
+            />
+            <p>{currencyToDisplay}</p>
+          </div>
         </div>
       </div>
       <div
