@@ -4,8 +4,6 @@ namespace Budget.Domain.Budgets;
 
 public interface IBudgetRepository
 {
-    Task<Result<Budget>> GetByNameAsync(string name, CancellationToken cancellationToken);
-
     Task<Result<Budget>> AddAsync(Budget budget, CancellationToken cancellationToken);
 
     Task<Result<Budget>> GetByIdAsync(BudgetId budgetId, CancellationToken cancellationToken);

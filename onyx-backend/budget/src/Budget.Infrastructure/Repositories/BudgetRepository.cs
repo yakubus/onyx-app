@@ -20,11 +20,6 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
         _budgetContext = budgetContext;
     }
 
-    public async Task<Result<Domain.Budgets.Budget>> GetByNameAsync(
-        string name,
-        CancellationToken cancellationToken) =>
-        await GetFirstAsync($"Name = '{name}'", cancellationToken);
-
     public async Task<Result<Domain.Budgets.Budget>> GetCurrentBudgetAsync(CancellationToken cancellationToken)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
