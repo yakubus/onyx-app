@@ -29,6 +29,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\shared-kernel\LambdaKernel\LambdaKernel.csproj" />
     <ProjectReference Include="..\Budget.Application\Budget.Application.csproj" />
     <ProjectReference Include="..\Budget.Infrastructure\Budget.Infrastructure.csproj" />
   </ItemGroup>

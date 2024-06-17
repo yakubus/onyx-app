@@ -1,11 +1,13 @@
 ﻿using Amazon.Lambda.Annotations;
 using Amazon.Lambda.Annotations.APIGateway;
+using Amazon.Lambda.APIGatewayEvents;
 using Budget.Application.Accounts.AddAccount;
 using Budget.Application.Accounts.GetAccounts;
 using Budget.Application.Accounts.RemoveAccount;
 using Budget.Application.Accounts.UpdateAccount;
 using Budget.Functions.Functions.Accounts.Requests;
 using Budget.Functions.Functions.Shared;
+using LambdaKernel;
 using MediatR;
 using Models.Responses;
 #pragma warning disable CS1591
@@ -23,45 +25,45 @@ public sealed class AccountFunctions : BaseFunction
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllAccounts))]
     [HttpApi(LambdaHttpMethod.Get, accountsBaseRoute)]
-    public async Task<Result> GetAllAccounts(string budgetId)
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAllAccounts(string budgetId)
     {
         var query = new GetAccountsQuery(Guid.Parse(budgetId));
 
         var result = await Sender.Send(query);
 
-        return result;
+        return result.ReturnAPIResponse(200, 404);
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddAccount))]
     [HttpApi(LambdaHttpMethod.Post, accountsBaseRoute)]
-    public async Task<Result> AddAccount(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> AddAccount(
         string budgetId,
-        [Amazon.Lambda.Annotations.APIGateway.FromBody] AddAccountRequest request)
+        [FromBody] AddAccountRequest request)
     {
         var command = new AddAccountCommand(request.Name, request.Balance, request.AccountType, Guid.Parse(budgetId));
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateAccount))]
     [HttpApi(LambdaHttpMethod.Put, $"{accountsBaseRoute}{{accountId}}")]
-    public async Task<Result> UpdateAccount(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateAccount(
         string budgetId,
         string accountId,
-        [Amazon.Lambda.Annotations.APIGateway.FromBody] UpdateAccountRequest request)
+        [FromBody] UpdateAccountRequest request)
     {
         var command = new UpdateAccountCommand(Guid.Parse(accountId), request.NewName, request.NewBalance, Guid.Parse(budgetId));
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveAccount))]
     [HttpApi(LambdaHttpMethod.Delete, $"{accountsBaseRoute}{{accountId}}")]
-    public async Task<Result> RemoveAccount(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveAccount(
         string budgetId,
         string accountId)
     {
@@ -69,6 +71,6 @@ public sealed class AccountFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 }

@@ -10,6 +10,7 @@ using Budget.Application.Budgets.RemoveBudget;
 using Budget.Application.Budgets.RemoveUserFromBudgetBudget;
 using Budget.Functions.Functions.Budgets.Requests;
 using Budget.Functions.Functions.Shared;
+using LambdaKernel;
 using MediatR;
 using Models.Responses;
 
@@ -28,30 +29,30 @@ public sealed class BudgetFunctions : BaseFunction
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllBudgets))]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetAllBudgets()
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAllBudgets()
     {
         var command = new GetBudgetsQuery();
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse(200, 404);
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllBudgets))]
     [HttpApi(LambdaHttpMethod.Get, $"{baseRoute}{{budgetId}}")]
-    public async Task<Result> GetBudgetDetails(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetBudgetDetails(
         string budgetId)
     {
         var command = new GetBudgetDetailsQuery(Guid.Parse(budgetId));
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse(200, 404);
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllBudgets))]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{budgetId}}/invitation")]
-    public async Task<Result> GetBudgetInvitation(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetBudgetInvitation(
         string budgetId,
         APIGatewayHttpApiV2ProxyRequest request)
     {
@@ -67,23 +68,23 @@ public sealed class BudgetFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddBudget))]
     [HttpApi(LambdaHttpMethod.Post, $"{baseRoute}")]
-    public async Task<Result> AddBudget([FromBody] AddBudgetRequest request)
+    public async Task<APIGatewayHttpApiV2ProxyResponse> AddBudget([FromBody] AddBudgetRequest request)
     {
         var command = new AddBudgetCommand(request.BudgetName, request.BudgetCurrency);
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveBudgetUser))]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{budgetId}}/remove/{{userId}}")]
-    public async Task<Result> RemoveBudgetUser(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveBudgetUser(
         string budgetId,
         string userId)
     {
@@ -91,12 +92,12 @@ public sealed class BudgetFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(JoinTheBudget))]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{budgetId}}/join/{{token}}")]
-    public async Task<Result> JoinTheBudget(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> JoinTheBudget(
         string budgetId,
         string token)
     {
@@ -104,19 +105,19 @@ public sealed class BudgetFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveBudget))]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{budgetId}}")]
-    public async Task<Result> RemoveBudget(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveBudget(
         string budgetId)
     {
         var command = new RemoveBudgetCommand(Guid.Parse(budgetId));
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
 }

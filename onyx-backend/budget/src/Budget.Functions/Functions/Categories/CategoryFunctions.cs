@@ -8,7 +8,8 @@ using Budget.Functions.Functions.Categories.Requests;
 using Budget.Functions.Functions.Shared;
 using MediatR;
 using Models.Responses;
-
+using Amazon.Lambda.APIGatewayEvents;
+using LambdaKernel;
 
 
 namespace Budget.Functions.Functions.Categories;
@@ -24,18 +25,18 @@ public sealed class CategoryFunctions : BaseFunction
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllCategories))]
     [HttpApi(LambdaHttpMethod.Get, baseRoute)]
-    public async Task<Result> GetAllCategories(string budgetId)
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAllCategories(string budgetId)
     {
         var query = new GetCategoriesQuery(Guid.Parse(budgetId));
 
         var result = await Sender.Send(query);
 
-        return result;
+        return result.ReturnAPIResponse(200, 404);
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddCategory))]
     [HttpApi(LambdaHttpMethod.Post, baseRoute)]
-    public async Task<Result> AddCategory(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> AddCategory(
         string budgetId,
         [FromBody] AddCategoryRequest request)
     {
@@ -43,12 +44,12 @@ public sealed class CategoryFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateCategory))]
     [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> UpdateCategory(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateCategory(
         string budgetId,
         string categoryId,
         [FromBody] UpdateCategoryRequest request)
@@ -60,12 +61,12 @@ public sealed class CategoryFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveCategory))]
     [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{categoryId}}")]
-    public async Task<Result> RemoveCategory(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveCategory(
         string budgetId,
         string categoryId)
     {
@@ -73,6 +74,6 @@ public sealed class CategoryFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 }

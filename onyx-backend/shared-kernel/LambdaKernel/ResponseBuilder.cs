@@ -6,14 +6,14 @@ namespace LambdaKernel;
 
 public static class ResponseBuilder
 {
-    private static APIGatewayProxyResponse Respond(Result result, int statusCode, Dictionary<string, string>? headers = null) =>
+    private static APIGatewayHttpApiV2ProxyResponse Respond(Result result, int statusCode, Dictionary<string, string>? headers = null) =>
         new()
         {
             StatusCode = statusCode,
             Headers = headers ?? new Dictionary<string, string>(),
             Body = JsonConvert.SerializeObject(result),
         };
-    private static APIGatewayProxyResponse Respond<T>(Result<T> result, int statusCode, Dictionary<string, string>? headers = null) =>
+    private static APIGatewayHttpApiV2ProxyResponse Respond<T>(Result<T> result, int statusCode, Dictionary<string, string>? headers = null) =>
         new()
         {
             StatusCode = statusCode,
@@ -21,23 +21,25 @@ public static class ResponseBuilder
             Body = JsonConvert.SerializeObject(result),
         };
 
-    public static APIGatewayProxyResponse ReturnAPIResponse(
+    public static APIGatewayHttpApiV2ProxyResponse ReturnAPIResponse(
         this Result result,
         int? successStatusCode = null,
-        int? failureStatusCode = null)
+        int? failureStatusCode = null,
+        Dictionary<string, string>? headers = null)
     {
         return result.IsSuccess ?
-            Respond(result, successStatusCode ?? 200) :
-            Respond(result, failureStatusCode ?? 400);
+            Respond(result, successStatusCode ?? 200, headers) :
+            Respond(result, failureStatusCode ?? 400, headers);
     }
 
-    public static APIGatewayProxyResponse ReturnAPIResponse<T>(
+    public static APIGatewayHttpApiV2ProxyResponse ReturnAPIResponse<T>(
         this Result<T> result,
         int? successStatusCode = null,
-        int? failureStatusCode = null)
+        int? failureStatusCode = null,
+        Dictionary<string, string>? headers = null)
     {
         return result.IsSuccess ?
-            Respond(result, successStatusCode ?? 200) :
-            Respond(result, failureStatusCode ?? 400);
+            Respond(result, successStatusCode ?? 200, headers) :
+            Respond(result, failureStatusCode ?? 400, headers);
     }
 }

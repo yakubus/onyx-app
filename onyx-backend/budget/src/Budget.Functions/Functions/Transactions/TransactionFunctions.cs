@@ -1,10 +1,12 @@
 ﻿using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.Annotations;
+using Amazon.Lambda.APIGatewayEvents;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.GetTransactions;
 using Budget.Application.Transactions.RemoveTransaction;
 using Budget.Functions.Functions.Shared;
 using Budget.Functions.Functions.Transactions.Requests;
+using LambdaKernel;
 using MediatR;
 using Result = Models.Responses.Result;
 
@@ -21,7 +23,7 @@ public sealed class TransactionFunctions : BaseFunction
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetTransactions))]
     [HttpApi(LambdaHttpMethod.Get, transactionBaseRoute)]
-    public async Task<Result> GetTransactions(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetTransactions(
         string budgetId,
         [FromQuery] string? query,
         [FromQuery] string? counterpartyId,
@@ -37,12 +39,12 @@ public sealed class TransactionFunctions : BaseFunction
 
         var result = await Sender.Send(transactionsQuery);
 
-        return result;
+        return result.ReturnAPIResponse(200, 404);
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateTransaction))]
     [HttpApi(LambdaHttpMethod.Post, transactionBaseRoute)]
-    public async Task<Result> UpdateTransaction(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateTransaction(
         string budgetId,
         [FromBody] AddTransactionRequest request)
     {
@@ -56,12 +58,12 @@ public sealed class TransactionFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveTransaction))]
     [HttpApi(LambdaHttpMethod.Get, $"{transactionBaseRoute}{{transactionId}}")]
-    public async Task<Result> RemoveTransaction(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveTransaction(
         string budgetId,
         string transactionId)
     {
@@ -69,6 +71,6 @@ public sealed class TransactionFunctions : BaseFunction
 
         var result = await Sender.Send(command);
 
-        return result;
+        return result.ReturnAPIResponse();
     }
 }
