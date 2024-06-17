@@ -3,12 +3,16 @@ import { ResultSchema } from "@/lib/validation/base";
 import { AccountSchema } from "@/lib/validation/account";
 import { CategorySchema } from "@/lib/validation/category";
 import { CounterpartySchema } from "@/lib/validation/counterparty";
+import { CURRENCY } from "@/lib/constants/currency";
+
+const currencyValues = CURRENCY.map((c) => c.value) as [string, ...string[]];
 
 export const BudgetSchema = z.object({
   id: z.string(),
   name: z.string(),
   currency: z.string(),
   userIds: z.array(z.string()),
+  optimistic: z.boolean().optional(),
 });
 
 export const BudgetResultSchema = ResultSchema.extend({
@@ -20,6 +24,8 @@ export const CreateBudgetSchema = z.object({
     .string()
     .min(1, "Please provide budget name.")
     .regex(/^[a-zA-Z0-9\s.-]{1,50}$/, "Invalid budget name."),
+  currency: z.enum(currencyValues, { message: "Invalid currency" }),
+  userId: z.string(),
 });
 export type CreateBudget = z.infer<typeof CreateBudgetSchema>;
 

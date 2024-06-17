@@ -56,7 +56,11 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
       <TooltipProvider>
         <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
-            <li className={cn("border-t", isPending && "opacity-50")}>
+            <li
+              className={cn("border-t", {
+                "opacity-50": isPending || budget.optimistic,
+              })}
+            >
               <Link
                 to="/budget/$budgetId"
                 params={{ budgetId: budget.id }}
@@ -67,11 +71,11 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
                 }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"
-                className="grid w-full grid-cols-4 px-4 py-8 hover:bg-accent"
+                className="grid w-full grid-cols-9 gap-x-4 px-4 py-8 hover:bg-accent"
               >
-                <p>{budget.name}</p>
-                <p>{budget.currency}</p>
-                <p className="col-span-2 flex flex-col">
+                <p className="col-span-3">{budget.name}</p>
+                <p className="col-span-2">{budget.currency}</p>
+                <p className="col-span-4 flex flex-col">
                   {budget.userIds.map((id) => (
                     <span key={id}>{id}</span>
                   ))}

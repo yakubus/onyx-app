@@ -39,8 +39,15 @@ export const getBudgetsQueryOptions = queryOptions({
   queryFn: getBudgets,
 });
 
-export const createBudget = (budgetName: string) =>
-  privateApi.post("/budgets", { budgetName });
+export const createBudget = ({
+  budgetName,
+  budgetCurrency,
+  userId,
+}: {
+  budgetName: string;
+  budgetCurrency: string;
+  userId: string;
+}) => privateApi.post("/budgets", { budgetName, budgetCurrency, userId });
 
 export const deleteBudget = (id: string) => privateApi.delete(`/budgets/${id}`);
 
