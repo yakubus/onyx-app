@@ -10,15 +10,14 @@ using Identity.Functions.Controllers.User.Requests;
 using Identity.Functions.Functions.Shared;
 using LambdaKernel;
 using MediatR;
-using Models.Responses;
 
 namespace Identity.Functions.Functions.User;
 
-public sealed class UserController : BaseFunction
+public sealed class UserFunctions : BaseFunction
 {
     private const string usersBaseRoute = $"{BaseRouteV1}user";
 
-    public UserController(ISender sender) : base(sender)
+    public UserFunctions(ISender sender) : base(sender)
     {
     }
 

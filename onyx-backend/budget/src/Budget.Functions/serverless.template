@@ -3,7 +3,7 @@
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "An AWS Serverless Application. This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).",
   "Resources": {
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoriesGetToAssignAmountGenerated": {
+    "SubcategoriesGetToAssignAmount": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -30,7 +30,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateAssignmentGenerated": {
+    "SubcategoriesUpdateAssignment": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -57,7 +57,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveAssignmentGenerated": {
+    "SubcategoriesRemoveAssignment": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -84,7 +84,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateTargetGenerated": {
+    "SubcategoriesUpdateTarget": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -111,7 +111,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveTargetGenerated": {
+    "SubcategoriesRemoveTarget": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -138,7 +138,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsAddGenerated": {
+    "CounterpartiesAdd": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -165,7 +165,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsUpdateGenerated": {
+    "CounterpartiesUpdate": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -192,7 +192,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsRemoveGenerated": {
+    "CounterpartiesRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -219,7 +219,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsAddGenerated": {
+    "SubcategoriesAdd": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -246,7 +246,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsUpdateGenerated": {
+    "SubcategoriesUpdate": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -273,7 +273,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsSubcategoriesSubcategoryFunctionsRemoveGenerated": {
+    "SubcategoriesRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -300,7 +300,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCategoriesCategoryFunctionsUpdateGenerated": {
+    "CategoriesUpdate": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -327,7 +327,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCategoriesCategoryFunctionsAddGenerated": {
+    "CategoriesAdd": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -354,7 +354,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCategoriesCategoryFunctionsRemoveGenerated": {
+    "CategoriesRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -381,7 +381,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetAllGenerated": {
+    "BudgetsGetAll": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -408,7 +408,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetDetailsGenerated": {
+    "BudgetsGetDetails": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -435,7 +435,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsGetInvitationGenerated": {
+    "BudgetsGetInvitation": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -462,7 +462,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsAddGenerated": {
+    "BudgetsAdd": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -489,7 +489,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsRemoveUserGenerated": {
+    "BudgetsRemoveUser": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -516,7 +516,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsJoinGenerated": {
+    "BudgetsJoin": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -543,7 +543,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsBudgetsBudgetFunctionsRemoveGenerated": {
+    "BudgetsRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -570,7 +570,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsAccountsAccountFunctionsGetAllGenerated": {
+    "AccountsGetAll": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -597,7 +597,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsAccountsAccountFunctionsAddGenerated": {
+    "AccountsAdd": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -624,7 +624,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsAccountsAccountFunctionsUpdateGenerated": {
+    "AccountsUpdate": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -651,7 +651,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsAccountsAccountFunctionsRemoveGenerated": {
+    "AccountsRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -678,7 +678,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCategoriesCategoryFunctionsGetAllGenerated": {
+    "CategoriesGetAll": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -705,7 +705,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsCounterpartiesCounterpartyFunctionsGetAllGenerated": {
+    "CounterpartiesGetAll": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -732,7 +732,7 @@
         "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsGetGenerated": {
+    "TransactionsGet": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -758,10 +758,11 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsUpdateGenerated": {
+    "TransactionsUpdate": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -787,10 +788,11 @@
               "Method": "POST"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     },
-    "BudgetFunctionsFunctionsTransactionsTransactionFunctionsRemoveGenerated": {
+    "TransactionsRemove": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -816,7 +818,8 @@
               "Method": "GET"
             }
           }
-        }
+        },
+        "Role": "arn:aws:iam::975049887576:role/FullAccess"
       }
     }
   },

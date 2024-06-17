@@ -15,11 +15,11 @@ using Models.Responses;
 
 namespace Identity.Functions.Functions.Auth;
 
-public sealed class AuthController : BaseFunction
+public sealed class AuthFunctions : BaseFunction
 {
     private const string authBaseRoute = $"{BaseRouteV1}auth/";
 
-    public AuthController(ISender sender) : base(sender)
+    public AuthFunctions(ISender sender) : base(sender)
     {
     }
 
@@ -84,7 +84,7 @@ public sealed class AuthController : BaseFunction
         return result.ReturnAPIResponse(200, 401);
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(Register))]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(ForgotPassword))]
     [HttpApi(LambdaHttpMethod.Put, $"{authBaseRoute}forgot-password")]
     public async Task<APIGatewayHttpApiV2ProxyResponse> ForgotPassword(
         [FromBody] ForgotPasswordRequest request)

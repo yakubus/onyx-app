@@ -163,7 +163,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_Login_Generated::Login",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_Login_Generated::Login",
         "Events": {
           "RootPost": {
             "Type": "HttpApi",
@@ -180,7 +180,7 @@
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
         "SyncedEvents": [
-          "RootPut"
+          "RootPost"
         ]
       },
       "Properties": {
@@ -190,13 +190,13 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_ForgotPassword_Generated::ForgotPassword",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_Register_Generated::Register",
         "Events": {
-          "RootPut": {
+          "RootPost": {
             "Type": "HttpApi",
             "Properties": {
-              "Path": "/api/v1/auth/forgot-password",
-              "Method": "PUT"
+              "Path": "/api/v1/auth/register",
+              "Method": "POST"
             }
           }
         }
@@ -217,7 +217,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_GetUser_Generated::GetUser",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserFunctions_GetUser_Generated::GetUser",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
@@ -244,7 +244,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_UpdateUser_Generated::UpdateUser",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserFunctions_UpdateUser_Generated::UpdateUser",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
@@ -271,7 +271,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_RequestEmailChange_Generated::RequestEmailChange",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserFunctions_RequestEmailChange_Generated::RequestEmailChange",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
@@ -298,7 +298,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_Logout_Generated::Logout",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserFunctions_Logout_Generated::Logout",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
@@ -325,7 +325,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserController_RemoveUser_Generated::RemoveUser",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.User.UserFunctions_RemoveUser_Generated::RemoveUser",
         "Events": {
           "RootDelete": {
             "Type": "HttpApi",
@@ -352,7 +352,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_VerifyEmail_Generated::VerifyEmail",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_VerifyEmail_Generated::VerifyEmail",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
@@ -379,7 +379,7 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_Refresh_Generated::Refresh",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_Refresh_Generated::Refresh",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
@@ -406,12 +406,39 @@
         "Timeout": 30,
         "Role": "arn:aws:iam::975049887576:role/FullAccess",
         "PackageType": "Zip",
-        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthController_ResendEmail_Generated::ResendEmail",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_ResendEmail_Generated::ResendEmail",
         "Events": {
           "RootPut": {
             "Type": "HttpApi",
             "Properties": {
               "Path": "/api/v1/auth/resend-email",
+              "Method": "PUT"
+            }
+          }
+        }
+      }
+    },
+    "ForgotPassword": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations",
+        "SyncedEvents": [
+          "RootPut"
+        ]
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Auth.AuthFunctions_ForgotPassword_Generated::ForgotPassword",
+        "Events": {
+          "RootPut": {
+            "Type": "HttpApi",
+            "Properties": {
+              "Path": "/api/v1/auth/forgot-password",
               "Method": "PUT"
             }
           }
