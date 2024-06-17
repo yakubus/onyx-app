@@ -1,9 +1,7 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,21 +10,36 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-import { CreateBudget } from "@/lib/validation/budget";
-import { CreateCategorySchema } from "@/lib/validation/category";
-import { createBudget, getBudgetsQueryOptions } from "@/lib/api/budget";
+import { CreateBudget, CreateBudgetSchema } from "@/lib/validation/budget";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
+import { CURRENCY } from "@/lib/constants/currency";
+import { Input } from "@/components/ui/input";
+import { User } from "@/lib/validation/user";
+import { useCreateBudgetMutation } from "@/lib/hooks/mutations/useCreateBudgetMutation";
 
 interface CreateBudgetFormProps {
   setIsCreating: (state: boolean) => void;
+  user: User;
 }
 
-const CreateBudgetForm: FC<CreateBudgetFormProps> = ({ setIsCreating }) => {
+const CreateBudgetForm: FC<CreateBudgetFormProps> = ({
+  setIsCreating,
+  user,
+}) => {
   const form = useForm<CreateBudget>({
-    resolver: zodResolver(CreateCategorySchema),
+    resolver: zodResolver(CreateBudgetSchema),
     defaultValues: {
       name: "",
+      currency: user.currency,
+      userId: user.id,
     },
   });
   const {
@@ -37,31 +50,28 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({ setIsCreating }) => {
     reset,
     setError,
   } = form;
-  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
-    mutationKey: ["createBudget"],
-    mutationFn: createBudget,
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: getBudgetsQueryOptions.queryKey,
-      });
-    },
-    onError: () => {
-      setError("name", {
-        type: "network",
-        message: "Something went wrong. Please try again.",
-      });
-    },
-    onSuccess: () => {
-      reset();
-      setIsCreating(false);
-    },
+  const onMutationError = () => {
+    setError("name", {
+      type: "network",
+      message: "Something went wrong. Please try again.",
+    });
+  };
+
+  const onMutationSuccess = () => {
+    reset();
+    setIsCreating(false);
+  };
+
+  const { mutate } = useCreateBudgetMutation({
+    onMutationError,
+    onMutationSuccess,
   });
 
   const onSubmit: SubmitHandler<CreateBudget> = (data) => {
-    const { name } = data;
-    mutate(name);
+    console.log(data);
+    const { name: budgetName, currency: budgetCurrency, userId } = data;
+    mutate({ budgetName, budgetCurrency, userId });
   };
 
   const formRef = useClickOutside<HTMLFormElement>(() => {
@@ -72,32 +82,73 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({ setIsCreating }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        ref={formRef}
+        className="grid w-full grid-cols-9 gap-x-4 px-4 py-6"
+      >
         <FormField
           control={control}
           name="name"
           render={({ field }) => (
-            <FormItem className="w-full">
+            <FormItem className="col-span-3">
               <FormControl>
-                <div className="flex">
-                  <input
-                    placeholder="Add budget..."
-                    {...field}
-                    className="h-14 w-full rounded-l-md border-y border-l px-8 outline-none"
-                  />
-                  <Button
-                    type="submit"
-                    variant="secondary"
-                    className="h-14 rounded-l-none"
-                  >
-                    <Plus />
-                  </Button>
-                </div>
+                <Input
+                  placeholder="Name..."
+                  {...field}
+                  className="h-14 w-full"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={control}
+          name="currency"
+          render={({ field }) => (
+            <FormItem className="col-span-2">
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled
+              >
+                <FormControl>
+                  <SelectTrigger className="h-14">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {CURRENCY.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="userId"
+          render={({ field }) => (
+            <FormItem className="col-span-3">
+              <FormControl>
+                <Input {...field} className="h-14 w-full" disabled />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          variant="outline"
+          className="col-span-1 h-14 rounded-l-none font-semibold"
+        >
+          Create
+        </Button>
       </form>
     </Form>
   );

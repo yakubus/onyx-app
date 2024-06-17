@@ -23,8 +23,6 @@ const TargetCardList: FC<TargetCardListProps> = ({
     select: (mutation) => mutation.state.variables as CreateTargetForm,
   });
 
-  console.log(variables);
-
   return (
     <>
       <ul className="space-y-1 border-b py-4">
