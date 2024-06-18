@@ -74,12 +74,18 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   });
 
   useEffect(() => {
+    reset({
+      amount: defaultAmount || "0",
+    });
+  }, [defaultAmount, reset]);
+
+  useEffect(() => {
     if (isError) {
       reset({
-        amount: defaultAmount,
+        amount: defaultAmount || "0",
       });
     }
-  }, [isError, reset]);
+  }, [isError, reset, defaultAmount]);
 
   const onSubmit: SubmitHandler<CreateAssignment> = (data) => {
     const { amount } = data;
