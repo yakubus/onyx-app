@@ -103,6 +103,7 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
               <FormControl>
                 <Input
                   {...field}
+                  autoComplete="off"
                   className="h-8 border-none bg-transparent text-base"
                 />
               </FormControl>

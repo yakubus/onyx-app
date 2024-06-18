@@ -124,6 +124,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                 <Input
                   type="text"
                   step="any"
+                  autoComplete="off"
                   {...field}
                   onChange={(e) => {
                     let { value } = e.target;
