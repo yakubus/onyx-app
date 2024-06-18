@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 import { Money } from "@/lib/validation/base";
-import { cn } from "@/lib/utils";
+import { cn, formatAmount } from "@/lib/utils";
 
 interface BudgetAssignmentCardProps {
   toAssign: Money;
@@ -104,11 +104,11 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({ toAssign }) => {
           <p className="text-sm">TO ASSIGN:</p>
           <p
             className={cn(
-              "text-center text-lg font-semibold",
+              "text-center text-lg font-semibold tracking-wide",
               isFetching && "opacity-50",
             )}
           >
-            {amount} {currency}
+            {formatAmount(amount.toString())} {currency}
           </p>
         </div>
       </CardContent>

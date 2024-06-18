@@ -17,7 +17,12 @@ import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { useToast } from "@/components/ui/use-toast";
-import { addCommasToAmount, removeCommasFromAmount } from "@/lib/utils";
+import {
+  addCommasToAmount,
+  formatAmount,
+  formatDecimals,
+  removeCommasFromAmount,
+} from "@/lib/utils";
 
 interface AssignmentFormProps {
   defaultAmount: string | undefined;
@@ -36,8 +41,8 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
     from: "/_dashboard-layout/budget/$budgetId",
   });
   const defaultInputValue = defaultAmount
-    ? addCommasToAmount(defaultAmount)
-    : "0";
+    ? formatAmount(defaultAmount)
+    : "0.00";
   const form = useForm({
     defaultValues: {
       amount: defaultInputValue,
@@ -126,7 +131,12 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                     value = addCommasToAmount(value);
                     field.onChange(value);
                   }}
-                  className="h-8 border-none bg-transparent pb-2 pr-1 pt-1 text-right text-base"
+                  onBlur={(e) => {
+                    const { value } = e.target;
+                    const formattedValue = formatDecimals(value);
+                    field.onChange(formattedValue);
+                  }}
+                  className="h-8 border-none bg-transparent px-1 pb-2 pt-1 text-right text-base"
                 />
               </FormControl>
               <FormLabel className="pl-2 text-base">

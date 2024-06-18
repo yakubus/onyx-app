@@ -68,7 +68,9 @@ export const assignmentLiveValidation = (value: string) => {
   // Limit decimal places to 2 digits if there is a decimal part
   const parts = value.split(".");
   if (parts.length > 1) {
-    value = `${parts[0]}.${parts[1].slice(0, 2)}`; // Limit to 2 decimal places
+    value = `${parts[0].slice(0, 9)}.${parts[1].slice(0, 2)}`; // Limit to 9 digits before decimal and 2 digits after
+  } else {
+    value = value.slice(0, 9); // Limit to 9 digits if there's no decimal part
   }
 
   return value;
