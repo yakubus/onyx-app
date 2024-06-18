@@ -43,3 +43,13 @@ export function setStoredUser(user: UserWithToken | null, key: string) {
     localStorage.removeItem(key);
   }
 }
+
+export const addCommasToAmount = (amount: string) => {
+  const parts = amount.split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.join(".");
+};
+
+export const removeCommasFromAmount = (amount: string) => {
+  return amount.replace(/,/g, "");
+};
