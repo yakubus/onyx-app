@@ -1,6 +1,5 @@
 import { FC, useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useSearch } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -13,14 +12,17 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-import {
-  CreateAssignment,
-  CreateAssignmentSchema,
-} from "@/lib/validation/subcategory";
+import { assignmentLiveValidation } from "@/lib/validation/subcategory";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  addCommasToAmount,
+  formatAmount,
+  formatDecimals,
+  removeCommasFromAmount,
+} from "@/lib/utils";
 
 interface AssignmentFormProps {
   defaultAmount: string | undefined;
@@ -38,11 +40,13 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   const { month, year, selectedBudget } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId",
   });
-  const form = useForm<CreateAssignment>({
+  const defaultInputValue = defaultAmount
+    ? formatAmount(defaultAmount)
+    : "0.00";
+  const form = useForm({
     defaultValues: {
-      amount: defaultAmount || "0",
+      amount: defaultInputValue,
     },
-    resolver: zodResolver(CreateAssignmentSchema),
   });
 
   const {
@@ -74,19 +78,26 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   });
 
   useEffect(() => {
+    reset({
+      amount: defaultInputValue,
+    });
+  }, [defaultInputValue, reset]);
+
+  useEffect(() => {
     if (isError) {
       reset({
-        amount: defaultAmount,
+        amount: defaultInputValue,
       });
     }
-  }, [isError, reset]);
+  }, [isError, reset, defaultInputValue]);
 
-  const onSubmit: SubmitHandler<CreateAssignment> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { amount } = data;
-    if (Number(amount) === Number(defaultAmount)) return;
+    const amountWithoutCommas = removeCommasFromAmount(amount);
+    if (Number(amountWithoutCommas) === Number(defaultAmount)) return;
 
     const assignment: FormAssignment = {
-      assignedAmount: Number(amount),
+      assignedAmount: Number(amountWithoutCommas),
       assignmentMonth: {
         month: Number(month),
         year: Number(year),
@@ -111,22 +122,21 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
             <FormItem className="flex items-center space-y-0">
               <FormControl>
                 <Input
-                  type="number"
-                  min="0"
+                  type="text"
                   step="any"
                   {...field}
                   onChange={(e) => {
-                    const { value } = e.target;
-                    let transformedValue = value.replace(/^-/, "");
-                    if (
-                      transformedValue.startsWith("0") &&
-                      transformedValue !== "0"
-                    ) {
-                      transformedValue = transformedValue.replace(/^0+/, "");
-                    }
-                    field.onChange(transformedValue);
+                    let { value } = e.target;
+                    value = assignmentLiveValidation(value);
+                    value = addCommasToAmount(value);
+                    field.onChange(value);
                   }}
-                  className="h-8 border-none bg-transparent pb-2 pr-1 pt-1 text-right text-base"
+                  onBlur={(e) => {
+                    const { value } = e.target;
+                    const formattedValue = formatDecimals(value);
+                    field.onChange(formattedValue);
+                  }}
+                  className="h-8 border-none bg-transparent px-1 pb-2 pt-1 text-right text-base"
                 />
               </FormControl>
               <FormLabel className="pl-2 text-base">

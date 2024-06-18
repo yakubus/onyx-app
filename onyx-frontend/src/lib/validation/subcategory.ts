@@ -32,12 +32,6 @@ const AmountSchema = z
   .min(1, "Please provide amount.")
   .regex(/^(0|[1-9]\d*)(\.\d{1,2})?$/, "Invalid amount.");
 
-export const CreateAssignmentSchema = z.object({
-  amount: AmountSchema,
-});
-
-export type CreateAssignment = z.infer<typeof CreateAssignmentSchema>;
-
 export const ToAssignSchema = ResultSchema.extend({
   value: MoneySchema,
 });
@@ -49,3 +43,35 @@ export const CreateTargetSchema = z.object({
 });
 
 export type CreateTarget = z.infer<typeof CreateTargetSchema>;
+
+export const assignmentLiveValidation = (value: string) => {
+  // Replace empty input with '0'
+  if (value === "") {
+    value = "0";
+  }
+
+  // Remove any non-numeric characters except '.'
+  value = value.replace(/[^\d.]/g, "");
+
+  // Remove leading zeros before the whole number part
+  value = value.replace(/^0+(?=\d)/, "");
+
+  // Remove leading zero if it's the only digit before a decimal point
+  value = value.replace(/(^|-)0+(\d+\.\d*)/, "$1$2");
+
+  // Remove leading zero if it's the only digit
+  value = value.replace(/^0+(?=\d)/, "");
+
+  // Replace multiple dots with a single dot
+  value = value.replace(/(\..*)\./g, "$1");
+
+  // Limit decimal places to 2 digits if there is a decimal part
+  const parts = value.split(".");
+  if (parts.length > 1) {
+    value = `${parts[0].slice(0, 9)}.${parts[1].slice(0, 2)}`; // Limit to 9 digits before decimal and 2 digits after
+  } else {
+    value = value.slice(0, 9); // Limit to 9 digits if there's no decimal part
+  }
+
+  return value;
+};
