@@ -31,6 +31,7 @@ export const TargetSchema = z.object({
   targetAmount: MoneySchema,
   collectedAmount: MoneySchema,
   amountAssignedEveryMonth: MoneySchema,
+  optimistic: z.boolean().optional(),
 });
 
 export type Target = z.infer<typeof TargetSchema>;

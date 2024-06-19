@@ -55,10 +55,14 @@ export const addCommasToAmount = (amount: string) => {
 export const formatDecimals = (amount: string) => {
   const parts = amount.split(".");
 
-  if (parts.length === 1) {
+  if (parts[1]) {
+    if (parts[1].length === 1) {
+      parts[1] += "0";
+    } else {
+      parts[1] = parts[1].substring(0, 2);
+    }
+  } else {
     parts[1] = "00";
-  } else if (parts[1].length === 1) {
-    parts[1] += "0";
   }
   return parts.join(".");
 };
@@ -68,10 +72,14 @@ export const formatAmount = (amount: string) => {
   // Apply commas to the integer part
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-  if (parts.length === 1) {
+  if (parts[1]) {
+    if (parts[1].length === 1) {
+      parts[1] += "0";
+    } else {
+      parts[1] = parts[1].substring(0, 2);
+    }
+  } else {
     parts[1] = "00";
-  } else if (parts[1].length === 1) {
-    parts[1] += "0";
   }
   return parts.join(".");
 };
