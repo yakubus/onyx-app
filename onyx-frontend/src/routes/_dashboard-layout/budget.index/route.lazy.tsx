@@ -1,23 +1,16 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
 import { Minus, Plus } from "lucide-react";
-import RouteLoadingError from "@/components/RouteLoadingError";
-import { Button } from "@/components/ui/button";
-import CreateBudgetForm from "@/components/dashboard/budget/CreateBudgetForm";
 import BudgetTableRow from "@/components/dashboard/budget/BudgetTableRow";
-import BudgetsLoadingSkeleton from "@/components/dashboard/budget/BudgetsLoadingSkeleton";
-
+import CreateBudgetForm from "@/components/dashboard/budget/CreateBudgetForm";
+import { Button } from "@/components/ui/button";
 import { getBudgetsQueryOptions } from "@/lib/api/budget";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_dashboard-layout/budget/")({
+export const Route = createLazyFileRoute("/_dashboard-layout/budget/")({
   component: Budget,
-  loader: ({ context: { queryClient } }) =>
-    queryClient.ensureQueryData(getBudgetsQueryOptions),
-  pendingComponent: () => <BudgetsLoadingSkeleton />,
-  errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
 });
 
 function Budget() {
