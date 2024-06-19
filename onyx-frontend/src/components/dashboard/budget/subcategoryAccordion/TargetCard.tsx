@@ -5,6 +5,7 @@ import TargetCardForm from "./TargetCardForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Subcategory } from "@/lib/validation/subcategory";
+import { useSearch } from "@tanstack/react-router";
 
 interface TargetCardProps {
   subcategory: Subcategory;
@@ -15,9 +16,11 @@ const TargetCard: FC<TargetCardProps> = ({
   subcategory,
   currencyToDisplay,
 }) => {
+  const { month } = useSearch({ from: "/_dashboard-layout/budget/$budgetId" });
   const [isCreating, setIsCreating] = useState(false);
 
   const currentTarget = subcategory.target;
+  const isAvailable = new Date().getMonth() + 1 <= parseInt(month);
 
   return (
     <Card className="overflow-hidden rounded-lg border">
@@ -25,6 +28,9 @@ const TargetCard: FC<TargetCardProps> = ({
         <CardTitle className="text-center text-lg">Target</CardTitle>
       </CardHeader>
       <CardContent>
+        {!currentTarget && !isAvailable && (
+          <p className="pt-6 text-center">Target wasn't set for this month.</p>
+        )}
         {currentTarget && !isCreating && (
           <TargetCardList
             currencyToDisplay={currencyToDisplay}
@@ -32,11 +38,12 @@ const TargetCard: FC<TargetCardProps> = ({
             setIsCreating={setIsCreating}
           />
         )}
-        {isCreating || !currentTarget ? (
+        {isCreating || (!currentTarget && isAvailable) ? (
           <TargetCardForm
             currentTarget={currentTarget}
             setIsCreating={setIsCreating}
             subcategoryId={subcategory.id}
+            currencyToDisplay={currencyToDisplay}
           />
         ) : null}
       </CardContent>
