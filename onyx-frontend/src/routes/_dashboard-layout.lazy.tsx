@@ -102,7 +102,7 @@ const MobileLayout = ({
         </Link>
         <UserDropdown />
       </nav>
-      <main className="px-4 pt-24">
+      <main className="px-4 pb-12 pt-24">
         <Outlet />
       </main>
     </>

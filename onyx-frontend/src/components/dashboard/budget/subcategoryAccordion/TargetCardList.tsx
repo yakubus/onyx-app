@@ -66,7 +66,7 @@ const TargetCardList: FC<TargetCardListProps> = ({
         className="mt-4 w-full"
         onClick={() => setIsCreating(true)}
       >
-        Edit
+        Change
       </Button>
     </>
   );

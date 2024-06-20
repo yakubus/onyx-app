@@ -44,6 +44,14 @@ export const CreateTargetSchema = z.object({
 
 export type CreateTarget = z.infer<typeof CreateTargetSchema>;
 
+export const CreateDescriptionSchema = z.object({
+  description: z
+    .string()
+    .max(255, "Maximum length of description is 255 characters."),
+});
+
+export type CreateDescription = z.infer<typeof CreateDescriptionSchema>;
+
 export const assignmentLiveValidation = (value: string) => {
   // Replace empty input with '0'
   if (value === "") {

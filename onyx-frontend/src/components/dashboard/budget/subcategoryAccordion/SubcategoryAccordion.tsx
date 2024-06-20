@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useRef } from "react";
+import { FC, MouseEvent, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 
@@ -31,8 +31,9 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     getToAssignQueryKey(selectedBudget),
   );
 
+  const [isNameEditActive, setIsNameEditActive] = useState(false);
+
   const assignFormRef = useRef<HTMLDivElement>(null);
-  const nameFormRef = useRef<HTMLDivElement>(null);
   const isActive = activeSubcategory === subcategory.id;
 
   const onExpandClick = (
@@ -41,8 +42,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     const isAssignFormClicked = assignFormRef.current?.contains(
       e.target as Node,
     );
-    const isNameFormClicked = nameFormRef.current?.contains(e.target as Node);
-    if (isAssignFormClicked || isNameFormClicked) return;
+    if (isAssignFormClicked) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
@@ -55,7 +55,12 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     currentlyAssigned?.actualAmount.currency || budgetToAssign?.currency || "";
 
   return (
-    <li className={cn(isActive && "border-b")}>
+    <li
+      className={cn(
+        isActive && "border-b last-of-type:border-none",
+        subcategory.optimistic && "opacity-50",
+      )}
+    >
       <div
         onClick={(e) => onExpandClick(e)}
         className={cn(
@@ -63,16 +68,18 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           isActive && "border-b",
         )}
       >
-        <div className="col-span-1 flex items-center space-x-6">
+        <div className="col-span-1 flex items-center md:space-x-6">
           <ChevronRight
             className={cn(
               "flex-shrink-0 rotate-0 opacity-60 transition-all duration-300 ease-in-out",
               isActive && "rotate-90",
             )}
           />
-          <div ref={nameFormRef}>
-            <NameForm subcategory={subcategory} />
-          </div>
+          <NameForm
+            subcategory={subcategory}
+            isNameEditActive={isNameEditActive}
+            setIsNameEditActive={setIsNameEditActive}
+          />
         </div>
         <div className="col-span-2 grid grid-cols-2 items-center justify-items-end gap-x-4">
           <p>
@@ -81,7 +88,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
               : "0.00"}{" "}
             {currencyToDisplay}
           </p>
-          <div className="ml-10" ref={assignFormRef}>
+          <div className="md:ml-10" ref={assignFormRef}>
             {currencyToDisplay && (
               <AssignmentForm
                 defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
@@ -102,6 +109,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           <SubcategoryAccordionContent
             subcategory={subcategory}
             currencyToDisplay={currencyToDisplay}
+            setIsNameEditActive={setIsNameEditActive}
           />
         </div>
       </div>

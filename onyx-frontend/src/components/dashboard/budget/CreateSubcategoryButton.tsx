@@ -70,7 +70,7 @@ const CreateSubcategoryButton: FC<CreateSubcategoryButtonProps> = ({
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center border-t px-1 py-2"
+        className="flex items-center px-1 py-2"
         ref={formRef}
       >
         <FormField

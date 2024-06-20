@@ -85,13 +85,13 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({
       <form
         onSubmit={handleSubmit(onSubmit)}
         ref={formRef}
-        className="grid w-full grid-cols-9 gap-x-4 px-4 py-6"
+        className="grid w-full gap-x-4 gap-y-4 px-4 py-6 md:grid-cols-9 md:gap-y-0"
       >
         <FormField
           control={control}
           name="name"
           render={({ field }) => (
-            <FormItem className="col-span-3">
+            <FormItem className="md:col-span-3">
               <FormControl>
                 <Input
                   placeholder="Name..."
@@ -107,7 +107,7 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({
           control={control}
           name="currency"
           render={({ field }) => (
-            <FormItem className="col-span-2">
+            <FormItem className="md:col-span-2">
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
@@ -134,7 +134,7 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({
           control={control}
           name="userId"
           render={({ field }) => (
-            <FormItem className="col-span-3">
+            <FormItem className="md:col-span-3">
               <FormControl>
                 <Input {...field} className="h-14 w-full" disabled />
               </FormControl>
