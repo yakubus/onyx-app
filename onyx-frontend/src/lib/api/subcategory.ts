@@ -36,6 +36,12 @@ export interface CreateTargetForm {
   formTarget: FormTarget;
 }
 
+interface CreateSubcategoryDescription {
+  budgetId: string;
+  subcategoryId: string;
+  newDescription: string;
+}
+
 export const createSubcategory = ({
   budgetId,
   parentCategoryId,
@@ -70,3 +76,12 @@ export const createTarget = ({
     `/${budgetId}/subcategories/${subcategoryId}/target`,
     formTarget,
   );
+
+export const createSubcategoryDescription = ({
+  budgetId,
+  subcategoryId,
+  newDescription,
+}: CreateSubcategoryDescription) =>
+  privateApi.put(`/${budgetId}/subcategories/${subcategoryId}`, {
+    newDescription,
+  });
