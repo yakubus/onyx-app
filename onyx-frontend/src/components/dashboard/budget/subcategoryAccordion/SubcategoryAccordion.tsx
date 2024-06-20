@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useRef } from "react";
+import { FC, MouseEvent, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 
@@ -31,8 +31,9 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     getToAssignQueryKey(selectedBudget),
   );
 
+  const [isNameEditActive, setIsNameEditActive] = useState(false);
+
   const assignFormRef = useRef<HTMLDivElement>(null);
-  const nameFormRef = useRef<HTMLDivElement>(null);
   const isActive = activeSubcategory === subcategory.id;
 
   const onExpandClick = (
@@ -41,8 +42,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     const isAssignFormClicked = assignFormRef.current?.contains(
       e.target as Node,
     );
-    const isNameFormClicked = nameFormRef.current?.contains(e.target as Node);
-    if (isAssignFormClicked || isNameFormClicked) return;
+    if (isAssignFormClicked) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
@@ -70,9 +70,11 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
               isActive && "rotate-90",
             )}
           />
-          <div ref={nameFormRef}>
-            <NameForm subcategory={subcategory} />
-          </div>
+          <NameForm
+            subcategory={subcategory}
+            isNameEditActive={isNameEditActive}
+            setIsNameEditActive={setIsNameEditActive}
+          />
         </div>
         <div className="col-span-2 grid grid-cols-2 items-center justify-items-end gap-x-4">
           <p>
@@ -102,6 +104,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           <SubcategoryAccordionContent
             subcategory={subcategory}
             currencyToDisplay={currencyToDisplay}
+            setIsNameEditActive={setIsNameEditActive}
           />
         </div>
       </div>

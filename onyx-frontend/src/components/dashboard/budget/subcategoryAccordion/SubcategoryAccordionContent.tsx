@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button";
 interface SubcategoryAccordionContentProps {
   subcategory: Subcategory;
   currencyToDisplay: string;
+  setIsNameEditActive: (state: boolean) => void;
 }
 
 const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
   subcategory,
   currencyToDisplay,
+  setIsNameEditActive,
 }) => {
   return (
     <div className="grid grid-cols-2 gap-x-4 p-4">
@@ -24,7 +26,11 @@ const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
       <div className="flex h-full flex-col space-y-4">
         <SubcategoryDescriptionForm subcategory={subcategory} />
         <div className="flex w-full justify-end space-x-2">
-          <Button className="w-full" variant="outline">
+          <Button
+            onClick={() => setIsNameEditActive(true)}
+            className="w-full"
+            variant="outline"
+          >
             Edit name
           </Button>
           <Button className="w-full" variant="outline">

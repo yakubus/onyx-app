@@ -18,9 +18,15 @@ import { useClickOutside } from "@/lib/hooks/useClickOutside";
 
 interface NameFormProps {
   subcategory: Subcategory;
+  setIsNameEditActive: (state: boolean) => void;
+  isNameEditActive: boolean;
 }
 
-const NameForm: FC<NameFormProps> = ({ subcategory }) => {
+const NameForm: FC<NameFormProps> = ({
+  subcategory,
+  isNameEditActive,
+  setIsNameEditActive,
+}) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId",
@@ -40,7 +46,7 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
     setFocus,
   } = form;
 
-  const { mutate, isError } = useMutation({
+  const { mutate, isError, isPending, variables } = useMutation({
     mutationFn: editSubcategoryName,
     onSettled: async () => {
       return await queryClient.invalidateQueries(
@@ -80,6 +86,12 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
   };
 
   useEffect(() => {
+    if (isNameEditActive) {
+      setFocus("name");
+    }
+  }, [isNameEditActive, setFocus]);
+
+  useEffect(() => {
     if (isError) {
       reset({
         name: subcategory.name,
@@ -91,9 +103,10 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
     if (isDirty) {
       handleSubmit(onSubmit)();
     }
+    setIsNameEditActive(false);
   });
 
-  return (
+  return isNameEditActive ? (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
         <FormField
@@ -105,7 +118,7 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
                 <Input
                   {...field}
                   autoComplete="off"
-                  className="h-8 border-none bg-transparent text-base"
+                  className="h-8 cursor-pointer border-none bg-transparent text-base"
                 />
               </FormControl>
             </FormItem>
@@ -113,6 +126,10 @@ const NameForm: FC<NameFormProps> = ({ subcategory }) => {
         />
       </form>
     </Form>
+  ) : (
+    <p className="px-3">
+      {isPending ? variables?.subcategoryName : subcategory.name}
+    </p>
   );
 };
 
