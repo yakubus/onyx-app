@@ -1,15 +1,18 @@
 import { privateApi } from "@/lib/axios";
 import { MonthDate } from "@/lib/validation/base";
 
+interface RequestIds {
+  budgetId: string;
+  subcategoryId: string;
+}
+
 interface CreateSubcategory {
   budgetId: string;
   parentCategoryId: string;
   subcategoryName: string;
 }
 
-interface EditSubcategoryName {
-  budgetId: string;
-  subcategoryId: string;
+interface EditSubcategoryName extends RequestIds {
   subcategoryName: string;
 }
 
@@ -18,9 +21,7 @@ export interface FormAssignment {
   assignmentMonth: MonthDate;
 }
 
-interface Assign {
-  budgetId: string;
-  subcategoryId: string;
+interface Assign extends RequestIds {
   assignment: FormAssignment;
 }
 
@@ -30,15 +31,11 @@ export interface FormTarget {
   targetUpToMonth: MonthDate;
 }
 
-export interface CreateTargetForm {
-  budgetId: string;
-  subcategoryId: string;
+export interface CreateTargetForm extends RequestIds {
   formTarget: FormTarget;
 }
 
-interface CreateSubcategoryDescription {
-  budgetId: string;
-  subcategoryId: string;
+interface CreateSubcategoryDescription extends RequestIds {
   newDescription: string;
 }
 
@@ -85,3 +82,6 @@ export const createSubcategoryDescription = ({
   privateApi.put(`/${budgetId}/subcategories/${subcategoryId}`, {
     newDescription,
   });
+
+export const deleteSubcategory = ({ budgetId, subcategoryId }: RequestIds) =>
+  privateApi.delete(`/${budgetId}/subcategories/${subcategoryId}`);

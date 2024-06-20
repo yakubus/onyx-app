@@ -1,9 +1,10 @@
 import { FC } from "react";
 
 import TargetCard from "@/components/dashboard/budget/subcategoryAccordion/TargetCard";
+import DeleteSubcategoryButton from "@/components/dashboard/budget/subcategoryAccordion/DeleteSubcategoryButton";
+import SubcategoryDescriptionForm from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryDescriptionForm";
 
 import { Subcategory } from "@/lib/validation/subcategory";
-import SubcategoryDescriptionForm from "./SubcategoryDescriptionForm";
 import { Button } from "@/components/ui/button";
 
 interface SubcategoryAccordionContentProps {
@@ -33,9 +34,7 @@ const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
           >
             Edit name
           </Button>
-          <Button className="w-full" variant="outline">
-            Delete
-          </Button>
+          <DeleteSubcategoryButton subcategoryId={subcategory.id} />
         </div>
       </div>
     </div>

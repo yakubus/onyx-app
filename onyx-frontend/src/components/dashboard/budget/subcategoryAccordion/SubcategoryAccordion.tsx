@@ -55,7 +55,12 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     currentlyAssigned?.actualAmount.currency || budgetToAssign?.currency || "";
 
   return (
-    <li className={cn(isActive && "border-b")}>
+    <li
+      className={cn(
+        isActive && "border-b",
+        subcategory.optimistic && "opacity-50",
+      )}
+    >
       <div
         onClick={(e) => onExpandClick(e)}
         className={cn(
