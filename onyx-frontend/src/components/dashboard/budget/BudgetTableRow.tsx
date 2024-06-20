@@ -71,13 +71,15 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
                 }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"
-                className="grid w-full grid-cols-9 gap-x-4 px-4 py-8 hover:bg-accent"
+                className="grid w-full grid-cols-3 gap-x-4 px-4 py-8 hover:bg-accent md:grid-cols-9"
               >
-                <p className="col-span-3">{budget.name}</p>
-                <p className="col-span-2">{budget.currency}</p>
-                <p className="col-span-4 flex flex-col">
+                <p className="md:col-span-3">{budget.name}</p>
+                <p className="md:col-span-2">{budget.currency}</p>
+                <p className="flex flex-col md:col-span-4">
                   {budget.userIds.map((id) => (
-                    <span key={id}>{id}</span>
+                    <span key={id} className="truncate">
+                      {id}
+                    </span>
                   ))}
                 </p>
               </Link>

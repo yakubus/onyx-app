@@ -48,10 +48,10 @@ function Budget() {
       </header>
       <section className="space-y-4 py-20">
         <ul className="overflow-hidden rounded-lg border">
-          <li className="grid w-full grid-cols-9 gap-x-4 bg-accent p-4 text-lg font-semibold tracking-wide">
-            <p className="col-span-3">Name</p>
-            <p className="col-span-2">Currency</p>
-            <p className="col-span-4">Users</p>
+          <li className="grid w-full grid-cols-3 gap-x-4 bg-accent p-4 text-lg font-semibold tracking-wide md:grid-cols-9">
+            <p className="md:col-span-3">Name</p>
+            <p className="md:col-span-2">Currency</p>
+            <p className="md:col-span-4">Users</p>
           </li>
           {budgets.map((budget) => (
             <BudgetTableRow budget={budget} key={budget.id} />

@@ -17,25 +17,29 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
 
   return (
     <Card className="lg:col-span-3">
-      <div className="grid grid-cols-3 rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
-        <p className="col-span-1">Subcategory</p>
+      <div className="grid grid-cols-3 gap-x-4 rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
+        <p className="col-span-1 truncate">Subcategory</p>
         <div className="col-span-2 grid grid-cols-2 justify-items-end">
-          <p>Actual Amount</p>
+          <p className="truncate">Actual Amount</p>
           <p>Assigned</p>
         </div>
       </div>
       {activeCategory?.subcategories && (
-        <ul className="p-1">
-          {activeCategory.subcategories.map((subcategory) => (
-            <SubcategoryAccordion
-              key={subcategory.id}
-              subcategory={subcategory}
-              activeSubcategory={activeSubcategory}
-              setActiveSubcategory={setActiveSubcategory}
-            />
-          ))}
-          <CreateSubcategoryButton parentCategoryId={activeCategory.id} />
-        </ul>
+        <div className="p-1">
+          <ul>
+            {activeCategory.subcategories.map((subcategory) => (
+              <SubcategoryAccordion
+                key={subcategory.id}
+                subcategory={subcategory}
+                activeSubcategory={activeSubcategory}
+                setActiveSubcategory={setActiveSubcategory}
+              />
+            ))}
+          </ul>
+          <div className="border-t">
+            <CreateSubcategoryButton parentCategoryId={activeCategory.id} />
+          </div>
+        </div>
       )}
     </Card>
   );

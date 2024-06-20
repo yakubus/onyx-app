@@ -19,7 +19,7 @@ const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
   setIsNameEditActive,
 }) => {
   return (
-    <div className="grid grid-cols-2 gap-x-4 p-4">
+    <div className="grid gap-x-4 gap-y-4 p-4 md:grid-cols-2 md:gap-y-0">
       <TargetCard
         subcategory={subcategory}
         currencyToDisplay={currencyToDisplay}

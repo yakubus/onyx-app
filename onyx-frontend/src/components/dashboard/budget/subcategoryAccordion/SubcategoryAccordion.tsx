@@ -57,7 +57,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   return (
     <li
       className={cn(
-        isActive && "border-b",
+        isActive && "border-b last-of-type:border-none",
         subcategory.optimistic && "opacity-50",
       )}
     >
@@ -68,7 +68,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
           isActive && "border-b",
         )}
       >
-        <div className="col-span-1 flex items-center space-x-6">
+        <div className="col-span-1 flex items-center md:space-x-6">
           <ChevronRight
             className={cn(
               "flex-shrink-0 rotate-0 opacity-60 transition-all duration-300 ease-in-out",
@@ -88,7 +88,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
               : "0.00"}{" "}
             {currencyToDisplay}
           </p>
-          <div className="ml-10" ref={assignFormRef}>
+          <div className="md:ml-10" ref={assignFormRef}>
             {currencyToDisplay && (
               <AssignmentForm
                 defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
