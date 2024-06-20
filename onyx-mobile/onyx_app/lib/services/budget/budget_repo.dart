@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:onyx_app/config.dart';
@@ -18,6 +19,7 @@ class BudgetService {
       },
     );
     if (response.statusCode == 200) {
+      log('resmpne budget service ${response.body}');
       return BudgetServiceModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load budgets');

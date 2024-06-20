@@ -25,10 +25,13 @@
     "billing": "Biling",
     "team": "Team",
     "subscription": "Subskrypcja",
+    "name": "nazwa",
 
 
     
     "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować.",
     "select_language":"wybierz język",
-    "select_currency":"wybierz walutę"
+    "select_currency":"wybierz walutę",
+    "budget_view_title": "Wszystkie Twoje budżety w jednym miejscu",
+    "budget_view_title_desctiption": "Wybieraj i zarządzaj istniejącymi budżetami lub twórz nowe!"
   } 

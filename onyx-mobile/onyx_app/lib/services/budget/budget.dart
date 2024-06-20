@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +18,7 @@ class BudgetServiceModel {
   bool isSuccess;
   bool isFailure;
   ErrorOnyx error;
+
   BudgetServiceModel({
     required this.value,
     required this.isSuccess,
@@ -38,36 +40,14 @@ class BudgetServiceModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'value': value.map((x) {
-        return x.toMap();
-      }).toList(growable: false),
-      'isSuccess': isSuccess,
-      'isFailure': isFailure,
-      'error': error.toMap(),
-    };
-  }
-
-  factory BudgetServiceModel.fromMap(Map<String, dynamic> map) {
+  factory BudgetServiceModel.fromJson(Map<String, dynamic> json) {
     return BudgetServiceModel(
-      value: List<Budget>.from(
-        ((map['value'] ?? const <Budget>[]) as List).map<Budget>((x) {
-          return Budget.fromMap(
-              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
-        }),
-      ),
-      isSuccess: (map["isSuccess"] ?? false) as bool,
-      isFailure: (map["isFailure"] ?? false) as bool,
-      error: ErrorOnyx.fromMap((map["error"] ?? Map<String, dynamic>.from({}))
-          as Map<String, dynamic>),
+      value: (json['value'] as List).map((i) => Budget.fromJson(i)).toList(),
+      isSuccess: json['isSuccess'] as bool,
+      isFailure: json['isFailure'] as bool,
+      error: ErrorOnyx.fromJson(json['error']),
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory BudgetServiceModel.fromJson(String source) =>
-      BudgetServiceModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -112,59 +92,17 @@ class Budget {
     required this.counterparties,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'currency': currency,
-      'userIds': userIds,
-      'accounts': accounts.map((x) {
-        return x.toMap();
-      }).toList(growable: false),
-      'categories': categories.map((x) {
-        return x.toMap();
-      }).toList(growable: false),
-      'counterparties': counterparties.map((x) {
-        return x.toMap();
-      }).toList(growable: false),
-    };
-  }
-
-  factory Budget.fromMap(Map<String, dynamic> map) {
+  factory Budget.fromJson(Map<String, dynamic> json) {
     return Budget(
-      id: (map["id"] ?? '') as String,
-      name: (map["name"] ?? '') as String,
-      currency: (map["currency"] ?? '') as String,
-      userIds: List<String>.from(
-        ((map['userIds'] ?? const <String>[]) as List<String>),
-      ),
-      accounts: List<Account>.from(
-        ((map['accounts'] ?? const <Account>[]) as List).map<Account>((x) {
-          return Account.fromMap(
-              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
-        }),
-      ),
-      categories: List<BudgetCategory>.from(
-        ((map['categories'] ?? const <BudgetCategory>[]) as List)
-            .map<BudgetCategory>((x) {
-          return BudgetCategory.fromMap(
-              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
-        }),
-      ),
-      counterparties: List<Counterparty>.from(
-        ((map['counterparties'] ?? const <Counterparty>[]) as List)
-            .map<Counterparty>((x) {
-          return Counterparty.fromMap(
-              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
-        }),
-      ),
+      id: json['id'] as String,
+      name: json['name'] as String,
+      currency: json['currency'] as String,
+      userIds: [],
+      accounts: [],
+      categories: [],
+      counterparties: [],
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Budget.fromJson(String source) =>
-      Budget.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class BudgetNotifier extends AsyncNotifier<BudgetServiceModel> {
@@ -180,6 +118,8 @@ class BudgetNotifier extends AsyncNotifier<BudgetServiceModel> {
         error: const ErrorOnyx(message: 'Token is empty', code: "401"),
       );
     }
-    return ref.watch(budgetServiceProvider).getBudgets(token);
+    final result = ref.watch(budgetServiceProvider).getBudgets(token);
+    log("BudgetNotifier build result $result");
+    return result;
   }
 }

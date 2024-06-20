@@ -25,11 +25,14 @@
     "billing": "Billing",
     "team": "Team",
     "subscription": "Subscription",
+    "name": "name",
 
 
     "start_tekst": "The only budget planner you'll ever need.",
     "select_language":"Select a language",
-    "select_currency":"Select a Currency"
+    "select_currency":"Select a Currency",
+    "budget_view_title": "All your budgets in one place.",
+    "budget_view_title_desctiption": "Select and manage your existing budgets as you wish or create new ones!"
   
   
   }

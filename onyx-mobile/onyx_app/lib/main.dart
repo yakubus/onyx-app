@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:onyx_app/services/budget/budget.dart';
 import 'package:onyx_app/services/user/user.dart';
 import 'package:onyx_app/themes/themes.dart';
 import 'package:onyx_app/services/app_settings/settings.dart';
@@ -20,6 +21,10 @@ final settingsProvider =
 
 final userServiceDataProvider =
     AsyncNotifierProvider<UserNotifier, UserServiceModel>(UserNotifier.new);
+
+final budgetServiceDataProvider =
+    AsyncNotifierProvider<BudgetNotifier, BudgetServiceModel>(
+        BudgetNotifier.new);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
