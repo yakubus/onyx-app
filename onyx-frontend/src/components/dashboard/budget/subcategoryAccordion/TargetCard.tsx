@@ -29,7 +29,9 @@ const TargetCard: FC<TargetCardProps> = ({
       </CardHeader>
       <CardContent>
         {!currentTarget && !isAvailable && (
-          <p className="pt-6 text-center">Target wasn't set for this month.</p>
+          <p className="pt-6 text-center">
+            The target has been met or has not been set for this month.
+          </p>
         )}
         {currentTarget && !isCreating && (
           <TargetCardList
