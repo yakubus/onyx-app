@@ -2,17 +2,19 @@ import { FC, useCallback } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 
-import { MIN_YEAR } from "@/lib/constants/date";
 import MonthYearPicker, { DisableConfig } from "../MonthYearPicker";
+import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/route.lazy";
 
 interface ToAssignPopoverProps {
   selectedMonth: number;
   selectedYear: number;
+  availableDates: AvailableDates;
 }
 
 const ToAssignPopover: FC<ToAssignPopoverProps> = ({
   selectedMonth,
   selectedYear,
+  availableDates,
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
@@ -21,7 +23,6 @@ const ToAssignPopover: FC<ToAssignPopoverProps> = ({
   const navigate = useNavigate();
   const isFetching = useIsFetching({ queryKey: ["toAssign", budgetId] }) > 0;
 
-  const isCurrentlySelectedYear = (year: number) => year === selectedYear;
   const handleSetNewDate = useCallback(
     (newMonth: number, newYear: number) => {
       if (isFetching) return;
@@ -40,15 +41,15 @@ const ToAssignPopover: FC<ToAssignPopoverProps> = ({
     [budgetId, isFetching, navigate, queryClient],
   );
 
+  const availableYears = Object.keys(availableDates).map(Number);
+
   const config: DisableConfig = {
     isDecreaseYearDisabled: (_selectedMonth, _selectedYear, localYear) =>
-      MIN_YEAR >= localYear,
+      availableYears.indexOf(localYear) === 0,
     isIncreaseYearDisabled: (_selectedMonth, _selectedYear, localYear) =>
-      new Date().getFullYear() <= localYear,
-    isUnselectable: (month: number, year: number) => {
-      const maxMonth = new Date().getMonth() + 2;
-      return month > maxMonth && isCurrentlySelectedYear(year);
-    },
+      availableYears.indexOf(localYear) === availableYears.length - 1,
+    isUnselectable: (month: number, year: number) =>
+      !availableDates[year] || !availableDates[year].includes(month),
   };
 
   return (
@@ -57,6 +58,7 @@ const ToAssignPopover: FC<ToAssignPopoverProps> = ({
       selectedMonth={selectedMonth}
       selectedYear={selectedYear}
       disableConfig={config}
+      availableYears={availableYears}
     />
   );
 };

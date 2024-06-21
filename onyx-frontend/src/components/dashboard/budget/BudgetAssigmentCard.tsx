@@ -1,7 +1,6 @@
 import { FC, useMemo } from "react";
-import { useIsFetching, useQueryClient } from "@tanstack/react-query";
+import { useIsFetching } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
-
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ToAssignPopover from "./ToAssignPopover";
 import { Button } from "@/components/ui/button";
@@ -11,16 +10,19 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-
 import { Money } from "@/lib/validation/base";
 import { cn, formatAmount } from "@/lib/utils";
+import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/route.lazy";
 
 interface BudgetAssignmentCardProps {
   toAssign: Money;
+  availableDates: AvailableDates;
 }
 
-const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({ toAssign }) => {
-  const queryClient = useQueryClient();
+const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
+  toAssign,
+  availableDates,
+}) => {
   const navigate = useNavigate();
   const { budgetId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId",
@@ -35,13 +37,13 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({ toAssign }) => {
   const numericSearchParamsMonth = Number(selectedMonth);
   const numericSearchParamsYear = Number(selectedYear);
 
-  const isMinMonth = useMemo(
-    () => numericSearchParamsMonth <= 1,
-    [numericSearchParamsMonth],
-  );
+  const months = availableDates[numericSearchParamsYear] || [];
+  const monthIndex = months.indexOf(numericSearchParamsMonth);
+
+  const isMinMonth = useMemo(() => monthIndex === 0, [monthIndex]);
   const isMaxMonth = useMemo(
-    () => numericSearchParamsMonth >= new Date().getMonth() + 2,
-    [numericSearchParamsMonth],
+    () => monthIndex === months.length - 1,
+    [monthIndex, months.length],
   );
 
   const handleMonthChange = (newMonth: number) => {
@@ -49,19 +51,16 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({ toAssign }) => {
       search: (prev) => ({ ...prev, month: newMonth.toString() }),
       mask: { to: `/budget/${budgetId}` },
     });
-    setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ["toAssign", budgetId] });
-    }, 0);
   };
 
   const handleDecreaseMonth = () => {
     if (isMinMonth || isFetching) return;
-    handleMonthChange(numericSearchParamsMonth - 1);
+    handleMonthChange(months[monthIndex - 1]);
   };
 
   const handleIncreaseMonth = () => {
     if (isMaxMonth || isFetching) return;
-    handleMonthChange(numericSearchParamsMonth + 1);
+    handleMonthChange(months[monthIndex + 1]);
   };
 
   return (
@@ -72,6 +71,7 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({ toAssign }) => {
             <ToAssignPopover
               selectedMonth={numericSearchParamsMonth}
               selectedYear={numericSearchParamsYear}
+              availableDates={availableDates}
             />
           </CardTitle>
           <CardDescription>
