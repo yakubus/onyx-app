@@ -1,7 +1,6 @@
 ﻿using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.Annotations;
 using Amazon.Lambda.APIGatewayEvents;
-using Budget.Application.Counterparties.AddCounterparty;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.GetTransactions;
 using Budget.Application.Transactions.RemoveTransaction;
@@ -15,16 +14,16 @@ namespace Budget.Functions.Functions.Transactions;
 
 public sealed class TransactionFunctions : BaseFunction
 {
-    private const string transactionBaseRoute = $"{BaseRouteV1}/{{budgetId}}/transactions";
+    private const string transactionBaseRoute = $"{BaseRouteV1}{{budgetId}}/transactions/";
 
     public TransactionFunctions(ISender sender) : base(sender)
     {
         
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Transactions{nameof(Get)}")]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetTransactions))]
     [HttpApi(LambdaHttpMethod.Get, transactionBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Get(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetTransactions(
         string budgetId,
         [FromQuery] string? query,
         [FromQuery] string? counterpartyId,
@@ -43,9 +42,9 @@ public sealed class TransactionFunctions : BaseFunction
         return result.ReturnAPIResponse(200, 404);
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Transactions{nameof(Add)}")]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateTransaction))]
     [HttpApi(LambdaHttpMethod.Post, transactionBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Add(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateTransaction(
         string budgetId,
         [FromBody] AddTransactionRequest request)
     {
@@ -62,9 +61,9 @@ public sealed class TransactionFunctions : BaseFunction
         return result.ReturnAPIResponse();
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Transactions{nameof(Remove)}")]
-    [HttpApi(LambdaHttpMethod.Get, $"{transactionBaseRoute}/{{transactionId}}")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Remove(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveTransaction))]
+    [HttpApi(LambdaHttpMethod.Get, $"{transactionBaseRoute}{{transactionId}}")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveTransaction(
         string budgetId,
         string transactionId)
     {

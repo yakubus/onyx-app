@@ -17,15 +17,15 @@ namespace Budget.Functions.Functions.Categories;
 //TODO: Add query for GET to load assignments only for month
 public sealed class CategoryFunctions : BaseFunction
 {
-    private const string categoriesBaseRoute = $"{BaseRouteV1}/{{budgetId}}/categories";
+    private const string baseRoute = $"{BaseRouteV1}{{budgetId}}/categories/";
 
     public CategoryFunctions(ISender sender) : base(sender)
     {
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Categories{nameof(GetAll)}")]
-    [HttpApi(LambdaHttpMethod.Get, categoriesBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAll(string budgetId)
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllCategories))]
+    [HttpApi(LambdaHttpMethod.Get, baseRoute)]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAllCategories(string budgetId)
     {
         var query = new GetCategoriesQuery(Guid.Parse(budgetId));
 
@@ -34,9 +34,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result.ReturnAPIResponse(200, 404);
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Categories{nameof(Add)}")]
-    [HttpApi(LambdaHttpMethod.Post, categoriesBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Add(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddCategory))]
+    [HttpApi(LambdaHttpMethod.Post, baseRoute)]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> AddCategory(
         string budgetId,
         [FromBody] AddCategoryRequest request)
     {
@@ -47,9 +47,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result.ReturnAPIResponse();
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Categories{nameof(Update)}")]
-    [HttpApi(LambdaHttpMethod.Put, $"{categoriesBaseRoute}/{{categoryId}}")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Update(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateCategory))]
+    [HttpApi(LambdaHttpMethod.Put, $"{baseRoute}{{categoryId}}")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateCategory(
         string budgetId,
         string categoryId,
         [FromBody] UpdateCategoryRequest request)
@@ -64,9 +64,9 @@ public sealed class CategoryFunctions : BaseFunction
         return result.ReturnAPIResponse();
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Categories{nameof(Remove)}")]
-    [HttpApi(LambdaHttpMethod.Delete, $"{categoriesBaseRoute}/{{categoryId}}")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Remove(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveCategory))]
+    [HttpApi(LambdaHttpMethod.Delete, $"{baseRoute}{{categoryId}}")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveCategory(
         string budgetId,
         string categoryId)
     {

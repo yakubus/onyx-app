@@ -16,16 +16,16 @@ namespace Budget.Functions.Functions.Accounts;
 
 public sealed class AccountFunctions : BaseFunction
 {
-    private const string accountsBaseRoute = $"{BaseRouteV1}/{{budgetId}}/accounts";
+    private const string accountsBaseRoute = $"{BaseRouteV1}{{budgetId}}/accounts/";
 
     public AccountFunctions(ISender sender) : base(sender)
     {
         
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Accounts{nameof(GetAll)}")]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(GetAllAccounts))]
     [HttpApi(LambdaHttpMethod.Get, accountsBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAll(string budgetId)
+    public async Task<APIGatewayHttpApiV2ProxyResponse> GetAllAccounts(string budgetId)
     {
         var query = new GetAccountsQuery(Guid.Parse(budgetId));
 
@@ -34,9 +34,9 @@ public sealed class AccountFunctions : BaseFunction
         return result.ReturnAPIResponse(200, 404);
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Accounts{nameof(Add)}")]
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(AddAccount))]
     [HttpApi(LambdaHttpMethod.Post, accountsBaseRoute)]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Add(
+    public async Task<APIGatewayHttpApiV2ProxyResponse> AddAccount(
         string budgetId,
         [FromBody] AddAccountRequest request)
     {
@@ -47,9 +47,9 @@ public sealed class AccountFunctions : BaseFunction
         return result.ReturnAPIResponse();
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Accounts{nameof(Update)}")]
-    [HttpApi(LambdaHttpMethod.Put, $"{accountsBaseRoute}/{{accountId}}")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Update(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(UpdateAccount))]
+    [HttpApi(LambdaHttpMethod.Put, $"{accountsBaseRoute}{{accountId}}")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> UpdateAccount(
         string budgetId,
         string accountId,
         [FromBody] UpdateAccountRequest request)
@@ -61,9 +61,9 @@ public sealed class AccountFunctions : BaseFunction
         return result.ReturnAPIResponse();
     }
 
-    [LambdaFunction(Role = FullAccessRole, ResourceName = $"Accounts{nameof(Remove)}")]
-    [HttpApi(LambdaHttpMethod.Delete, $"{accountsBaseRoute}/{{accountId}}")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> Remove(
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveAccount))]
+    [HttpApi(LambdaHttpMethod.Delete, $"{accountsBaseRoute}{{accountId}}")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveAccount(
         string budgetId,
         string accountId)
     {
