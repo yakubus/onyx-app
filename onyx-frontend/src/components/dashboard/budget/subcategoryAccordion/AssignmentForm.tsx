@@ -38,7 +38,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { month, year, selectedBudget } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const defaultInputValue = defaultAmount
     ? formatAmount(defaultAmount)

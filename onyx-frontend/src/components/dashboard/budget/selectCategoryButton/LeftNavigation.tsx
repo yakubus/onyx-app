@@ -30,7 +30,7 @@ const LeftNavigation: FC<SelectCategorySectionProps> = ({
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
 
   const onMutationError = () => {

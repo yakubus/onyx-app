@@ -7,7 +7,7 @@ import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { getToAssignQueryOptions } from "@/lib/api/budget";
 
-export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId")({
+export const Route = createFileRoute("/_dashboard-layout/_budget-only-layout/budget/$budgetId")({
   loaderDeps: ({ search: { month, year } }) => ({ month, year }),
   loader: ({
     context: { queryClient },

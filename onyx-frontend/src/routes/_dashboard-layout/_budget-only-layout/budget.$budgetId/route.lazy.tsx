@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { getToAssignQueryOptions } from "@/lib/api/budget";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 
-export const Route = createLazyFileRoute("/_dashboard-layout/budget/$budgetId")(
+export const Route = createLazyFileRoute("/_dashboard-layout/_budget-only-layout/budget/$budgetId")(
   {
     component: SingleBudget,
   },

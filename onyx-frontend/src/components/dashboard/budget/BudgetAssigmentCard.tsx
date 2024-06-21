@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Money } from "@/lib/validation/base";
 import { cn, formatAmount } from "@/lib/utils";
-import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/route.lazy";
+import { type AvailableDates } from "@/routes/_dashboard-layout/_budget-only-layout/budget.$budgetId/route.lazy";
 
 interface BudgetAssignmentCardProps {
   toAssign: Money;
@@ -25,11 +25,11 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const { amount, currency } = toAssign;
   const { month: selectedMonth, year: selectedYear } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
 
   const isFetching = useIsFetching({ queryKey: ["toAssign", budgetId] }) > 0;

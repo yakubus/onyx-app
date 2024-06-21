@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 
 import MonthYearPicker, { DisableConfig } from "../MonthYearPicker";
-import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/route.lazy";
+import { type AvailableDates } from "@/routes/_dashboard-layout/_budget-only-layout/budget.$budgetId/route.lazy";
 
 interface ToAssignPopoverProps {
   selectedMonth: number;
@@ -18,7 +18,7 @@ const ToAssignPopover: FC<ToAssignPopoverProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const navigate = useNavigate();
   const isFetching = useIsFetching({ queryKey: ["toAssign", budgetId] }) > 0;

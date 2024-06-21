@@ -25,7 +25,7 @@ const SubcategoryDescriptionForm: FC<SubcategoryDescriptionFormProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const { toast } = useToast();
   const form = useForm<CreateDescription>({

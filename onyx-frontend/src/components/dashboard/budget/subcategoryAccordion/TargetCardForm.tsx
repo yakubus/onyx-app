@@ -47,7 +47,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
     selectedBudget,
     year: searchYear,
   } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const { toast } = useToast();
 
