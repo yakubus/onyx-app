@@ -42,7 +42,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     const isAssignFormClicked = assignFormRef.current?.contains(
       e.target as Node,
     );
-    if (isAssignFormClicked) return;
+    if (isAssignFormClicked || isNameEditActive) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 
