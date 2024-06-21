@@ -25,7 +25,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { month, year, selectedBudget } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId",
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
   });
   const budgetToAssign = queryClient.getQueryData<Money>(
     getToAssignQueryKey(selectedBudget),
@@ -42,7 +42,7 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
     const isAssignFormClicked = assignFormRef.current?.contains(
       e.target as Node,
     );
-    if (isAssignFormClicked) return;
+    if (isAssignFormClicked || isNameEditActive) return;
     setActiveSubcategory(isActive ? null : subcategory.id);
   };
 

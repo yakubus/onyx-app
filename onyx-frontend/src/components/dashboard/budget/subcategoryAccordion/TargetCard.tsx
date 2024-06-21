@@ -16,7 +16,9 @@ const TargetCard: FC<TargetCardProps> = ({
   subcategory,
   currencyToDisplay,
 }) => {
-  const { month } = useSearch({ from: "/_dashboard-layout/budget/$budgetId" });
+  const { month } = useSearch({
+    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+  });
   const [isCreating, setIsCreating] = useState(false);
 
   const currentTarget = subcategory.target;
@@ -29,7 +31,9 @@ const TargetCard: FC<TargetCardProps> = ({
       </CardHeader>
       <CardContent>
         {!currentTarget && !isAvailable && (
-          <p className="pt-6 text-center">Target wasn't set for this month.</p>
+          <p className="pt-6 text-center">
+            The target has been met or has not been set for this month.
+          </p>
         )}
         {currentTarget && !isCreating && (
           <TargetCardList

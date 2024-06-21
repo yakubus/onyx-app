@@ -33,6 +33,7 @@ interface MonthYearPickerProps {
   onDateChange: (newMonth: number, newYear: number) => void;
   disableConfig?: DisableConfig;
   center?: boolean;
+  availableYears?: number[];
 }
 
 const MonthYearPicker: FC<MonthYearPickerProps> = ({
@@ -41,6 +42,7 @@ const MonthYearPicker: FC<MonthYearPickerProps> = ({
   onDateChange,
   disableConfig = {},
   center,
+  availableYears,
 }) => {
   const [localMonth, setLocalMonth] = useState<number | null>(null);
   const [localYear, setLocalYear] = useState(selectedYear);
@@ -75,7 +77,12 @@ const MonthYearPicker: FC<MonthYearPickerProps> = ({
         ) {
           return prevYear;
         }
-        return prevYear + 1;
+        if (!availableYears) {
+          return prevYear + 1;
+        }
+        const index = availableYears.indexOf(prevYear);
+        if (index === availableYears.length - 1) return prevYear;
+        return availableYears[index + 1];
       } else {
         if (
           isDecreaseYearDisabled &&
@@ -88,7 +95,12 @@ const MonthYearPicker: FC<MonthYearPickerProps> = ({
         ) {
           return prevYear;
         }
-        return prevYear - 1;
+        if (!availableYears) {
+          return prevYear - 1;
+        }
+        const index = availableYears.indexOf(prevYear);
+        if (index === 0) return prevYear;
+        return availableYears[index - 1];
       }
     });
   };
