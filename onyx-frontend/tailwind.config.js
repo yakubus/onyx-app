@@ -81,10 +81,12 @@ export default {
       },
       height: {   
         "900px": "900px",
-        "1320px": "1320px" ,
+        "1320px": "1320px",
+        "1200px": "1200px",
         "30px": "30px",
         "864px": "864px",
         "680px": "680px",
+        "750px": "750px",
         "600px": "600px",
         "518px": "518px" 
       },
@@ -95,14 +97,9 @@ export default {
         "990px": "990px",
         "850px": "850px",
         "600px": "600px",
-        "386px": "386px"
-      },
-      maxHeight: {
-        "700": "700px",
-      },
-      margin: {
-        "122px": "122px"
-      }
+        "386px": "386px",
+        "52px": "52px"
+      },      
     },
   },
   plugins: [tailwindcssAnimate, tailwindScrollbar({ nocompatible: true })],
