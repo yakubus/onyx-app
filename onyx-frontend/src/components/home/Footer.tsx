@@ -7,10 +7,10 @@ import Brand from "@/components/Logo";
 
 const Footer = () => {
   return (
-    <div className="flex max-w-6xl h-auto bg-background flex-col mx-auto sm:my-8 lg:mt-36">
-      <div className="w-full h-auto flex flex-col md:flex-row pb-8">
+    <div className="flex max-w-1440px h-auto bg-background flex-col mx-auto mt-8 p-4">
+      <div className="w-full h-auto flex flex-col md:flex-row pb-8 justify-start md:justify-center items-center">
         <div className="md:w-1/4">
-          <div className="mt-4">
+          <div className="mt-4 flex ">
             <Brand className="text-foreground flex justify-start"/>
           </div>          
           <div className="mt-8 md:mt-4 mb-2 flex flex-row">
@@ -43,11 +43,11 @@ const Footer = () => {
             <li className="cursor-pointer">Privacy</li>                           
           </ul>
         </div>
-        <div className="w-full md:w-1/4 flex justify-center md:justify-end items-center mt-8 md:mt-0">
+        <div className="w-full md:w-1/4 flex justify-center md:justify-center items-center mt-8 md:mt-0">
           <Social />
         </div> 
       </div>
-      <div className="max-w-6xl h-auto flex justify-center items-center border-t border-solid border-primary-dark">
+      <div className="max-w-1440px h-auto flex justify-center items-center border-t border-solid border-primary-dark">
         <div className="h-auto w-auto text-foreground pb-2 pt-2">ONYX - 2024</div> 
       </div>     
     </div>
