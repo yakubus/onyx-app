@@ -1,34 +1,36 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
-Description: An AWS Serverless Application. This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).
-
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application. This template is partially managed by
+  Amazon.Lambda.Annotations (v1.3.0.0).
 Resources:
   IdentityApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowOrigins: "'*'"
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigins: '''*'''
+        AllowMethods: '''GET,POST,PUT,DELETE,OPTIONS'''
+        AllowHeaders: '''Content-Type,Authorization'''
       DefaultRouteSettings:
         DetailedMetricsEnabled: true
       Auth:
         DefaultAuthorizer: LambdaAuthorizer
         Authorizers:
           LambdaAuthorizer:
-            FunctionArn: !Sub LambdaAuthorizerArn
+            FunctionArn:
+              Fn::Sub: LambdaAuthorizerArn
             AuthorizerPayloadFormatVersion: '2.0'
-            #IdentitySource: "$request.header.Authorization"
-
+    Metadata:
+      SamResourceId: IdentityApi
   Login:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: Login
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -40,19 +42,20 @@ Resources:
           Properties:
             Path: /api/v1/auth/login
             Method: POST
-            ApiId: !Ref IdentityApi
+            ApiId:
+              Ref: IdentityApi
             Auth:
               Authorizer: NONE
-
   Register:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: Register
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -64,19 +67,20 @@ Resources:
           Properties:
             Path: /api/v1/auth/register
             Method: POST
-            ApiId: !Ref IdentityApi
+            ApiId:
+              Ref: IdentityApi
             Auth:
               Authorizer: NONE
-
   GetUser:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: GetUser
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -88,17 +92,18 @@ Resources:
           Properties:
             Path: /api/v1/user
             Method: GET
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   UpdateUser:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: UpdateUser
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -110,17 +115,18 @@ Resources:
           Properties:
             Path: /api/v1/user
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   RequestEmailChange:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: RequestEmailChange
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -132,17 +138,18 @@ Resources:
           Properties:
             Path: /api/v1/userchange-email
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   Logout:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: Logout
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -154,17 +161,18 @@ Resources:
           Properties:
             Path: /api/v1/userlogout
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   RemoveUser:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: RemoveUser
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -176,17 +184,18 @@ Resources:
           Properties:
             Path: /api/v1/userremove
             Method: DELETE
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   VerifyEmail:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: VerifyEmail
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -198,17 +207,18 @@ Resources:
           Properties:
             Path: /api/v1/auth/verify-email
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   Refresh:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: Refresh
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -220,19 +230,20 @@ Resources:
           Properties:
             Path: /api/v1/auth/refresh
             Method: PUT
-            ApiId: !Ref IdentityApi
+            ApiId:
+              Ref: IdentityApi
             Auth:
               Authorizer: NONE
-
   ResendEmail:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: ResendEmail
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -244,17 +255,18 @@ Resources:
           Properties:
             Path: /api/v1/auth/resend-email
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   ForgotPassword:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: ForgotPassword
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -266,26 +278,29 @@ Resources:
           Properties:
             Path: /api/v1/auth/forgot-password
             Method: PUT
-            ApiId: !Ref IdentityApi
-
+            ApiId:
+              Ref: IdentityApi
   LambdaAuthorizer:
     Type: AWS::Serverless::Function
     Metadata:
+      SamResourceId: LambdaAuthorizer
       Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/4d6ed0250af91e6f3b921a020422a0c9
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
       PackageType: Zip
       Handler: Identity.Functions::Identity.Functions.Functions.Access.AccessFunction_FunctionHandler_Generated::FunctionHandler
-
 Outputs:
   ApiURL:
     Description: API endpoint URL for Prod environment
     Value:
       Fn::Sub: https://${IdentityApi}.execute-api.${AWS::Region}.amazonaws.com/
   LambdaAuthorizerArn:
-    Description: "The ARN of the Lambda Authorizer"
-    Value: !GetAtt LambdaAuthorizer.Arn
+    Description: The ARN of the Lambda Authorizer
+    Value:
+      Fn::GetAtt:
+      - LambdaAuthorizer
+      - Arn

@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
+Transform: AWS::Serverless-2016-10-31
 Description: This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).
 Parameters:
   LambdaAuthorizerArn:
@@ -10,26 +10,30 @@ Resources:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowOrigins: "'*'"
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigins: '''*'''
+        AllowMethods: '''GET,POST,PUT,DELETE,OPTIONS'''
+        AllowHeaders: '''Content-Type,Authorization'''
       DefaultRouteSettings:
         DetailedMetricsEnabled: true
       Auth:
         DefaultAuthorizer: LambdaAuthorizer
         Authorizers:
           LambdaAuthorizer:
-            FunctionArn: !Ref LambdaAuthorizerArn
+            FunctionArn:
+              Ref: LambdaAuthorizerArn
             AuthorizerPayloadFormatVersion: '2.0'
+    Metadata:
+      SamResourceId: BudgetApi
   SubcategoriesGetToAssign:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesGetToAssign
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -41,16 +45,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/to-assign
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -62,16 +68,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesUpdate:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesUpdate
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -83,16 +91,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/{subcategoryId}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesRemove
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -104,16 +114,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/{subcategoryId}
             Method: DELETE
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesUpdateAssignment:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesUpdateAssignment
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -125,16 +137,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/assignment
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesUpdateTarget:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesUpdateTarget
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -146,16 +160,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/target
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   SubcategoriesRemoveTarget:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: SubcategoriesRemoveTarget
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -167,16 +183,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/target/remove
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   AccountsGetAll:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: AccountsGetAll
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -188,16 +206,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/accounts
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   AccountsAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: AccountsAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -209,16 +229,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/accounts
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   AccountsUpdate:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: AccountsUpdate
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -230,16 +252,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/accounts/{accountId}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   AccountsRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: AccountsRemove
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -251,16 +275,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/accounts/{accountId}
             Method: DELETE
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CategoriesGetAll:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CategoriesGetAll
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -272,16 +298,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/categories
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CategoriesAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CategoriesAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -293,16 +321,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/categories
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CategoriesUpdate:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CategoriesUpdate
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -314,16 +344,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/categories/{categoryId}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CategoriesRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CategoriesRemove
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -335,16 +367,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/categories/{categoryId}
             Method: DELETE
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsGetAll:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsGetAll
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -356,16 +390,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsGetDetails:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsGetDetails
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -377,16 +413,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets/{budgetId}
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsGetInvitation:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsGetInvitation
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -398,16 +436,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets/{budgetId}/invitation
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -419,16 +459,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsRemoveUser:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsRemoveUser
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -440,16 +482,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets/{budgetId}/remove/{userId}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsJoin:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsJoin
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -461,16 +505,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets/{budgetId}/join/{token}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   BudgetsRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: BudgetsRemove
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -482,16 +528,18 @@ Resources:
           Properties:
             Path: /api/v1/budgets/{budgetId}
             Method: DELETE
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CounterpartiesGetAll:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CounterpartiesGetAll
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -503,16 +551,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/counterparties
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CounterpartiesAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CounterpartiesAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -524,16 +574,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/counterparties
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CounterpartiesUpdate:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CounterpartiesUpdate
       SyncedEvents:
-        - RootPut
+      - RootPut
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -545,16 +597,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/counterparties/{counterpartyId}
             Method: PUT
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   CounterpartiesRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: CounterpartiesRemove
       SyncedEvents:
-        - RootDelete
+      - RootDelete
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -566,16 +620,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/counterparties/{counterpartyId}
             Method: DELETE
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   TransactionsGet:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: TransactionsGet
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -587,16 +643,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/transactions
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   TransactionsAdd:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: TransactionsAdd
       SyncedEvents:
-        - RootPost
+      - RootPost
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -608,16 +666,18 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/transactions
             Method: POST
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
   TransactionsRemove:
     Type: AWS::Serverless::Function
     Metadata:
-      Tool: Amazon.Lambda.Annotations
+      SamResourceId: TransactionsRemove
       SyncedEvents:
-        - RootGet
+      - RootGet
+      Tool: Amazon.Lambda.Annotations
     Properties:
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/20fce4685e6a212fe4b268d9f537df41
       MemorySize: 512
       Timeout: 30
       Role: arn:aws:iam::975049887576:role/FullAccess
@@ -629,7 +689,8 @@ Resources:
           Properties:
             Path: /api/v1/{budgetId}/transactions/{transactionId}
             Method: GET
-            ApiId: !Ref BudgetApi
+            ApiId:
+              Ref: BudgetApi
 Outputs:
   ApiURL:
     Description: API endpoint URL for Prod environment

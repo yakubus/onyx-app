@@ -15,7 +15,7 @@ namespace Identity.Functions.Functions.User;
 
 public sealed class UserFunctions : BaseFunction
 {
-    private const string usersBaseRoute = $"{BaseRouteV1}user";
+    private const string usersBaseRoute = $"{BaseRouteV1}/user";
 
     public UserFunctions(ISender sender) : base(sender)
     {
@@ -49,7 +49,7 @@ public sealed class UserFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RequestEmailChange))]
-    [HttpApi(LambdaHttpMethod.Put, $"{usersBaseRoute}change-email")]
+    [HttpApi(LambdaHttpMethod.Put, $"{usersBaseRoute}/change-email")]
     public async Task<APIGatewayHttpApiV2ProxyResponse> RequestEmailChange()
     {
         var command = new RequestEmailChangeCommand();
@@ -60,7 +60,7 @@ public sealed class UserFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(Logout))]
-    [HttpApi(LambdaHttpMethod.Put, $"{usersBaseRoute}logout")]
+    [HttpApi(LambdaHttpMethod.Put, $"{usersBaseRoute}/logout")]
     public async Task<APIGatewayHttpApiV2ProxyResponse> Logout()
     {
         var command = new LogoutUserCommand();
@@ -71,7 +71,7 @@ public sealed class UserFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(RemoveUser))]
-    [HttpApi(LambdaHttpMethod.Delete, $"{usersBaseRoute}remove")]
+    [HttpApi(LambdaHttpMethod.Delete, $"{usersBaseRoute}/remove")]
     public async Task<APIGatewayHttpApiV2ProxyResponse> RemoveUser([FromBody] RemoveUserRequest request)
     {
         var command = new RemoveUserCommand(request.Password);
