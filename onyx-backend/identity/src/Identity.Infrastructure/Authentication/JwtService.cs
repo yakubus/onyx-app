@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Amazon.Auth.AccessControlPolicy;
 using Identity.Application.Abstractions.Authentication;
 using Identity.Domain;
 using Identity.Infrastructure.Authentication.Models;
@@ -12,10 +13,10 @@ namespace Identity.Infrastructure.Authentication;
 
 internal sealed class JwtService : IJwtService
 {
-    private static readonly Error AuthenticationFailedError = new(
+    private static readonly Error authenticationFailedError = new(
         "Jwt.AuthenticationFailedError",
         "Failed to acquire access token do to authentication failure");
-    private static readonly Error TokenCreationFailedError = new(
+    private static readonly Error tokenCreationFailedError = new(
         "Jwt.CreationFailure",
         "Failed to generate access token");
 
@@ -37,19 +38,48 @@ internal sealed class JwtService : IJwtService
             SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            _options.Issuer,
-            _options.Audience,
-            claims,
-            null,
-            DateTime.UtcNow.AddMinutes(_options.ExpireInMinutes),
-            signingCredentials);
+            issuer: null,
+            audience: null,
+            claims: claims,
+            notBefore: null,
+            expires: DateTime.UtcNow.AddMinutes(_options.ExpireInMinutes),
+            signingCredentials: signingCredentials);
 
         var tokenValue = new JwtSecurityTokenHandler()
             .WriteToken(token);
 
         return tokenValue is null ?
-                Result.Failure<string>(AuthenticationFailedError) :
+                Result.Failure<string>(authenticationFailedError) :
                 Result.Success(tokenValue);
+    }
+
+    public string ValidateJwt(string token, out string principalId)
+    {
+        principalId = string.Empty;
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
+
+        try
+        {
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+            };
+
+            _ = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            principalId = jwtToken.Subject;
+
+            return "Allow";
+        }
+        catch
+        {
+            return "Deny";
+        }
     }
 
     public Result<string> GenerateLongLivedToken()
@@ -69,7 +99,7 @@ internal sealed class JwtService : IJwtService
             .WriteToken(token);
 
         return tokenValue is null ?
-            Result.Failure<string>(AuthenticationFailedError) :
+            Result.Failure<string>(authenticationFailedError) :
             Result.Success(tokenValue);
     }
 
@@ -81,11 +111,11 @@ internal sealed class JwtService : IJwtService
 
             jwt.TryGetPayloadValue(UserRepresentationModel.IdClaimName, out string userId);
 
-            return userId ?? Result.Failure<string>(TokenCreationFailedError);
+            return userId ?? Result.Failure<string>(tokenCreationFailedError);
         }
         catch (Exception)
         {
-            return Result.Failure<string>(TokenCreationFailedError);
+            return Result.Failure<string>(tokenCreationFailedError);
         }
     }
 }

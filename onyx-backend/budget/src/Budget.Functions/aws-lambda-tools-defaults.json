@@ -10,9 +10,9 @@
     "region"      : "eu-central-1",
     "configuration" : "Release",
     "s3-prefix"     : "Budget.Functions/",
-    "template"      : "serverless.template",
+    "template"      : "budget-template.yaml",
     "template-parameters" : "",
     "docker-host-build-output-dir" : "./bin/Release/lambda-publish",
     "s3-bucket"                    : "dbrdak-training",
-    "stack-name"                   : "dbrdak-training"
+    "stack-name"                   : "onyx-budget"
 }

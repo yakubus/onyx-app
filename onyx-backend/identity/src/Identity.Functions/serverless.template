@@ -299,6 +299,21 @@
           }
         }
       }
+    },
+    "LambdaAuthorizer": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations"
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::975049887576:role/FullAccess",
+        "PackageType": "Zip",
+        "Handler": "Identity.Functions::Identity.Functions.Functions.Access.AccessFunction_FunctionHandler_Generated::FunctionHandler"
+      }
     }
   },
   "Outputs": {
