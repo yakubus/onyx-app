@@ -22,10 +22,10 @@ import {
 import TargetCardFormDatePicker from "./TargetCardFormDatePicker";
 import { FormTarget } from "@/lib/api/subcategory";
 import {
-  addCommasToAmount,
+  addSpacesToAmount,
   formatAmount,
   formatDecimals,
-  removeCommasFromAmount,
+  removeSpacesFromAmount,
 } from "@/lib/utils";
 import { useCreateTargetMutation } from "@/lib/hooks/mutations/useCreateTargetMutation";
 
@@ -90,7 +90,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
 
   const onSubmit: SubmitHandler<CreateTarget> = (data) => {
     const { month, year, amount } = data;
-    const amountWithoutCommas = removeCommasFromAmount(amount);
+    const amountWithoutCommas = removeSpacesFromAmount(amount);
     const target: FormTarget = {
       targetAmount: Number(amountWithoutCommas),
       startedAt: {
@@ -129,7 +129,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
                     onChange={(e) => {
                       let { value } = e.target;
                       value = assignmentLiveValidation(value);
-                      value = addCommasToAmount(value);
+                      value = addSpacesToAmount(value);
                       field.onChange(value);
                     }}
                     onBlur={(e) => {

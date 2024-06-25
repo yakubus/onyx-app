@@ -58,6 +58,9 @@ export const assignmentLiveValidation = (value: string) => {
     value = "0";
   }
 
+  // Convert commas to dots for decimal input
+  value = value.replace(/,/g, ".");
+
   // Remove any non-numeric characters except '.'
   value = value.replace(/[^\d.]/g, "");
 

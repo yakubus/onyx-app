@@ -18,10 +18,10 @@ import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  addCommasToAmount,
+  addSpacesToAmount,
   formatAmount,
   formatDecimals,
-  removeCommasFromAmount,
+  removeSpacesFromAmount,
 } from "@/lib/utils";
 
 interface AssignmentFormProps {
@@ -96,7 +96,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { amount } = data;
-    const amountWithoutCommas = removeCommasFromAmount(amount);
+    const amountWithoutCommas = removeSpacesFromAmount(amount);
     if (Number(amountWithoutCommas) === Number(defaultAmount)) return;
 
     const assignment: FormAssignment = {
@@ -132,7 +132,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                   onChange={(e) => {
                     let { value } = e.target;
                     value = assignmentLiveValidation(value);
-                    value = addCommasToAmount(value);
+                    value = addSpacesToAmount(value);
                     field.onChange(value);
                   }}
                   onBlur={(e) => {
@@ -140,10 +140,10 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                     const formattedValue = formatDecimals(value);
                     field.onChange(formattedValue);
                   }}
-                  className="h-8 border-none bg-transparent px-1 pb-2 pt-1 text-right text-base"
+                  className="relative h-8 border-none bg-transparent px-1 pr-10 text-right text-base"
                 />
               </FormControl>
-              <FormLabel className="pl-2 text-base">
+              <FormLabel className="absolute right-5 pl-2 text-base">
                 {currencyToDisplay}
               </FormLabel>
             </FormItem>
