@@ -4,6 +4,7 @@ using Identity.Domain;
 using Models.DataTypes;
 using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
+using SharedDAL.Extensions;
 
 namespace Identity.Infrastructure.Data.DataModels;
 
@@ -63,27 +64,27 @@ internal class UserDataModel : IDataModel<User>
         RegisteredAtHour = doc[nameof(RegisteredAtHour)].AsInt();
         RegisteredAtMinute = doc[nameof(RegisteredAtMinute)].AsInt();
         RegisteredAtSecond = doc[nameof(RegisteredAtSecond)].AsInt();
-        LongLivedToken = doc[nameof(LongLivedToken)];
+        LongLivedToken = doc[nameof(LongLivedToken)].AsNullableString();
         Currency = doc[nameof(Currency)];
         IsEmailVerified = doc[nameof(IsEmailVerified)].AsBoolean();
         GuardLoginAttempts = doc[nameof(GuardLoginAttempts)].AsInt();
-        GuardLockedUntilDay = doc[nameof(GuardLockedUntilDay)]?.AsInt();
-        GuardLockedUntilMonth = doc[nameof(GuardLockedUntilMonth)]?.AsInt();
-        GuardLockedUntilYear = doc[nameof(GuardLockedUntilYear)]?.AsInt();
-        GuardLockedUntilHour = doc[nameof(GuardLockedUntilHour)]?.AsInt();
-        GuardLockedUntilMinute = doc[nameof(GuardLockedUntilMinute)]?.AsInt();
-        GuardLockedUntilSecond = doc[nameof(GuardLockedUntilSecond)]?.AsInt();
+        GuardLockedUntilDay = doc[nameof(GuardLockedUntilDay)].AsNullableInt();
+        GuardLockedUntilMonth = doc[nameof(GuardLockedUntilMonth)].AsNullableInt();
+        GuardLockedUntilYear = doc[nameof(GuardLockedUntilYear)].AsNullableInt();
+        GuardLockedUntilHour = doc[nameof(GuardLockedUntilHour)].AsNullableInt();
+        GuardLockedUntilMinute = doc[nameof(GuardLockedUntilMinute)].AsNullableInt();
+        GuardLockedUntilSecond = doc[nameof(GuardLockedUntilSecond)].AsNullableInt();
         IsPasswordForgotten = doc[nameof(IsPasswordForgotten)].AsBoolean();
         IsEmailChangeRequested = doc[nameof(IsEmailChangeRequested)].AsBoolean();
-        VerificationCodeCode = doc[nameof(VerificationCodeCode)];
-        VerificationCodeExpirationDateDay = doc[nameof(VerificationCodeExpirationDateDay)]?.AsInt();
-        VerificationCodeExpirationDateMonth = doc[nameof(VerificationCodeExpirationDateMonth)]?.AsInt();
-        VerificationCodeExpirationDateYear = doc[nameof(VerificationCodeExpirationDateYear)]?.AsInt();
-        VerificationCodeExpirationDateHour = doc[nameof(VerificationCodeExpirationDateHour)]?.AsInt();
-        VerificationCodeExpirationDateMinute = doc[nameof(VerificationCodeExpirationDateMinute)]?.AsInt();
-        VerificationCodeExpirationDateSecond = doc[nameof(VerificationCodeExpirationDateSecond)]?.AsInt();
-
+        VerificationCodeCode = doc[nameof(VerificationCodeCode)].AsNullableString();
+        VerificationCodeExpirationDateDay = doc[nameof(VerificationCodeExpirationDateDay)].AsNullableInt();
+        VerificationCodeExpirationDateMonth = doc[nameof(VerificationCodeExpirationDateMonth)].AsNullableInt();
+        VerificationCodeExpirationDateYear = doc[nameof(VerificationCodeExpirationDateYear)].AsNullableInt();
+        VerificationCodeExpirationDateHour = doc[nameof(VerificationCodeExpirationDateHour)].AsNullableInt();
+        VerificationCodeExpirationDateMinute = doc[nameof(VerificationCodeExpirationDateMinute)].AsNullableInt();
+        VerificationCodeExpirationDateSecond = doc[nameof(VerificationCodeExpirationDateSecond)].AsNullableInt();
     }
+
 
     public UserDataModel(User user)
     {

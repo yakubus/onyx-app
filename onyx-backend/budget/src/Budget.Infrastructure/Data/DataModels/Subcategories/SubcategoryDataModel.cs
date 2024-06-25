@@ -5,6 +5,7 @@ using Budget.Domain.Subcategories;
 using Models.DataTypes;
 using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
+using SharedDAL.Extensions;
 
 namespace Budget.Infrastructure.Data.DataModels.Subcategories;
 
@@ -29,19 +30,20 @@ internal sealed class SubcategoryDataModel : IDataModel<Subcategory>
         Id = doc[nameof(Id)].AsGuid();
         BudgetId = doc[nameof(BudgetId)].AsGuid();
         Name = doc[nameof(Name)];
-        Description = doc[nameof(Description)];
+        Description = doc[nameof(Description)].AsNullableString();
         Assignments = doc[nameof(Assignments)]
             .AsArrayOfDynamoDBEntry()
             .Select(entry => AssignmentDataModel.FromDocument(entry.AsDocument()));
-        TargetUpToMonthMonth = doc[nameof(TargetUpToMonthMonth)].AsInt();
-        TargetUpToMonthYear = doc[nameof(TargetUpToMonthYear)].AsInt();
-        TargetStartedAtMonth = doc[nameof(TargetStartedAtMonth)].AsInt();
-        TargetStartedAtYear = doc[nameof(TargetStartedAtYear)].AsInt();
-        TargetTargetAmount = doc[nameof(TargetTargetAmount)].AsDecimal();
-        TargetTargetCurrency = doc[nameof(TargetTargetCurrency)];
-        TargetCollectedAmount = doc[nameof(TargetCollectedAmount)].AsInt();
-        TargetCollectedCurrency = doc[nameof(TargetCollectedCurrency)];
+        TargetUpToMonthMonth = doc[nameof(TargetUpToMonthMonth)].AsNullableInt();
+        TargetUpToMonthYear = doc[nameof(TargetUpToMonthYear)].AsNullableInt();
+        TargetStartedAtMonth = doc[nameof(TargetStartedAtMonth)].AsNullableInt();
+        TargetStartedAtYear = doc[nameof(TargetStartedAtYear)].AsNullableInt();
+        TargetTargetAmount = doc[nameof(TargetTargetAmount)].AsNullableDecimal();
+        TargetTargetCurrency = doc[nameof(TargetTargetCurrency)].AsNullableString();
+        TargetCollectedAmount = doc[nameof(TargetCollectedAmount)].AsNullableDecimal();
+        TargetCollectedCurrency = doc[nameof(TargetCollectedCurrency)].AsNullableString();
     }
+
     private SubcategoryDataModel(Subcategory subcategory)
     {
         Id = subcategory.Id.Value;

@@ -2,7 +2,7 @@
 
 namespace Budget.Application.Transactions.GetTransactions;
 
-internal sealed record GetTransactionQueryRequest
+public sealed record GetTransactionQueryRequest
 {
     public string Value { get; init; }
 
@@ -12,11 +12,11 @@ internal sealed record GetTransactionQueryRequest
         "GetTransactionQueryRequest.InvalidQuery",
         "Invalid query");
 
-    internal static readonly GetTransactionQueryRequest Empty = new(string.Empty);
-    internal static readonly GetTransactionQueryRequest All = new(nameof(All));
-    internal static readonly GetTransactionQueryRequest Counterparty = new(nameof(Counterparty));
-    internal static readonly GetTransactionQueryRequest Account = new(nameof(Account));
-    internal static readonly GetTransactionQueryRequest Subcategory = new(nameof(Subcategory));
+    public static readonly GetTransactionQueryRequest Empty = new(string.Empty);
+    public static readonly GetTransactionQueryRequest All = new(nameof(All));
+    public static readonly GetTransactionQueryRequest Counterparty = new(nameof(Counterparty));
+    public static readonly GetTransactionQueryRequest Account = new(nameof(Account));
+    public static readonly GetTransactionQueryRequest Subcategory = new(nameof(Subcategory));
 
     internal static readonly IReadOnlyCollection<GetTransactionQueryRequest> AllValues =
         new List<GetTransactionQueryRequest>

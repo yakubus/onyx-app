@@ -20,8 +20,8 @@ internal sealed class RemoveCounterpartyCommandHandler : ICommandHandler<RemoveC
     {
         var counterpartyId = new CounterpartyId(request.Id);
 
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
-            $"CounterpartyId = '{counterpartyId.Value}'",
+        var relatedTransactionsGetResult = await _transactionRepository.GetByCounterpartyAsync(
+            counterpartyId,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

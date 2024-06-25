@@ -1,17 +1,9 @@
 ﻿using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Amazon.Lambda.Annotations;
 using Identity.Application.Abstractions.Authentication;
 using Identity.Functions.Functions.Shared;
 using MediatR;
-using Serilog;
 
 namespace Identity.Functions.Functions.Access
 {

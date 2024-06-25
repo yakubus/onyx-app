@@ -7,7 +7,6 @@ using Budget.Application.Categories.UpdateCategory;
 using Budget.Functions.Functions.Categories.Requests;
 using Budget.Functions.Functions.Shared;
 using MediatR;
-using Models.Responses;
 using Amazon.Lambda.APIGatewayEvents;
 using LambdaKernel;
 

@@ -9,7 +9,7 @@ using Budget.Functions.Functions.Accounts.Requests;
 using Budget.Functions.Functions.Shared;
 using LambdaKernel;
 using MediatR;
-using Models.Responses;
+
 #pragma warning disable CS1591
 
 namespace Budget.Functions.Functions.Accounts;

@@ -1,7 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
 using Amazon.DynamoDBv2.DocumentModel;
-using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime.Internal.Auth;
 using Models.Responses;
 using Newtonsoft.Json;
 using SharedDAL.DataModels.Abstractions;
@@ -12,15 +10,15 @@ public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId, new()
 {
-    private readonly Table _table;
-    private readonly DbContext _context;
-    private readonly IDataModelService<TEntity> _dataModelService;
+    protected readonly Table Table;
+    protected readonly DbContext Context;
+    protected readonly IDataModelService<TEntity> DataModelService;
 
     protected Repository(DbContext context, IDataModelService<TEntity> dataModelService)
     {
-        _context = context;
-        _dataModelService = dataModelService;
-        _table = context.Set<TEntity>();
+        Context = context;
+        DataModelService = dataModelService;
+        Table = context.Set<TEntity>();
     }
 
     public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
@@ -32,14 +30,14 @@ public abstract class Repository<TEntity, TEntityId>
             Limit = 1000
         };
 
-        var scanner = _table.Scan(config);
+        var scanner = Table.Scan(config);
         var docs = new List<Document>();
 
         do 
             docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
         while (!scanner.IsDone);
 
-        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);
@@ -49,82 +47,52 @@ public abstract class Repository<TEntity, TEntityId>
         TEntityId id,
         CancellationToken cancellationToken = default)
     {
-        var doc = await _table.GetItemAsync(new Primitive(id.Value.ToString()), cancellationToken);
+        var doc = await Table.GetItemAsync(new Primitive(id.Value.ToString()), cancellationToken);
 
         if (doc is null)
         {
             return DataAccessErrors<TEntity>.NotFound;
         }
         
-        var record = _dataModelService.ConvertDocumentToDataModel(doc);
+        var record = DataModelService.ConvertDocumentToDataModel(doc);
 
         return record.ToDomainModel();
     }
 
-    /// <summary>
-    /// Query the database with a custom query
-    /// </summary>
-    /// <param name="query">Must be a valid DynamoDB query<br/>
-    ///     Must contain only logical part of query (without SELECT FROM statement) </param>
-    /// <param name="cancellationToken"></param>
-    /// <returns>List of TEntity type</returns>
-    public virtual async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
-        string query,
+    protected virtual async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
+        ScanFilter filter,
         CancellationToken cancellationToken = default)
     {
-        var statement = string.Join(
-            $"SELECT * FROM {_table.TableName} WHERE ",
-            query);
+        var scanner = Table.Scan(filter);
 
-        var response = await _context.Client.ExecuteStatementAsync(
-            new ExecuteStatementRequest
-            {
-                Statement = statement
-            },
-            cancellationToken);
+        var docs = new List<Document>();
 
-        var items = response.Items;
-        var docs = items.Select(Document.FromAttributeMap);
+        do
+            docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
+        while (!scanner.IsDone);
 
-        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);
     }
 
-    /// <summary>
-    /// Query the database with a custom query
-    /// </summary>
-    /// <param name="query">Must be a valid DynamoDB query<br/>
-    ///     Must contain only logical part of query (without SELECT FROM statement) </param>
-    /// <param name="cancellationToken"></param>
-    /// <returns>Object of TEntity type, which is first found<br/>
-    /// Failure when no record was found</returns>
-    public virtual async Task<Result<TEntity>> GetFirstAsync(
-        string query,
+    protected virtual async Task<Result<TEntity>> GetFirstAsync(
+        ScanFilter filter,
         CancellationToken cancellationToken = default)
     {
-        var statement = string.Join(
-            $"SELECT * FROM {_table.TableName} WHERE ",
-            query);
+        var scanner = Table.Scan(filter);
 
-        var response = await _context.Client.ExecuteStatementAsync(
-            new ExecuteStatementRequest
-            {
-                Statement = statement,
-            },
-            cancellationToken);
+        var docs = await scanner.GetNextSetAsync(cancellationToken);
 
-        var item = response.Items.FirstOrDefault();
+        var doc = docs.FirstOrDefault();
 
-        if (item is null)
+        if (doc is null)
         {
             return DataAccessErrors<TEntity>.NotFound;
         }
 
-        var doc = Document.FromAttributeMap(item);
-
-        var record = _dataModelService.ConvertDocumentToDataModel(doc);
+        var record = DataModelService.ConvertDocumentToDataModel(doc);
         var entity = record.ToDomainModel();
 
         return entity;
@@ -134,14 +102,14 @@ public abstract class Repository<TEntity, TEntityId>
         IEnumerable<TEntityId> ids,
         CancellationToken cancellationToken = default)
     {
-        var batch = _table.CreateBatchGet();
+        var batch = Table.CreateBatchGet();
 
         ids.ToList().ForEach(id => batch.AddKey(new Primitive(id.Value.ToString())));
 
         await batch.ExecuteAsync(cancellationToken);
 
         var docs = batch.Results;
-        var records = docs.Select(_dataModelService.ConvertDocumentToDataModel);
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
         var enitites = records.Select(record => record.ToDomainModel());
 
         return Result.Create(enitites);
@@ -151,7 +119,7 @@ public abstract class Repository<TEntity, TEntityId>
         TEntityId entityId, 
         CancellationToken cancellationToken = default)
     {
-        await _table.DeleteItemAsync(new Primitive(entityId.Value.ToString()), cancellationToken);
+        await Table.DeleteItemAsync(new Primitive(entityId.Value.ToString()), cancellationToken);
 
         return Result.Success();
     }
@@ -160,7 +128,7 @@ public abstract class Repository<TEntity, TEntityId>
         IEnumerable<TEntityId> entitiesId,
         CancellationToken cancellationToken = default)
     {
-        var batch = _table.CreateBatchWrite();
+        var batch = Table.CreateBatchWrite();
 
         entitiesId.ToList().ForEach(id => batch.AddKeyToDelete(new Primitive(id.Value.ToString())));
 
@@ -173,11 +141,11 @@ public abstract class Repository<TEntity, TEntityId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        var record = _dataModelService.ConvertDomainModelToDataModel(entity);
+        var record = DataModelService.ConvertDomainModelToDataModel(entity);
         var json = JsonConvert.SerializeObject(record);
         var doc = Document.FromJson(json);
 
-        await _table.PutItemAsync(doc, cancellationToken);
+        await Table.PutItemAsync(doc, cancellationToken);
 
         return Result.Success(entity);
     }
@@ -186,9 +154,9 @@ public abstract class Repository<TEntity, TEntityId>
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
-        var batch = _table.CreateBatchWrite();
+        var batch = Table.CreateBatchWrite();
 
-        var records = entities.Select(_dataModelService.ConvertDomainModelToDataModel);
+        var records = entities.Select(DataModelService.ConvertDomainModelToDataModel);
         var jsons = records.Select(JsonConvert.SerializeObject);
         var docs = jsons.Select(Document.FromJson);
 

@@ -1,4 +1,4 @@
-﻿namespace Identity.Functions.Controllers.User.Requests;
+﻿namespace Identity.Functions.Functions.User.Requests;
 
 public sealed record UpdateUserRequest(
     string? NewEmail,

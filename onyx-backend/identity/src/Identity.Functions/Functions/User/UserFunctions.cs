@@ -6,8 +6,8 @@ using Identity.Application.User.LogoutUser;
 using Identity.Application.User.RemoveUser;
 using Identity.Application.User.RequestEmailChange;
 using Identity.Application.User.UpdateUser;
-using Identity.Functions.Controllers.User.Requests;
 using Identity.Functions.Functions.Shared;
+using Identity.Functions.Functions.User.Requests;
 using LambdaKernel;
 using MediatR;
 

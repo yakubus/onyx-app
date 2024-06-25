@@ -1,7 +1,6 @@
 ﻿using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.Annotations;
 using Amazon.Lambda.APIGatewayEvents;
-using Budget.Application.Counterparties.AddCounterparty;
 using Budget.Application.Transactions.AddTransaction;
 using Budget.Application.Transactions.GetTransactions;
 using Budget.Application.Transactions.RemoveTransaction;
@@ -9,7 +8,6 @@ using Budget.Functions.Functions.Shared;
 using Budget.Functions.Functions.Transactions.Requests;
 using LambdaKernel;
 using MediatR;
-using Result = Models.Responses.Result;
 
 namespace Budget.Functions.Functions.Transactions;
 

@@ -1,4 +1,6 @@
-﻿using Identity.Domain;
+﻿using Amazon.DynamoDBv2.DocumentModel;
+using Identity.Domain;
+using Identity.Infrastructure.Data.DataModels;
 using Models.Responses;
 using SharedDAL;
 using SharedDAL.DataModels.Abstractions;
@@ -13,8 +15,14 @@ internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
 
     public async Task<Result<User>> GetByEmailAsync(
         Domain.Email email,
-        CancellationToken cancellationToken) =>
-        await GetFirstAsync(
-            $"Email = '{email.Value}'",
+        CancellationToken cancellationToken)
+    {
+        var filter = new ScanFilter();
+
+        filter.AddCondition(nameof(UserDataModel.Email), ScanOperator.Equal, email.Value);
+
+        return await GetFirstAsync(
+            filter,
             cancellationToken);
+    }
 }

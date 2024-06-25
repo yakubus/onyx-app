@@ -9,8 +9,6 @@ using Budget.Functions.Functions.Counterparties.Requests;
 using Budget.Functions.Functions.Shared;
 using LambdaKernel;
 using MediatR;
-using Models.Responses;
-
 
 
 namespace Budget.Functions.Functions.Counterparties;

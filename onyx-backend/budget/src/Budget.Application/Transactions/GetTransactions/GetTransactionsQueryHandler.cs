@@ -47,9 +47,21 @@ internal sealed class GetTransactionsQueryHandler : IQueryHandler<GetTransaction
             return Result.Failure<IEnumerable<TransactionModel>>(GetTransactionErrors.InvalidQueryValues);
         }
 
-        var filter = GetTransactionFilters.GetFilter(query, request);
+        var transactionsGetTask = query switch
+        {
+            _ when query == GetTransactionQueryRequest.All ||
+                   query == GetTransactionQueryRequest.Empty =>
+                _transactionRepository.GetAllAsync(cancellationToken),
+            _ when query == GetTransactionQueryRequest.Account =>
+                _transactionRepository.GetByAccountAsync(new (request.AccountId!.Value), cancellationToken),
+            _ when query == GetTransactionQueryRequest.Subcategory =>
+                _transactionRepository.GetBySubcategoryAsync(new(request.AccountId!.Value), cancellationToken),
+            _ when query == GetTransactionQueryRequest.Counterparty =>
+                _transactionRepository.GetByCounterpartyAsync(new(request.AccountId!.Value), cancellationToken),
+            _ => Task.FromResult(Result.Failure<IEnumerable<Transaction>>(Error.None))
+        };
 
-        var transactionsGetResult = await _transactionRepository.GetWhereAsync(filter, cancellationToken);
+        var transactionsGetResult = await transactionsGetTask;
 
         if (transactionsGetResult.IsFailure)
         {

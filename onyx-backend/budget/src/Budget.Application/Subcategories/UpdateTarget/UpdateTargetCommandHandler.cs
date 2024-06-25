@@ -106,15 +106,9 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
         Target target,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
-            $"""
-             SubcategoryId IS NOT NULL
-             AND SubcategoryId = '{subcategory.Id.Value}'
-             AND TransactedAtMonth >= {target.StartedAt.Month}
-             AND TransactedAtYear >= {target.StartedAt.Year}
-             AND TransactedAtMonth <= {target.UpToMonth.Month}
-             AND TransactedAtYear <= {target.UpToMonth.Year}
-             """,
+        var relatedTransactionsGetResult = await _transactionRepository.GetForTargetAsync(
+            subcategory.Id,
+            target,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

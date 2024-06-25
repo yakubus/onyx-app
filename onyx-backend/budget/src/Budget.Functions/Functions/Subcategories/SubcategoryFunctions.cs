@@ -12,7 +12,6 @@ using Budget.Functions.Functions.Shared;
 using Budget.Functions.Functions.Subcategories.Requests;
 using LambdaKernel;
 using MediatR;
-using Models.Responses;
 
 namespace Budget.Functions.Functions.Subcategories;
 

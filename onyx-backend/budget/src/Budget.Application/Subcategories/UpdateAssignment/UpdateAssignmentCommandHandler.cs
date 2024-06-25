@@ -107,13 +107,9 @@ internal sealed class UpdateAssignmentCommandHandler : ICommandHandler<UpdateAss
         Assignment assignment,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
-            $"""
-            SubcategoryId IS NOT NULL
-            AND SubcategoryId = '{subcategory.Id.Value}'
-            AND TransactedAtMonth = {assignment.Month.Month}
-            AND TransactedAtYear = {assignment.Month.Year}
-            """,
+        var relatedTransactionsGetResult = await _transactionRepository.GetForAssignmentAsync(
+            subcategory.Id,
+            assignment,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

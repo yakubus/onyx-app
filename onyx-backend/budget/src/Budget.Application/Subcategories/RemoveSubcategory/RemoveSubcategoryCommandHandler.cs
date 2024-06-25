@@ -32,8 +32,8 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
 
         var subcategory = subcategoryGetResult.Value;
 
-        var categoryGetResult = await _categoryRepository.GetFirstAsync(
-            $"CONTAINS (SubcategoriesId, '{subcategory.Id.Value}')",
+        var categoryGetResult = await _categoryRepository.GetCategoryWithSubcategory(
+            subcategory.Id,
             cancellationToken);
 
         if (categoryGetResult.IsFailure)
@@ -41,8 +41,8 @@ internal sealed class RemoveSubcategoryCommandHandler : ICommandHandler<RemoveSu
             return categoryGetResult.Error;
         }
 
-        var relatedTransactionsGetResult = await _transactionRepository.GetWhereAsync(
-            $"SubcategoryId = '{subcategoryId.Value}'",
+        var relatedTransactionsGetResult = await _transactionRepository.GetBySubcategoryAsync(
+            subcategoryId,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

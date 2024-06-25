@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Amazon.Auth.AccessControlPolicy;
 using Identity.Application.Abstractions.Authentication;
 using Identity.Domain;
 using Identity.Infrastructure.Authentication.Models;

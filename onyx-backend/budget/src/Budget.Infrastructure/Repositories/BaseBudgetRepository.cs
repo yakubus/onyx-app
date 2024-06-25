@@ -1,4 +1,5 @@
 ﻿using Abstractions.DomainBaseTypes;
+using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Application.Abstractions.Identity;
 using Budget.Domain.Budgets;
 using Budget.Domain.Shared.Abstractions;
@@ -23,7 +24,7 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
         _budgetContext = budgetContext;
     }
 
-    public override async Task<Result<TEntity>> GetFirstAsync(string query, CancellationToken cancellationToken = default)
+    protected override async Task<Result<TEntity>> GetFirstAsync(ScanFilter scanFilter, CancellationToken cancellationToken = default)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
 
@@ -34,9 +35,9 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
+        scanFilter.AddCondition("BudgetId", ScanOperator.Equal, budgetId.Value.ToString());
 
-        return await base.GetFirstAsync(combinedQuery, cancellationToken);
+        return await base.GetFirstAsync(scanFilter, cancellationToken);
     }
 
     public override async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
@@ -50,11 +51,14 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        return await GetWhereAsync($"BudgetId = '{budgetId.Value}'", cancellationToken);
+        var scanFilter = new ScanFilter();
+        scanFilter.AddCondition("BudgetId", ScanOperator.Equal, budgetId.Value.ToString());
+
+        return await GetWhereAsync(scanFilter, cancellationToken);
     }
 
-    public override async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
-        string query,
+    protected override async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
+        ScanFilter scanFilter,
         CancellationToken cancellationToken = default)
     {
         var budgetIdGetResult = _budgetContext.GetBudgetId();
@@ -66,8 +70,8 @@ internal abstract class BaseBudgetRepository<TEntity, TEntityId> : Repository<TE
 
         var budgetId = new BudgetId(budgetIdGetResult.Value);
 
-        var combinedQuery = string.Join(query, " ", $"AND BudgetId = '{budgetId.Value}'");
+        scanFilter.AddCondition("BudgetId", ScanOperator.Equal, budgetId.Value.ToString());
 
-        return await base.GetWhereAsync(combinedQuery, cancellationToken);
+        return await base.GetWhereAsync(scanFilter, cancellationToken);
     }
 }

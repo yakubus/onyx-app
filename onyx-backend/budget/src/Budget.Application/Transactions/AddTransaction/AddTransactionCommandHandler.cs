@@ -7,7 +7,6 @@ using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
-using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Transactions.AddTransaction;
@@ -174,8 +173,9 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         var counterpartyName = counterpartyNameCreateResult.Value;
         var isPayee = request.Amount.Amount < 0;
         var counterpartyType = isPayee ? CounterpartyType.Payee : CounterpartyType.Payer;
-        var counterpartyGetResult = await _counterpartyRepository.GetFirstAsync(
-            $"Name = '{counterpartyName.Value}' AND Type = '{counterpartyType.Value}'",
+        var counterpartyGetResult = await _counterpartyRepository.GetByNameAndType(
+            counterpartyName,
+            counterpartyType,
             cancellationToken);
 
         if (counterpartyGetResult.IsSuccess)

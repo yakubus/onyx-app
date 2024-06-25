@@ -7,11 +7,10 @@ using Identity.Application.Auth.RefreshAccessToken;
 using Identity.Application.Auth.RegisterUser;
 using Identity.Application.Auth.ResendEmail;
 using Identity.Application.Auth.VerifyEmail;
-using Identity.Functions.Controllers.Auth.Requests;
+using Identity.Functions.Functions.Auth.Requests;
 using Identity.Functions.Functions.Shared;
 using LambdaKernel;
 using MediatR;
-using Models.Responses;
 
 namespace Identity.Functions.Functions.Auth;
 

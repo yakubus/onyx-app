@@ -4,6 +4,7 @@ using Budget.Domain.Budgets;
 using Models.DataTypes;
 using SharedDAL.DataModels;
 using SharedDAL.DataModels.Abstractions;
+using SharedDAL.Extensions;
 
 namespace Budget.Infrastructure.Data.DataModels.Budgets;
 
@@ -27,14 +28,15 @@ internal sealed class BudgetDataModel : IDataModel<Domain.Budgets.Budget>
         Name = doc[nameof(Name)];
         BaseCurrency = doc[nameof(BaseCurrency)];
         UserIds = doc[nameof(UserIds)].AsArrayOfString();
-        InvitationTokenValue = doc[nameof(InvitationTokenValue)];
-        InvitationTokenExpirationDateDay = doc[nameof(InvitationTokenExpirationDateDay)].AsInt();
-        InvitationTokenExpirationDateMonth = doc[nameof(InvitationTokenExpirationDateMonth)].AsInt();
-        InvitationTokenExpirationDateYear = doc[nameof(InvitationTokenExpirationDateYear)].AsInt();
-        InvitationTokenExpirationDateHour = doc[nameof(InvitationTokenExpirationDateHour)].AsInt();
-        InvitationTokenExpirationDateMinute = doc[nameof(InvitationTokenExpirationDateMinute)].AsInt();
-        InvitationTokenExpirationDateSecond = doc[nameof(InvitationTokenExpirationDateSecond)].AsInt();
+        InvitationTokenValue = doc[nameof(InvitationTokenValue)].AsNullableString();
+        InvitationTokenExpirationDateDay = doc[nameof(InvitationTokenExpirationDateDay)].AsNullableInt();
+        InvitationTokenExpirationDateMonth = doc[nameof(InvitationTokenExpirationDateMonth)].AsNullableInt();
+        InvitationTokenExpirationDateYear = doc[nameof(InvitationTokenExpirationDateYear)].AsNullableInt();
+        InvitationTokenExpirationDateHour = doc[nameof(InvitationTokenExpirationDateHour)].AsNullableInt();
+        InvitationTokenExpirationDateMinute = doc[nameof(InvitationTokenExpirationDateMinute)].AsNullableInt();
+        InvitationTokenExpirationDateSecond = doc[nameof(InvitationTokenExpirationDateSecond)].AsNullableInt();
     }
+
 
     private BudgetDataModel(Domain.Budgets.Budget budget)
     {

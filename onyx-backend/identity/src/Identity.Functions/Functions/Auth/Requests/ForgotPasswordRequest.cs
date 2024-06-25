@@ -1,3 +1,3 @@
-﻿namespace Identity.Functions.Controllers.Auth.Requests;
+﻿namespace Identity.Functions.Functions.Auth.Requests;
 
 public sealed record ForgotPasswordRequest(string Email);

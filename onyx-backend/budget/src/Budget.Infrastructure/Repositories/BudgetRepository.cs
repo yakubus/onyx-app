@@ -1,5 +1,7 @@
-﻿using Budget.Application.Abstractions.Identity;
+﻿using Amazon.DynamoDBv2.DocumentModel;
+using Budget.Application.Abstractions.Identity;
 using Budget.Domain.Budgets;
+using Budget.Infrastructure.Data.DataModels.Budgets;
 using Models.Responses;
 using SharedDAL;
 using SharedDAL.DataModels.Abstractions;
@@ -36,6 +38,9 @@ internal sealed class BudgetRepository : Repository<Domain.Budgets.Budget, Budge
 
     public async Task<Result<IEnumerable<Domain.Budgets.Budget>>> GetBudgetsForUserAsync(string userId, CancellationToken cancellationToken)
     {
-        return await GetWhereAsync($"CONTAINS (UserIds, '{userId}')", cancellationToken);
+        var scanFilter = new ScanFilter();
+        scanFilter.AddCondition(nameof(BudgetDataModel.UserIds), ScanOperator.Contains, userId);
+
+        return await GetWhereAsync(scanFilter, cancellationToken);
     }
 }
