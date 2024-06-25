@@ -29,7 +29,7 @@ const CreateSubcategoryButton: FC<CreateSubcategoryButtonProps> = ({
   parentCategoryId,
 }) => {
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const form = useForm<CreateSubcategory>({
     defaultValues: {

@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { useSearch } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Input } from "@/components/ui/input";
@@ -37,8 +37,11 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
 }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { month, year, selectedBudget } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+  const { budgetId: selectedBudget } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId/",
+  });
+  const { month, year } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const defaultInputValue = defaultAmount
     ? formatAmount(defaultAmount)

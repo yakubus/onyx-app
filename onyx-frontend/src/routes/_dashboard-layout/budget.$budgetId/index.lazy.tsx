@@ -1,28 +1,29 @@
-import { useEffect, useMemo, useState } from "react";
-import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
-import { Link, createLazyFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { Navigate, createLazyFileRoute } from "@tanstack/react-router";
 
-import { Undo2 } from "lucide-react";
 import BudgetAssignmentCard from "@/components/dashboard/budget/BudgetAssigmentCard";
 import CategoriesCard from "@/components/dashboard/budget/CategoriesCard";
 import SubcategoriesCard from "@/components/dashboard/budget/SubcategoriesCard";
-import { Button } from "@/components/ui/button";
 
 import { getToAssignQueryOptions } from "@/lib/api/budget";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
+import {
+  DEFAULT_MONTH_NUMBER,
+  DEFAULT_YEAR_STRING,
+} from "@/lib/constants/date";
 
-export const Route = createLazyFileRoute("/_dashboard-layout/_budget-only-layout/budget/$budgetId")(
-  {
-    component: SingleBudget,
-  },
-);
+export const Route = createLazyFileRoute(
+  "/_dashboard-layout/budget/$budgetId/",
+)({
+  component: SingleBudget,
+});
 
 export interface AvailableDates {
   [key: number]: number[];
 }
 
 function SingleBudget() {
-  const queryClient = useQueryClient();
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const { budgetId } = Route.useParams();
   const { month, year } = Route.useSearch();
@@ -36,12 +37,12 @@ function SingleBudget() {
     (category) => category.id === activeCategoryId,
   );
 
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-
   const availableDates = useMemo(() => {
     const initialDates = {
-      [currentYear]: new Set([currentMonth, currentMonth + 1]),
+      [DEFAULT_YEAR_STRING]: new Set([
+        DEFAULT_MONTH_NUMBER,
+        DEFAULT_MONTH_NUMBER + 1,
+      ]),
     };
 
     const aggregatedDates = categories.reduce((result, category) => {
@@ -67,25 +68,17 @@ function SingleBudget() {
     );
 
     return sortedAvailableDates;
-  }, [categories, currentMonth, currentYear]);
+  }, [categories]);
 
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["toAssign", budgetId] });
-  }, [month, year, budgetId, queryClient]);
+  if (
+    !Object.keys(availableDates).includes(year) ||
+    !availableDates[year].includes(Number(month))
+  ) {
+    return <Navigate to="/budget" />;
+  }
 
   return (
     <div className="relative grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md lg:grid-cols-5">
-      <Button
-        className="-top-16 lg:absolute"
-        asChild
-        variant="outline"
-        size="sm"
-      >
-        <Link to="/budget" className="inline-flex  items-center justify-center">
-          <Undo2 className="size-4" />
-          <span className="ml-2">Budgets</span>
-        </Link>
-      </Button>
       <div className="flex h-full flex-col space-y-4 overflow-hidden lg:col-span-2">
         <BudgetAssignmentCard
           toAssign={toAssign}

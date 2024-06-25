@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSearch } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,12 +42,11 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
   subcategoryId,
   currencyToDisplay,
 }) => {
-  const {
-    month: searchMonth,
-    selectedBudget,
-    year: searchYear,
-  } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+  const { budgetId: selectedBudget } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId/",
+  });
+  const { month: searchMonth, year: searchYear } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const { toast } = useToast();
 

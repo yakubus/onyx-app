@@ -1,7 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { LayoutSearchParamsSchema } from "@/lib/validation/searchParams";
-
 export const Route = createFileRoute("/_dashboard-layout")({
   beforeLoad: ({ context: { auth }, location }) => {
     if (!auth.isAuthenticated) {
@@ -13,5 +11,4 @@ export const Route = createFileRoute("/_dashboard-layout")({
       });
     }
   },
-  validateSearch: LayoutSearchParamsSchema,
 });

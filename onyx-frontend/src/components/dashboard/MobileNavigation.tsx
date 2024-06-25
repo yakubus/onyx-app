@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, Undo2 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,24 +16,32 @@ import {
 
 import { BUDGET_LINKS, SIDEBAR_BOTTOM_LINKS } from "@/lib/constants/links";
 interface MobileNavigationProps {
-  selectedBudget: string | undefined;
+  isBudgetSelected: boolean;
+  isSingleBudgetLoadingError: boolean;
 }
 
-const MobileNavigation: FC<MobileNavigationProps> = ({ selectedBudget }) => {
+const MobileNavigation: FC<MobileNavigationProps> = ({
+  isBudgetSelected,
+  isSingleBudgetLoadingError,
+}) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const onBudgetLinkClick = (href: string) => {
-    navigate({ to: href, search: (prev) => prev, mask: { to: `/${href}` } });
+    navigate({
+      to: `/budget/$budgetId/${href}`,
+      search: (prev) => prev,
+      mask: { to: `/budget/$budgetId/${href}` },
+    });
     setIsNavOpen(false);
   };
 
   const onButgetsLinkClick = () => {
     navigate({
-      to: selectedBudget ? `/budget/${selectedBudget}` : "/budget",
+      to: isBudgetSelected ? "/budget/$budgetId" : "/budget",
       search: (prev) => prev,
-      mask: selectedBudget && { to: `/budget/${selectedBudget}` },
+      mask: { to: isBudgetSelected ? "/budget/$budgetId" : "/budget" },
     });
     setIsNavOpen(false);
   };
@@ -41,6 +49,20 @@ const MobileNavigation: FC<MobileNavigationProps> = ({ selectedBudget }) => {
   const onBottomLinkClick = (href: string) => {
     navigate({ to: href });
     setIsNavOpen(false);
+  };
+
+  const onBackToBudgetsClick = () => {
+    navigate({ to: "/budget" });
+    setIsNavOpen(false);
+  };
+
+  const { icon: BudgetIcon } = BUDGET_LINKS[0];
+
+  const isBudgetLinkSelected = (pathname: string) => {
+    return (
+      pathname.startsWith("/budget") &&
+      !BUDGET_LINKS.slice(1).some((link) => pathname.includes(link.href))
+    );
   };
 
   return (
@@ -61,47 +83,62 @@ const MobileNavigation: FC<MobileNavigationProps> = ({ selectedBudget }) => {
         </SheetHeader>
         <div className="flex flex-grow flex-col justify-between py-12">
           <div className="flex flex-col space-y-8">
+            {isBudgetSelected && (
+              <Button
+                onClick={onBackToBudgetsClick}
+                size="lg"
+                variant="primaryDark"
+                className="h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground"
+              >
+                <Undo2 />
+                <span>Budgets</span>
+              </Button>
+            )}
             <Button
               onClick={onButgetsLinkClick}
               size="lg"
               variant="primaryDark"
               className={cn(
-                "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
-                pathname.startsWith("/budget") &&
+                "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
+                isBudgetLinkSelected(pathname) &&
                   "bg-background text-foreground",
               )}
             >
-              Budget
+              <BudgetIcon />
+              <span>{isBudgetSelected ? "Budget" : "Budgets"}</span>
             </Button>
-            {BUDGET_LINKS.map(({ label, href }) => (
-              <Button
-                key={label}
-                onClick={() => onBudgetLinkClick(href)}
-                size="lg"
-                variant="primaryDark"
-                className={cn(
-                  "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
-                  pathname === href && "bg-background text-foreground",
-                  !selectedBudget && "hidden",
-                )}
-              >
-                {label}
-              </Button>
-            ))}
+            {!isSingleBudgetLoadingError &&
+              BUDGET_LINKS.slice(1).map(({ label, href, icon: Icon }) => (
+                <Button
+                  key={label}
+                  onClick={() => onBudgetLinkClick(href)}
+                  size="lg"
+                  variant="primaryDark"
+                  className={cn(
+                    "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
+                    pathname.endsWith(href) && "bg-background text-foreground",
+                    !isBudgetSelected && "hidden",
+                  )}
+                >
+                  <Icon />
+                  <span>{label}</span>
+                </Button>
+              ))}
           </div>
           <div className="flex flex-col space-y-4">
-            {SIDEBAR_BOTTOM_LINKS.map(({ label, href }) => (
+            {SIDEBAR_BOTTOM_LINKS.map(({ label, href, icon: Icon }) => (
               <Button
                 key={label}
                 onClick={() => onBottomLinkClick(href)}
                 size="lg"
                 variant="primaryDark"
                 className={cn(
-                  "text-md h-14 justify-start rounded-l-full rounded-r-none transition-colors duration-300 hover:bg-background hover:text-foreground",
+                  "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
                   pathname === href && "bg-background text-foreground",
                 )}
               >
-                {label}
+                <Icon />
+                <span>{label}</span>
               </Button>
             ))}
           </div>
