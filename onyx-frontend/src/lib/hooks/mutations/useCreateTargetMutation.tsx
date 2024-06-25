@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { createTarget } from "@/lib/api/subcategory";
+import { DEFAULT_MONTH_NUMBER } from "@/lib/constants/date";
 
 interface TargetMutationProps {
   budgetId: string;
@@ -53,7 +54,7 @@ export const useCreateTargetMutation = ({
                       amountAssignedEveryMonth: {
                         amount:
                           targetAmount /
-                          (upToMonth.month - new Date().getMonth() + 1),
+                          (upToMonth.month - DEFAULT_MONTH_NUMBER),
                         currency,
                       },
                       optimistic: true,

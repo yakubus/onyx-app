@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSearch } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,10 @@ import {
 import TargetCardFormDatePicker from "./TargetCardFormDatePicker";
 import { FormTarget } from "@/lib/api/subcategory";
 import {
-  addCommasToAmount,
+  addSpacesToAmount,
   formatAmount,
   formatDecimals,
-  removeCommasFromAmount,
+  removeSpacesFromAmount,
 } from "@/lib/utils";
 import { useCreateTargetMutation } from "@/lib/hooks/mutations/useCreateTargetMutation";
 
@@ -42,12 +42,11 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
   subcategoryId,
   currencyToDisplay,
 }) => {
-  const {
-    month: searchMonth,
-    selectedBudget,
-    year: searchYear,
-  } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+  const { budgetId: selectedBudget } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId/",
+  });
+  const { month: searchMonth, year: searchYear } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const { toast } = useToast();
 
@@ -91,7 +90,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
 
   const onSubmit: SubmitHandler<CreateTarget> = (data) => {
     const { month, year, amount } = data;
-    const amountWithoutCommas = removeCommasFromAmount(amount);
+    const amountWithoutCommas = removeSpacesFromAmount(amount);
     const target: FormTarget = {
       targetAmount: Number(amountWithoutCommas),
       startedAt: {
@@ -130,7 +129,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
                     onChange={(e) => {
                       let { value } = e.target;
                       value = assignmentLiveValidation(value);
-                      value = addCommasToAmount(value);
+                      value = addSpacesToAmount(value);
                       field.onChange(value);
                     }}
                     onBlur={(e) => {

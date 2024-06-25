@@ -17,7 +17,7 @@ const TargetCard: FC<TargetCardProps> = ({
   currencyToDisplay,
 }) => {
   const { month } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const [isCreating, setIsCreating] = useState(false);
 

@@ -29,7 +29,7 @@ const NameForm: FC<NameFormProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const { toast } = useToast();
   const form = useForm<CreateSubcategory>({

@@ -1,6 +1,6 @@
 import { FC, MouseEvent, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 
 import { ChevronRight } from "lucide-react";
 import SubcategoryAccordionContent from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryAccordionContent";
@@ -24,8 +24,11 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
   activeSubcategory,
 }) => {
   const queryClient = useQueryClient();
-  const { month, year, selectedBudget } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+  const { budgetId: selectedBudget } = useParams({
+    from: "/_dashboard-layout/budget/$budgetId/",
+  });
+  const { month, year } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const budgetToAssign = queryClient.getQueryData<Money>(
     getToAssignQueryKey(selectedBudget),

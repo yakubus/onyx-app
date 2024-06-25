@@ -44,10 +44,10 @@ export function setStoredUser(user: UserWithToken | null, key: string) {
   }
 }
 
-export const addCommasToAmount = (amount: string) => {
+export const addSpacesToAmount = (amount: string) => {
   const parts = amount.split(".");
-  // Apply commas to the integer part
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // Apply spaces to the integer part
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
   return parts.join(".");
 };
@@ -70,7 +70,7 @@ export const formatDecimals = (amount: string) => {
 export const formatAmount = (amount: string) => {
   const parts = amount.split(".");
   // Apply commas to the integer part
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
   if (parts[1]) {
     if (parts[1].length === 1) {
@@ -84,6 +84,6 @@ export const formatAmount = (amount: string) => {
   return parts.join(".");
 };
 
-export const removeCommasFromAmount = (amount: string) => {
-  return amount.replace(/,/g, "");
+export const removeSpacesFromAmount = (amount: string) => {
+  return amount.replace(/ /g, "");
 };

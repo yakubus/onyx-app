@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react";
-import { useIsFetching } from "@tanstack/react-query";
+import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ToAssignPopover from "./ToAssignPopover";
@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Money } from "@/lib/validation/base";
 import { cn, formatAmount } from "@/lib/utils";
-import { type AvailableDates } from "@/routes/_dashboard-layout/_budget-only-layout/budget.$budgetId/route.lazy";
+import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/index.lazy";
+import { getToAssignQueryKey } from "@/lib/api/budget";
 
 interface BudgetAssignmentCardProps {
   toAssign: Money;
@@ -23,13 +24,14 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
   toAssign,
   availableDates,
 }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
   const { amount, currency } = toAssign;
   const { month: selectedMonth, year: selectedYear } = useSearch({
-    from: "/_dashboard-layout/_budget-only-layout/budget/$budgetId",
+    from: "/_dashboard-layout/budget/$budgetId/",
   });
 
   const isFetching = useIsFetching({ queryKey: ["toAssign", budgetId] }) > 0;
@@ -46,11 +48,12 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
     [monthIndex, months.length],
   );
 
-  const handleMonthChange = (newMonth: number) => {
-    navigate({
+  const handleMonthChange = async (newMonth: number) => {
+    await navigate({
       search: (prev) => ({ ...prev, month: newMonth.toString() }),
       mask: { to: `/budget/${budgetId}` },
     });
+    queryClient.refetchQueries({ queryKey: getToAssignQueryKey(budgetId) });
   };
 
   const handleDecreaseMonth = () => {

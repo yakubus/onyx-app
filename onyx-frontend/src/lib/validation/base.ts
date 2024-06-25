@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  DEFAULT_MONTH_STRING,
+  DEFAULT_YEAR_STRING,
+} from "@/lib/constants/date";
 
 export const ErrorSchema = z.object({
   code: z.string(),
@@ -55,10 +59,14 @@ export const MonthStringSchema = z
     {
       message: "Month must be a number between 1 and 12",
     },
-  );
+  )
+  .catch(DEFAULT_MONTH_STRING)
+  .default(DEFAULT_MONTH_STRING);
 
 export const YearStringSchema = z
   .string()
   .refine((val) => Number(val) >= 2024, {
     message: "Year must be at least 2024",
-  });
+  })
+  .catch(DEFAULT_YEAR_STRING)
+  .default(DEFAULT_YEAR_STRING);

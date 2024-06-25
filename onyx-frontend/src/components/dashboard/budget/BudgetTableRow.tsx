@@ -23,6 +23,10 @@ import {
 import type { Budget } from "@/lib/validation/budget";
 import { deleteBudget, getBudgetsQueryOptions } from "@/lib/api/budget";
 import { cn } from "@/lib/utils";
+import {
+  DEFAULT_MONTH_STRING,
+  DEFAULT_YEAR_STRING,
+} from "@/lib/constants/date";
 
 interface BudgetTableRowProps {
   budget: Budget;
@@ -65,9 +69,8 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
                 to="/budget/$budgetId"
                 params={{ budgetId: budget.id }}
                 search={{
-                  selectedBudget: budget.id,
-                  month: String(new Date().getMonth() + 1),
-                  year: String(new Date().getFullYear()),
+                  month: DEFAULT_MONTH_STRING,
+                  year: DEFAULT_YEAR_STRING,
                 }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"
