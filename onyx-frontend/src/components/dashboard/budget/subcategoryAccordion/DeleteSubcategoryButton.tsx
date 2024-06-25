@@ -43,7 +43,10 @@ const DeleteSubcategoryButton: FC<DeleteSubcategoryButtonProps> = ({
   return (
     <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full" variant="outline">
+        <Button
+          className="w-full opacity-50 hover:opacity-100"
+          variant="outline"
+        >
           Delete
         </Button>
       </DialogTrigger>

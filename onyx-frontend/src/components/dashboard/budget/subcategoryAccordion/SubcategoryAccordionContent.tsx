@@ -20,13 +20,9 @@ const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
 }) => {
   return (
     <div className="grid gap-x-4 gap-y-4 p-4 md:grid-cols-2 md:gap-y-0">
-      <TargetCard
-        subcategory={subcategory}
-        currencyToDisplay={currencyToDisplay}
-      />
       <div className="flex h-full flex-col space-y-4">
-        <SubcategoryDescriptionForm subcategory={subcategory} />
         <div className="flex w-full justify-end space-x-2">
+          <DeleteSubcategoryButton subcategoryId={subcategory.id} />
           <Button
             onClick={() => setIsNameEditActive(true)}
             className="w-full"
@@ -34,9 +30,13 @@ const SubcategoryAccordionContent: FC<SubcategoryAccordionContentProps> = ({
           >
             Edit name
           </Button>
-          <DeleteSubcategoryButton subcategoryId={subcategory.id} />
         </div>
+        <SubcategoryDescriptionForm subcategory={subcategory} />
       </div>
+      <TargetCard
+        subcategory={subcategory}
+        currencyToDisplay={currencyToDisplay}
+      />
     </div>
   );
 };
