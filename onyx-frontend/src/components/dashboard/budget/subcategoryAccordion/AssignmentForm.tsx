@@ -12,7 +12,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-import { assignmentLiveValidation } from "@/lib/validation/subcategory";
+import { amountLiveValidation } from "@/lib/validation/base";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
@@ -131,7 +131,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                   {...field}
                   onChange={(e) => {
                     let { value } = e.target;
-                    value = assignmentLiveValidation(value);
+                    value = amountLiveValidation(value);
                     value = addSpacesToAmount(value);
                     field.onChange(value);
                   }}
@@ -143,7 +143,7 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
                   className="relative h-8 border-none bg-transparent px-1 pr-10 text-right text-base"
                 />
               </FormControl>
-              <FormLabel className="absolute right-5 pl-2 text-base">
+              <FormLabel className="absolute right-12 pl-2 text-base">
                 {currencyToDisplay}
               </FormLabel>
             </FormItem>

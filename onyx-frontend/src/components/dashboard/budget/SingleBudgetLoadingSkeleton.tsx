@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const SingleBudgetLoadingSkeleton = () => {
   return (
-    <div className="grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md lg:grid-cols-5">
+    <div className="grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md px-8 lg:grid-cols-5">
       <div className="flex h-full animate-pulse flex-col space-y-4 overflow-hidden lg:col-span-2">
         <Card>
           <div className="p-6">

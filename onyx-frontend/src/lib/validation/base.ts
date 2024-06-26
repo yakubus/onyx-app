@@ -3,6 +3,7 @@ import {
   DEFAULT_MONTH_STRING,
   DEFAULT_YEAR_STRING,
 } from "@/lib/constants/date";
+import { ACCOUNT_TYPES } from "../constants/account";
 
 export const ErrorSchema = z.object({
   code: z.string(),
@@ -63,6 +64,9 @@ export const MonthStringSchema = z
   .catch(DEFAULT_MONTH_STRING)
   .default(DEFAULT_MONTH_STRING);
 
+export const AccountTypeSchema = z.enum(ACCOUNT_TYPES);
+export type AccountType = z.infer<typeof AccountTypeSchema>;
+
 export const YearStringSchema = z
   .string()
   .refine((val) => Number(val) >= 2024, {
@@ -70,3 +74,45 @@ export const YearStringSchema = z
   })
   .catch(DEFAULT_YEAR_STRING)
   .default(DEFAULT_YEAR_STRING);
+
+export const NameSchema = z
+  .string()
+  .min(1, "Please provide name.")
+  .regex(/^[a-zA-Z0-9\s.-]{1,50}$/, "Invalid name.");
+
+export const RequiredString = z.string().min(1, "Required.");
+
+export const amountLiveValidation = (value: string) => {
+  // Replace empty input with '0'
+  if (value === "") {
+    value = "0";
+  }
+
+  // Convert commas to dots for decimal input
+  value = value.replace(/,/g, ".");
+
+  // Remove any non-numeric characters except '.'
+  value = value.replace(/[^\d.]/g, "");
+
+  // Remove leading zeros before the whole number part
+  value = value.replace(/^0+(?=\d)/, "");
+
+  // Remove leading zero if it's the only digit before a decimal point
+  value = value.replace(/(^|-)0+(\d+\.\d*)/, "$1$2");
+
+  // Remove leading zero if it's the only digit
+  value = value.replace(/^0+(?=\d)/, "");
+
+  // Replace multiple dots with a single dot
+  value = value.replace(/(\..*)\./g, "$1");
+
+  // Limit decimal places to 2 digits if there is a decimal part
+  const parts = value.split(".");
+  if (parts.length > 1) {
+    value = `${parts[0].slice(0, 9)}.${parts[1].slice(0, 2)}`; // Limit to 9 digits before decimal and 2 digits after
+  } else {
+    value = value.slice(0, 9); // Limit to 9 digits if there's no decimal part
+  }
+
+  return value;
+};

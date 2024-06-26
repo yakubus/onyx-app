@@ -126,7 +126,7 @@ function Layout() {
               <UserDropdown />
             </nav>
           </div>
-          <main className="col-span-4 h-screen px-8 pb-4 pt-28">
+          <main className="col-span-4 h-screen pb-4 pt-28">
             <Outlet />
           </main>
         </div>
@@ -154,7 +154,7 @@ const MobileLayout = ({
         </Link>
         <UserDropdown />
       </nav>
-      <main className="px-4 pb-12 pt-24">
+      <main className="pb-12 pt-24">
         <Outlet />
       </main>
     </>
