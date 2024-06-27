@@ -14,10 +14,17 @@ export interface CreateAccount {
   budgetId: string;
   payload: CreateAccountPayload;
 }
-export interface EditBalance {
+
+interface EditBase {
   budgetId: string;
   accountId: string;
+}
+export interface EditBalance extends EditBase {
   newBalance: Money;
+}
+
+interface EditAccountName extends EditBase {
+  newName: string;
 }
 
 export const getAccounts = async (budgetId: string) => {
@@ -52,3 +59,10 @@ export const createAccount = ({ budgetId, payload }: CreateAccount) =>
 
 export const editBalance = ({ budgetId, newBalance, accountId }: EditBalance) =>
   privateApi.put(`/${budgetId}/accounts/${accountId}`, { newBalance });
+
+export const editAccountName = ({
+  budgetId,
+  newName,
+  accountId,
+}: EditAccountName) =>
+  privateApi.put(`/${budgetId}/accounts/${accountId}`, { newName });

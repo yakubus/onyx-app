@@ -11,14 +11,17 @@ import {
 import CreateAccountForm from "./CreateAccountForm";
 import AccountCarouselCard from "./AccountCarouselCard";
 import { cn } from "@/lib/utils";
+import { useCarouselKeyboardDisable } from "@/lib/hooks/useCarouselKeyboardDisable";
 
 interface AccountsCarouselProps {
   accounts: Account[];
 }
 
 const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
+  const emblaRef = useCarouselKeyboardDisable();
+
   return (
-    <Carousel>
+    <Carousel ref={emblaRef}>
       <CarouselContent className="ml-0">
         {accounts.length > 0 &&
           accounts.map((account) => (
@@ -42,8 +45,8 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
           </div>
         </CarouselItem>
       </CarouselContent>
-      <CarouselPrevious className="left-4 hidden bg-primary-foreground md:inline-flex lg:left-8" />
-      <CarouselNext className="right-4 hidden bg-primary-foreground md:inline-flex lg:right-8" />
+      <CarouselPrevious className="left-4 hidden md:inline-flex lg:left-8" />
+      <CarouselNext className="right-4 hidden md:inline-flex lg:right-8" />
     </Carousel>
   );
 };

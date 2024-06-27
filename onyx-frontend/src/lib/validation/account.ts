@@ -29,3 +29,9 @@ export const CreateAccountSchema = z.object({
 });
 
 export type TCreateAccountForm = z.infer<typeof CreateAccountSchema>;
+
+export const EditAccountNameSchema = z.object({
+  name: NameSchema,
+});
+
+export type TEditAccountSchema = z.infer<typeof EditAccountNameSchema>;
