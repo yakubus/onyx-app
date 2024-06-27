@@ -3,14 +3,16 @@ import {
   AssignmentSchema,
   MoneySchema,
   MonthStringSchema,
+  NameSchema,
+  RequiredString,
   ResultSchema,
   TargetSchema,
   YearStringSchema,
 } from "@/lib/validation/base";
 
 export const SubcategorySchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
+  id: RequiredString,
+  name: RequiredString,
   description: z.string().nullable(),
   assignments: z.array(AssignmentSchema).nullable(),
   target: TargetSchema.nullable(),
@@ -19,10 +21,7 @@ export const SubcategorySchema = z.object({
 export type Subcategory = z.infer<typeof SubcategorySchema>;
 
 export const CreateSubcategorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Please provide subcategory name.")
-    .regex(/^[a-zA-Z0-9\s.-]{1,50}$/, "Invalid subcategory name."),
+  name: NameSchema,
 });
 
 export type CreateSubcategory = z.infer<typeof CreateSubcategorySchema>;

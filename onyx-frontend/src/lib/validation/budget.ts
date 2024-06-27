@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ResultSchema } from "@/lib/validation/base";
+import { NameSchema, ResultSchema } from "@/lib/validation/base";
 import { AccountSchema } from "@/lib/validation/account";
 import { CategorySchema } from "@/lib/validation/category";
 import { CounterpartySchema } from "@/lib/validation/counterparty";
@@ -20,10 +20,7 @@ export const BudgetResultSchema = ResultSchema.extend({
 });
 
 export const CreateBudgetSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Please provide budget name.")
-    .regex(/^[a-zA-Z0-9\s.-]{1,50}$/, "Invalid budget name."),
+  name: NameSchema,
   currency: z.enum(currencyValues, { message: "Invalid currency" }),
   userId: z.string(),
 });

@@ -1,12 +1,16 @@
 import * as z from "zod";
 
 import { SubcategorySchema } from "@/lib/validation/subcategory";
-import { MoneySchema, ResultSchema } from "@/lib/validation/base";
+import {
+  MoneySchema,
+  RequiredString,
+  ResultSchema,
+} from "@/lib/validation/base";
 import { CounterpartySchema } from "@/lib/validation/counterparty";
 import { AccountSchema } from "@/lib/validation/account";
 
 export const TransactionSchema = z.object({
-  id: z.string().min(1),
+  id: RequiredString,
   subcategory: SubcategorySchema.optional(),
   amount: MoneySchema,
   originalAmount: MoneySchema.optional(),
