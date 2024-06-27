@@ -9,6 +9,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import CreateAccountForm from "./CreateAccountForm";
+import AccountCarouselCard from "./AccountCarouselCard";
+import { cn } from "@/lib/utils";
 
 interface AccountsCarouselProps {
   accounts: Account[];
@@ -17,17 +19,25 @@ interface AccountsCarouselProps {
 const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
   return (
     <Carousel>
-      <CarouselContent>
+      <CarouselContent className="ml-0">
         {accounts.length > 0 &&
           accounts.map((account) => (
-            <CarouselItem key={account.id}>
-              <div className="rounded-xl bg-gradient-to-b from-background via-secondary to-background px-4 py-8 md:px-10 xl:px-16">
-                {account.name}
+            <CarouselItem
+              key={account.id}
+              className="border-y pl-0 first-of-type:rounded-l first-of-type:border-l"
+            >
+              <div className="h-full w-full bg-card px-4 py-7 md:px-8 xl:px-16">
+                <AccountCarouselCard account={account} />
               </div>
             </CarouselItem>
           ))}
-        <CarouselItem>
-          <div className="rounded-xl bg-gradient-to-b from-background via-secondary to-background px-4 py-8 md:px-10 xl:px-16">
+        <CarouselItem
+          className={cn(
+            "rounded-r border-r pl-0",
+            accounts.length === 0 && "rounded-l border-l",
+          )}
+        >
+          <div className="h-full w-full border-y bg-card px-4 py-7 md:px-8 xl:px-16">
             <CreateAccountForm />
           </div>
         </CarouselItem>

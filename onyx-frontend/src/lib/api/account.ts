@@ -14,6 +14,11 @@ export interface CreateAccount {
   budgetId: string;
   payload: CreateAccountPayload;
 }
+export interface EditBalance {
+  budgetId: string;
+  accountId: string;
+  newBalance: Money;
+}
 
 export const getAccounts = async (budgetId: string) => {
   try {
@@ -44,3 +49,6 @@ export const getAccountsQueryOptions = (budgetId: string) =>
 
 export const createAccount = ({ budgetId, payload }: CreateAccount) =>
   privateApi.post(`/${budgetId}/accounts`, payload);
+
+export const editBalance = ({ budgetId, newBalance, accountId }: EditBalance) =>
+  privateApi.put(`/${budgetId}/accounts/${accountId}`, { newBalance });
