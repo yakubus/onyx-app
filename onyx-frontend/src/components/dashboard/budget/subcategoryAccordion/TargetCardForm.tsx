@@ -14,11 +14,8 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 
-import { Target } from "@/lib/validation/base";
-import {
-  CreateTarget,
-  assignmentLiveValidation,
-} from "@/lib/validation/subcategory";
+import { Target, amountLiveValidation } from "@/lib/validation/base";
+import { CreateTarget } from "@/lib/validation/subcategory";
 import TargetCardFormDatePicker from "./TargetCardFormDatePicker";
 import { FormTarget } from "@/lib/api/subcategory";
 import {
@@ -128,7 +125,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
                     {...field}
                     onChange={(e) => {
                       let { value } = e.target;
-                      value = assignmentLiveValidation(value);
+                      value = amountLiveValidation(value);
                       value = addSpacesToAmount(value);
                       field.onChange(value);
                     }}

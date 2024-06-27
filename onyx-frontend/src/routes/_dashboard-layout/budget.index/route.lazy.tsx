@@ -36,7 +36,7 @@ function Budget() {
   };
 
   return (
-    <div className="h-full overflow-auto py-8 scrollbar-none md:pl-14 md:pr-10 md:pt-14">
+    <div className="h-full overflow-auto p-8 scrollbar-none md:pl-14 md:pr-10 md:pt-14">
       <header className="space-y-1 lg:space-y-2">
         <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl">
           All your budgets in one place.

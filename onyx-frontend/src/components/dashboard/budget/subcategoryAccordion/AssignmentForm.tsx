@@ -1,28 +1,15 @@
-import { FC, useEffect } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FC } from "react";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useParams, useSearch } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import AmountInput from "@/components/dashboard/AmountInput";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 
-import { assignmentLiveValidation } from "@/lib/validation/subcategory";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  addSpacesToAmount,
-  formatAmount,
-  formatDecimals,
-  removeSpacesFromAmount,
-} from "@/lib/utils";
+import { formatAmount, removeSpacesFromAmount } from "@/lib/utils";
+import useAmountForm from "@/lib/hooks/useAmountForm";
 
 interface AssignmentFormProps {
   defaultAmount: string | undefined;
@@ -35,8 +22,6 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   subcategoryId,
   currencyToDisplay,
 }) => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { budgetId: selectedBudget } = useParams({
     from: "/_dashboard-layout/budget/$budgetId/",
   });
@@ -46,53 +31,11 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   const defaultInputValue = defaultAmount
     ? formatAmount(defaultAmount)
     : "0.00";
-  const form = useForm({
-    defaultValues: {
-      amount: defaultInputValue,
-    },
-  });
-
-  const {
-    handleSubmit,
-    control,
-    formState: { isDirty },
-    reset,
-  } = form;
-
-  const { mutate, isError } = useMutation({
+  const { control, form, handleSubmit, isDirty, mutate } = useAmountForm({
+    defaultAmount: defaultInputValue,
     mutationFn: assign,
-    onSettled: async () => {
-      return await Promise.all([
-        queryClient.invalidateQueries(
-          getCategoriesQueryOptions(selectedBudget),
-        ),
-        queryClient.invalidateQueries({
-          queryKey: ["toAssign", selectedBudget],
-        }),
-      ]);
-    },
-    onError: (error) => {
-      console.error("Mutation error:", error);
-      toast({
-        title: "Error",
-        description: "Oops... Something went wrong. Please try again later.",
-      });
-    },
+    queryKey: getCategoriesQueryOptions(selectedBudget).queryKey,
   });
-
-  useEffect(() => {
-    reset({
-      amount: defaultInputValue,
-    });
-  }, [defaultInputValue, reset]);
-
-  useEffect(() => {
-    if (isError) {
-      reset({
-        amount: defaultInputValue,
-      });
-    }
-  }, [isError, reset, defaultInputValue]);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { amount } = data;
@@ -123,29 +66,13 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
           name="amount"
           render={({ field }) => (
             <FormItem className="flex items-center space-y-0">
-              <FormControl>
-                <Input
-                  type="text"
-                  step="any"
-                  autoComplete="off"
-                  {...field}
-                  onChange={(e) => {
-                    let { value } = e.target;
-                    value = assignmentLiveValidation(value);
-                    value = addSpacesToAmount(value);
-                    field.onChange(value);
-                  }}
-                  onBlur={(e) => {
-                    const { value } = e.target;
-                    const formattedValue = formatDecimals(value);
-                    field.onChange(formattedValue);
-                  }}
-                  className="relative h-8 border-none bg-transparent px-1 pr-10 text-right text-base"
-                />
-              </FormControl>
-              <FormLabel className="absolute right-5 pl-2 text-base">
+              <AmountInput
+                field={field}
+                className="relative h-8 border-none bg-transparent px-1 pr-10 text-right text-base"
+              />
+              <p className="absolute right-12 pl-2 text-base">
                 {currencyToDisplay}
-              </FormLabel>
+              </p>
             </FormItem>
           )}
         />

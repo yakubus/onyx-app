@@ -1,10 +1,14 @@
 import { z } from "zod";
 import { SubcategorySchema } from "@/lib/validation/subcategory";
-import { ResultSchema } from "@/lib/validation/base";
+import {
+  NameSchema,
+  RequiredString,
+  ResultSchema,
+} from "@/lib/validation/base";
 
 export const CategorySchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
+  id: RequiredString,
+  name: RequiredString,
   subcategories: z.array(SubcategorySchema),
   optimistic: z.boolean().optional(),
 });
@@ -14,10 +18,7 @@ export const CategoryResultSchema = ResultSchema.extend({
 });
 
 export const CreateCategorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Please provide category name.")
-    .regex(/^[a-zA-Z0-9\s.-]{1,50}$/, "Invalid category name."),
+  name: NameSchema,
 });
 export type CreateCategory = z.infer<typeof CreateCategorySchema>;
 
