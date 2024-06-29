@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-
 import Hero from "@/components/home/Hero";
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
-import Cta from "@/components/home/Cta";
 import Services from "@/components/home/Services";
+import Cta from "@/components/home/Cta";
+import About from "@/components/home/About";
+import LatestNews from "@/components/home/LatestNews";
+
+
 
 export const Route = createFileRoute("/_home-layout")({
   component: () => (
@@ -12,7 +15,9 @@ export const Route = createFileRoute("/_home-layout")({
       <Navbar />
       <Hero />
       <Services />
+      <About />      
       <Cta />
+      <LatestNews />
       <Footer />
     </div>
   ),

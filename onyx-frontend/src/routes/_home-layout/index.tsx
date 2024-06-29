@@ -1,12 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import Hero from "@/components/home/Hero";
+import Navbar from "@/components/home/Navbar";
+import Footer from "@/components/home/Footer";
+import Services from "@/components/home/Services";
+import Cta from "@/components/home/Cta";
 
 export const Route = createFileRoute("/_home-layout/")({
   component: () => (
-    <div className="p-10">
-      <Button asChild>
-        <Link to="/budget">Get Started</Link>
-      </Button>
+    <div className="max-w-1440px lg:max-w-1440px h-auto mx-auto overflow-hidden bg-background md:w-full xl:w-1440px">
+      <Navbar />
+      <Hero />
+      <Services />
+      <Cta />
+      <Footer />
     </div>
   ),
 });
