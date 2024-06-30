@@ -1,6 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Application.Abstractions.Identity;
-using Budget.Application.Transactions.GetTransactions;
 using Budget.Domain.Accounts;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;

@@ -1,7 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Serverless Application. This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).
-
 Resources:
   IdentityApi:
     Type: AWS::Serverless::HttpApi
@@ -18,8 +17,6 @@ Resources:
           LambdaAuthorizer:
             FunctionArn: !Sub LambdaAuthorizerArn
             AuthorizerPayloadFormatVersion: '2.0'
-            #IdentitySource: "$request.header.Authorization"
-
   Login:
     Type: AWS::Serverless::Function
     Metadata:
@@ -43,7 +40,6 @@ Resources:
             ApiId: !Ref IdentityApi
             Auth:
               Authorizer: NONE
-
   Register:
     Type: AWS::Serverless::Function
     Metadata:
@@ -67,7 +63,6 @@ Resources:
             ApiId: !Ref IdentityApi
             Auth:
               Authorizer: NONE
-
   GetUser:
     Type: AWS::Serverless::Function
     Metadata:
@@ -89,7 +84,6 @@ Resources:
             Path: /api/v1/user
             Method: GET
             ApiId: !Ref IdentityApi
-
   UpdateUser:
     Type: AWS::Serverless::Function
     Metadata:
@@ -111,7 +105,6 @@ Resources:
             Path: /api/v1/user
             Method: PUT
             ApiId: !Ref IdentityApi
-
   RequestEmailChange:
     Type: AWS::Serverless::Function
     Metadata:
@@ -130,10 +123,9 @@ Resources:
         RootPut:
           Type: HttpApi
           Properties:
-            Path: /api/v1/userchange-email
+            Path: /api/v1/user/change-email
             Method: PUT
             ApiId: !Ref IdentityApi
-
   Logout:
     Type: AWS::Serverless::Function
     Metadata:
@@ -152,10 +144,9 @@ Resources:
         RootPut:
           Type: HttpApi
           Properties:
-            Path: /api/v1/userlogout
+            Path: /api/v1/user/logout
             Method: PUT
             ApiId: !Ref IdentityApi
-
   RemoveUser:
     Type: AWS::Serverless::Function
     Metadata:
@@ -174,10 +165,9 @@ Resources:
         RootDelete:
           Type: HttpApi
           Properties:
-            Path: /api/v1/userremove
+            Path: /api/v1/user/remove
             Method: DELETE
             ApiId: !Ref IdentityApi
-
   VerifyEmail:
     Type: AWS::Serverless::Function
     Metadata:
@@ -199,7 +189,6 @@ Resources:
             Path: /api/v1/auth/verify-email
             Method: PUT
             ApiId: !Ref IdentityApi
-
   Refresh:
     Type: AWS::Serverless::Function
     Metadata:
@@ -223,7 +212,6 @@ Resources:
             ApiId: !Ref IdentityApi
             Auth:
               Authorizer: NONE
-
   ResendEmail:
     Type: AWS::Serverless::Function
     Metadata:
@@ -245,7 +233,6 @@ Resources:
             Path: /api/v1/auth/resend-email
             Method: PUT
             ApiId: !Ref IdentityApi
-
   ForgotPassword:
     Type: AWS::Serverless::Function
     Metadata:
@@ -267,7 +254,6 @@ Resources:
             Path: /api/v1/auth/forgot-password
             Method: PUT
             ApiId: !Ref IdentityApi
-
   LambdaAuthorizer:
     Type: AWS::Serverless::Function
     Metadata:
@@ -280,7 +266,6 @@ Resources:
       Role: arn:aws:iam::975049887576:role/FullAccess
       PackageType: Zip
       Handler: Identity.Functions::Identity.Functions.Functions.Access.AccessFunction_FunctionHandler_Generated::FunctionHandler
-
 Outputs:
   ApiURL:
     Description: API endpoint URL for Prod environment

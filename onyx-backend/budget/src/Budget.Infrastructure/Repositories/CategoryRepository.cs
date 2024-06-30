@@ -4,7 +4,6 @@ using Budget.Domain.Subcategories;
 using Models.Responses;
 using SharedDAL;
 using SharedDAL.DataModels.Abstractions;
-using System.Xml.Linq;
 using Amazon.DynamoDBv2.DocumentModel;
 using Budget.Infrastructure.Data.DataModels.Categories;
 

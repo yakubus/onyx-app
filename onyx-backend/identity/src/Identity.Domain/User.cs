@@ -112,6 +112,14 @@ public sealed class User : Entity<UserId>
 
     public Result LogIn(string passwordPlainText, string longLivedToken)
     {
+        var passwordVerifyResult = PasswordHash.VerifyPassword(passwordPlainText);
+
+        if (passwordVerifyResult.IsFailure)
+        {
+            Guard.LogInFailed();
+            return Result.Failure(passwordVerifyResult.Error);
+        }
+
         if (!IsEmailVerified)
         {
             return UserErrors.EmailNotVerified;
@@ -120,14 +128,6 @@ public sealed class User : Entity<UserId>
         if (Guard.IsLocked)
         {
             return UserErrors.UserLocked(Guard.RemainingLockSeconds);
-        }
-
-        var passwordVerifyResult = PasswordHash.VerifyPassword(passwordPlainText);
-
-        if (passwordVerifyResult.IsFailure)
-        {
-            Guard.LogInFailed();
-            return Result.Failure(passwordVerifyResult.Error);
         }
 
         LastLoggedInAt = DateTime.UtcNow;

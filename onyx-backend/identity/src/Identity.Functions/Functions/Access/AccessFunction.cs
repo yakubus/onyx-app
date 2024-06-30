@@ -5,49 +5,48 @@ using Identity.Application.Abstractions.Authentication;
 using Identity.Functions.Functions.Shared;
 using MediatR;
 
-namespace Identity.Functions.Functions.Access
+namespace Identity.Functions.Functions.Access;
+
+internal sealed class AccessFunction : BaseFunction
 {
-    internal sealed class AccessFunction : BaseFunction
+    private readonly IJwtService _jwtService;
+
+    public AccessFunction(IJwtService jwtService, ISender sender) : base(sender)
     {
-        private readonly IJwtService _jwtService;
+        _jwtService = jwtService;
+    }
 
-        public AccessFunction(IJwtService jwtService, ISender sender) : base(sender)
+    [LambdaFunction(Role = FullAccessRole, ResourceName = "LambdaAuthorizer")]
+    public APIGatewayCustomAuthorizerResponse FunctionHandler(APIGatewayCustomAuthorizerRequest request, ILambdaContext context)
+    {
+        var token = request.AuthorizationToken.Replace("Bearer ", string.Empty);
+
+        var validationResult = _jwtService.ValidateJwt(token, out var principalId);
+
+        return GeneratePolicy(
+            principalId,
+            validationResult,
+            request.MethodArn);
+    }
+
+    private static APIGatewayCustomAuthorizerResponse GeneratePolicy(string principalId, string effect, string resource)
+    {
+        return new APIGatewayCustomAuthorizerResponse
         {
-            _jwtService = jwtService;
-        }
-
-        [LambdaFunction(Role = FullAccessRole, ResourceName = "LambdaAuthorizer")]
-        public APIGatewayCustomAuthorizerResponse FunctionHandler(APIGatewayCustomAuthorizerRequest request, ILambdaContext context)
-        {
-            var token = request.AuthorizationToken.Replace("Bearer ", string.Empty);
-
-            var validationResult = _jwtService.ValidateJwt(token, out var principalId);
-
-            return GeneratePolicy(
-                principalId,
-                validationResult,
-                request.MethodArn);
-        }
-
-        private static APIGatewayCustomAuthorizerResponse GeneratePolicy(string principalId, string effect, string resource)
-        {
-            return new APIGatewayCustomAuthorizerResponse
+            PrincipalID = principalId,
+            PolicyDocument = new APIGatewayCustomAuthorizerPolicy
             {
-                PrincipalID = principalId,
-                PolicyDocument = new APIGatewayCustomAuthorizerPolicy
-                {
-                    Version = "2012-10-17",
-                    Statement =
-                    [
-                        new()
-                        {
-                            Action = ["execute-api:Invoke"],
-                            Effect = effect,
-                            Resource = [resource]
-                        }
-                    ]
-                }
-            };
-        }
+                Version = "2012-10-17",
+                Statement =
+                [
+                    new()
+                    {
+                        Action = ["execute-api:Invoke"],
+                        Effect = effect,
+                        Resource = [resource]
+                    }
+                ]
+            }
+        };
     }
 }
