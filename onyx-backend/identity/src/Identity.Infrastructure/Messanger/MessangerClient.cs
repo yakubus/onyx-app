@@ -1,25 +1,20 @@
-﻿namespace Identity.Infrastructure.Messanger;
+﻿using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+
+namespace Identity.Infrastructure.Messanger;
 
 internal sealed class MessangerClient
 {
-    //private readonly EventGridPublisherClient _client;
+    private static readonly AmazonSimpleNotificationServiceClient snsClient = new ();
 
-    //public MessangerClient(IOptions<MessangerOptions> messangerOptions)
-    //{
-    //    _client = new EventGridPublisherClient(
-    //        new Uri(messangerOptions.Value.TopicEndpoint),
-    //        new AzureKeyCredential(messangerOptions.Value.TopicKey));
-    //}
-
-    public async Task Message(string subject, object data)
+    public async Task Message(string topicArn, Dictionary<string, MessageAttributeValue> data)
     {
-        //var eventGridEvent = new EventGridEvent(
-        //    subject: subject,
-        //    eventType: $"Onyx.Events.{subject}",
-        //    dataVersion: "1.0",
-        //    data: data
-        //);
+        var publishRequest = new PublishRequest
+        {
+            TopicArn = topicArn,
+            MessageAttributes = data
+        };
 
-        //await _client.SendEventAsync(eventGridEvent);
+        _ = await snsClient.PublishAsync(publishRequest);
     }
 }

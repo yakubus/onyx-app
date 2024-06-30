@@ -9,19 +9,7 @@
     "profile"     : "dbrdak-lambda",
     "region"      : "eu-central-1",
     "configuration" : "Release",
-    "function-runtime" : "dotnet8",
-    "function-memory-size" : 512,
-    "function-timeout"     : 30,
-    "function-handler"     : "Messanger.Lambda::Messanger.Lambda.Functions.Emails.EmailLambda::FunctionHandler",
-    "framework"            : "net8.0",
-    "function-name"        : "onyx-messanger",
-    "package-type"         : "Zip",
-    "function-role"        : "arn:aws:iam::975049887576:role/FullAccess",
-    "function-architecture" : "x86_64",
-    "function-subnets"      : "",
-    "function-security-groups" : "",
-    "tracing-mode"             : "PassThrough",
-    "environment-variables"    : "",
-    "image-tag"                : "",
-    "function-description"     : ""
+    "template"      : "messanger-template.yaml",
+    "stack-name"    : "onyx-messanger",
+    "s3-bucket"     : "dbrdak-training"
 }
