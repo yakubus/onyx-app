@@ -20,14 +20,6 @@ internal sealed class AddBudgetCommandHandler : ICommandHandler<AddBudgetCommand
     //TODO Send event
     public async Task<Result<BudgetModel>> Handle(AddBudgetCommand request, CancellationToken cancellationToken)
     {
-        var isBudgetNameUnique = _budgetRepository.GetByName(request.BudgetName)
-            is var getBudgetResult && getBudgetResult.IsFailure;
-
-        if (!isBudgetNameUnique)
-        {
-            return getBudgetResult.Error;
-        }
-
         var userIdGetResult = _userContext.GetUserId();
 
         if (userIdGetResult.IsFailure)
@@ -37,16 +29,7 @@ internal sealed class AddBudgetCommandHandler : ICommandHandler<AddBudgetCommand
 
         var userId = userIdGetResult.Value;
 
-        var userCurrencyGetResult = _userContext.GetUserCurrency();
-
-        if (userCurrencyGetResult.IsFailure)
-        {
-            return userCurrencyGetResult.Error;
-        }
-
-        var userCurrency = userCurrencyGetResult.Value;
-
-        var budgetCreateResult = Domain.Budgets.Budget.Create(request.BudgetName, userId, userCurrency);
+        var budgetCreateResult = Domain.Budgets.Budget.Create(request.BudgetName, userId, request.BudgetCurrency);
 
         if (budgetCreateResult.IsFailure)
         {

@@ -20,8 +20,8 @@ internal sealed class RemoveCounterpartyCommandHandler : ICommandHandler<RemoveC
     {
         var counterpartyId = new CounterpartyId(request.Id);
 
-        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
-            t => t.CounterpartyId == counterpartyId,
+        var relatedTransactionsGetResult = await _transactionRepository.GetByCounterpartyAsync(
+            counterpartyId,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)
@@ -42,7 +42,7 @@ internal sealed class RemoveCounterpartyCommandHandler : ICommandHandler<RemoveC
 
         var results = await Task.WhenAll(removeCounterpartyTask, updateTransactionsTask);
 
-        if (results.FirstOrDefault(r => r.IsFailure) is not null and var failure)
+        if (Result.Aggregate(results) is not null and var failure)
         {
             return Result.Failure(failure.Error);
         }

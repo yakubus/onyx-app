@@ -1,0 +1,637 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: This template is partially managed by Amazon.Lambda.Annotations (v1.3.0.0).
+Parameters:
+  LambdaAuthorizerArn:
+    Type: String
+    Description: ARN of the Lambda authorizer function
+Resources:
+  BudgetApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins: "'*'"
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: true
+      Auth:
+        DefaultAuthorizer: LambdaAuthorizer
+        Authorizers:
+          LambdaAuthorizer:
+            FunctionArn: !Ref LambdaAuthorizerArn
+            AuthorizerPayloadFormatVersion: '2.0'
+  SubcategoriesGetToAssign:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_GetToAssign_Generated::GetToAssign
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/to-assign
+            Method: GET
+            ApiId: !Ref BudgetApi
+  SubcategoriesAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories
+            Method: POST
+            ApiId: !Ref BudgetApi
+  SubcategoriesUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Update_Generated::Update
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/{subcategoryId}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  SubcategoriesRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootDelete
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_Remove_Generated::Remove
+      Events:
+        RootDelete:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/{subcategoryId}
+            Method: DELETE
+            ApiId: !Ref BudgetApi
+  SubcategoriesUpdateAssignment:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_UpdateAssignment_Generated::UpdateAssignment
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/assignment
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  SubcategoriesUpdateTarget:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_UpdateTarget_Generated::UpdateTarget
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/target
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  SubcategoriesRemoveTarget:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Subcategories.SubcategoryFunctions_RemoveTarget_Generated::RemoveTarget
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/subcategories/{subcategoryId}/target/remove
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  AccountsGetAll:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_GetAll_Generated::GetAll
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/accounts
+            Method: GET
+            ApiId: !Ref BudgetApi
+  AccountsAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/accounts
+            Method: POST
+            ApiId: !Ref BudgetApi
+  AccountsUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Update_Generated::Update
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/accounts/{accountId}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  AccountsRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootDelete
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Accounts.AccountFunctions_Remove_Generated::Remove
+      Events:
+        RootDelete:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/accounts/{accountId}
+            Method: DELETE
+            ApiId: !Ref BudgetApi
+  CategoriesGetAll:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_GetAll_Generated::GetAll
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/categories
+            Method: GET
+            ApiId: !Ref BudgetApi
+  CategoriesAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/categories
+            Method: POST
+            ApiId: !Ref BudgetApi
+  CategoriesUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Update_Generated::Update
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/categories/{categoryId}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  CategoriesRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootDelete
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Categories.CategoryFunctions_Remove_Generated::Remove
+      Events:
+        RootDelete:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/categories/{categoryId}
+            Method: DELETE
+            ApiId: !Ref BudgetApi
+  BudgetsGetAll:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetAll_Generated::GetAll
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets
+            Method: GET
+            ApiId: !Ref BudgetApi
+  BudgetsGetDetails:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetDetails_Generated::GetDetails
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets/{budgetId}
+            Method: GET
+            ApiId: !Ref BudgetApi
+  BudgetsGetInvitation:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_GetInvitation_Generated::GetInvitation
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets/{budgetId}/invitation
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  BudgetsAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets
+            Method: POST
+            ApiId: !Ref BudgetApi
+  BudgetsRemoveUser:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_RemoveUser_Generated::RemoveUser
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets/{budgetId}/remove/{userId}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  BudgetsJoin:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Join_Generated::Join
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets/{budgetId}/join/{token}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  BudgetsRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootDelete
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Budgets.BudgetFunctions_Remove_Generated::Remove
+      Events:
+        RootDelete:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/budgets/{budgetId}
+            Method: DELETE
+            ApiId: !Ref BudgetApi
+  CounterpartiesGetAll:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_GetAll_Generated::GetAll
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/counterparties
+            Method: GET
+            ApiId: !Ref BudgetApi
+  CounterpartiesAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/counterparties
+            Method: POST
+            ApiId: !Ref BudgetApi
+  CounterpartiesUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPut
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Update_Generated::Update
+      Events:
+        RootPut:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/counterparties/{counterpartyId}
+            Method: PUT
+            ApiId: !Ref BudgetApi
+  CounterpartiesRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootDelete
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Counterparties.CounterpartyFunctions_Remove_Generated::Remove
+      Events:
+        RootDelete:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/counterparties/{counterpartyId}
+            Method: DELETE
+            ApiId: !Ref BudgetApi
+  TransactionsGet:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Get_Generated::Get
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/transactions
+            Method: GET
+            ApiId: !Ref BudgetApi
+  TransactionsAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootPost
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Add_Generated::Add
+      Events:
+        RootPost:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/transactions
+            Method: POST
+            ApiId: !Ref BudgetApi
+  TransactionsRemove:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Tool: Amazon.Lambda.Annotations
+      SyncedEvents:
+        - RootGet
+    Properties:
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      PackageType: Zip
+      Handler: Budget.Functions::Budget.Functions.Functions.Transactions.TransactionFunctions_Remove_Generated::Remove
+      Events:
+        RootGet:
+          Type: HttpApi
+          Properties:
+            Path: /api/v1/{budgetId}/transactions/{transactionId}
+            Method: GET
+            ApiId: !Ref BudgetApi
+Outputs:
+  ApiURL:
+    Description: API endpoint URL for Prod environment
+    Value:
+      Fn::Sub: https://${BudgetApi}.execute-api.${AWS::Region}.amazonaws.com/

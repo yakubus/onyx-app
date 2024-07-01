@@ -26,8 +26,8 @@ internal sealed class RemoveAccountCommandHandler : ICommandHandler<RemoveAccoun
     {
         var accountId = new AccountId(request.Id);
 
-        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
-            transaction => transaction.AccountId == accountId, 
+        var relatedTransactionsGetResult = await _transactionRepository.GetByAccountAsync(
+            accountId,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

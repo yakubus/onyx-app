@@ -22,7 +22,7 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
     public async Task<Result<CategoryModel>> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
     {
 
-        var budgetGetResult = await _budgetRepository.GetCurrentBudget(cancellationToken);
+        var budgetGetResult = await _budgetRepository.GetCurrentBudgetAsync(cancellationToken);
 
         if (budgetGetResult.IsFailure)
         {
@@ -39,7 +39,7 @@ internal sealed class AddCategoryCommandHandler : ICommandHandler<AddCategoryCom
         }
 
         var category = categoryCreateResult.Value;
-        var categoryIsNotUniqueResult = _categoryRepository.GetByName(category.Name, cancellationToken);
+        var categoryIsNotUniqueResult = await _categoryRepository.GetByNameAsync(category.Name, cancellationToken);
 
         if (categoryIsNotUniqueResult.IsSuccess)
         {

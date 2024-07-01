@@ -1,29 +1,21 @@
-﻿using Azure.Messaging.EventGrid;
-using Azure;
-using Microsoft.Extensions.Options;
+﻿using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 
 namespace Identity.Infrastructure.Messanger;
 
 internal sealed class MessangerClient
 {
-    private readonly EventGridPublisherClient _client;
+    private static readonly AmazonSimpleNotificationServiceClient snsClient = new ();
 
-    public MessangerClient(IOptions<MessangerOptions> messangerOptions)
+    public async Task Message(string topicArn, Dictionary<string, MessageAttributeValue> data)
     {
-        _client = new EventGridPublisherClient(
-            new Uri(messangerOptions.Value.TopicEndpoint),
-            new AzureKeyCredential(messangerOptions.Value.TopicKey));
-    }
+        var publishRequest = new PublishRequest
+        {
+            TopicArn = topicArn,
+            Message = "Send email",
+            MessageAttributes = data
+        };
 
-    public async Task Message(string subject, object data)
-    {
-        var eventGridEvent = new EventGridEvent(
-            subject: subject,
-            eventType: $"Onyx.Events.{subject}",
-            dataVersion: "1.0",
-            data: data
-        );
-
-        await _client.SendEventAsync(eventGridEvent);
+        _ = await snsClient.PublishAsync(publishRequest);
     }
 }

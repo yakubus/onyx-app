@@ -19,4 +19,13 @@ internal static class BudgetErrors
     internal static readonly Error UserNotAdded = new (
         "Budget.Users.NotAdded",
         "User is not a member of the budget");
+    internal static readonly Error TokenExpired = new (
+        "Budget.InvitationToken.Expired",
+        "Invitation token has expired");
+    internal static readonly Error InvalidToken = new (
+        "Budget.InvitationToken.Invalid",
+        "Invitation token is invalid");
+    internal static readonly Error InvitationTokenNotGenerated = new(
+        "Budget.InvitationToken.NotGenerated",
+        "Invitation token has not been generated");
 }

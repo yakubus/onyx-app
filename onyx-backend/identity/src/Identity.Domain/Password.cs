@@ -51,7 +51,7 @@ public sealed record Password
         var hash = Convert.FromBase64String(elements[1]);
 
         var hashInput = Rfc2898DeriveBytes.Pbkdf2(
-            Hash,
+            passwordPlainText,
             salt,
             iterations,
             hashAlgorithm,

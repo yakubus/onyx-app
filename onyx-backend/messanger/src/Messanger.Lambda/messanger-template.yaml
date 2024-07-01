@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  SendEmail:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: SendEmail
+
+  EmailSender:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: Messanger.Lambda::Messanger.Lambda.Functions.Emails.EmailLambda::FunctionHandler
+      Runtime: dotnet8
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      PackageType: Zip
+      Role: arn:aws:iam::975049887576:role/FullAccess
+      Environment:
+        Variables:
+          TopicArn: !Ref SendEmail
+      Events:
+        SnsEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref SendEmail
+Outputs:
+  SendEmailTopicArn:
+    Description: "The ARN of the Send Email Topic"
+    Value: !GetAtt SendEmail.TopicArn

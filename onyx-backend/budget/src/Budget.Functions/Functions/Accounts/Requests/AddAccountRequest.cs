@@ -2,9 +2,4 @@
 
 namespace Budget.Functions.Functions.Accounts.Requests;
 
-public sealed record AddAccountRequest
-{
-    public string Name { get; set; }
-    public MoneyModel Balance { get; set; }
-    public string AccountType { get; set; }
-}
+public sealed record AddAccountRequest(string Name, MoneyModel Balance, string AccountType);

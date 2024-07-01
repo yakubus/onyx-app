@@ -1,12 +1,12 @@
 ﻿using Abstractions.Messaging;
 using Budget.Application.Abstractions.Currency;
+using Budget.Application.Abstractions.Identity;
 using Budget.Application.Transactions.Models;
 using Budget.Domain.Accounts;
 using Budget.Domain.Budgets;
 using Budget.Domain.Counterparties;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
-using Models.DataTypes;
 using Models.Responses;
 
 namespace Budget.Application.Transactions.AddTransaction;
@@ -18,14 +18,18 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
     private readonly ISubcategoryRepository _subcategoryRepository;
     private readonly ICounterpartyRepository _counterpartyRepository;
     private readonly ICurrencyConverter _currencyConverter;
+    private readonly IBudgetContext _budgetContext;
+    private readonly IBudgetRepository _budgetRepository;
 
-    public AddTransactionCommandHandler(ITransactionRepository transactionRepository, ISubcategoryRepository subcategoryRepository, IAccountRepository accountRepository, ICounterpartyRepository counterpartyRepository, ICurrencyConverter currencyConverter)
+    public AddTransactionCommandHandler(ITransactionRepository transactionRepository, ISubcategoryRepository subcategoryRepository, IAccountRepository accountRepository, ICounterpartyRepository counterpartyRepository, ICurrencyConverter currencyConverter, IBudgetContext budgetContext, IBudgetRepository budgetRepository)
     {
         _transactionRepository = transactionRepository;
         _subcategoryRepository = subcategoryRepository;
         _accountRepository = accountRepository;
         _counterpartyRepository = counterpartyRepository;
         _currencyConverter = currencyConverter;
+        _budgetContext = budgetContext;
+        _budgetRepository = budgetRepository;
     }
 
     // TODO Money Echange
@@ -65,11 +69,27 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
             return Result.Failure<TransactionModel>(subcategoryGetResult.Error);
         }
 
+        var budgetIdGetResult = _budgetContext.GetBudgetId();
+
+        if (budgetIdGetResult.IsFailure)
+        {
+            return budgetIdGetResult.Error;
+        }
+
+        var budgetGetResult = await _budgetRepository.GetByIdAsync(
+            new(budgetIdGetResult.Value),
+            cancellationToken);
+
+        if (budgetGetResult.IsFailure)
+        {
+            return budgetGetResult.Error;
+        }
+
         var subcategory = subcategoryGetResult?.Value;
         var counterparty = counterpartyGetResult.Value;
         var account = accountGetResult.Value;
         var amount = amountCreateResult.Value;
-        var budgetCurrency = Currency.Usd; //TODO Fix when authentication implemented
+        var budgetCurrency = budgetGetResult.Value.BaseCurrency;
 
         var isForeignTransaction = account.Balance.Currency != amount.Currency;
 
@@ -153,8 +173,10 @@ internal sealed class AddTransactionCommandHandler : ICommandHandler<AddTransact
         var counterpartyName = counterpartyNameCreateResult.Value;
         var isPayee = request.Amount.Amount < 0;
         var counterpartyType = isPayee ? CounterpartyType.Payee : CounterpartyType.Payer;
-        var counterpartyGetResult = _counterpartyRepository.GetFirst(
-            c => c.Name == counterpartyName && c.Type == counterpartyType, cancellationToken);
+        var counterpartyGetResult = await _counterpartyRepository.GetByNameAndType(
+            counterpartyName,
+            counterpartyType,
+            cancellationToken);
 
         if (counterpartyGetResult.IsSuccess)
         {

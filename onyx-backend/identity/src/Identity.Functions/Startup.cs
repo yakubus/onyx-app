@@ -1,58 +1,47 @@
-﻿using System.IO;
 using Identity.Application;
-using Identity.Functions;
+using Identity.Functions.Logger;
+using Identity.Functions.Middlewares;
 using Identity.Infrastructure;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
-[assembly: FunctionsStartup(typeof(Startup))]
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Identity.Functions;
 
-public sealed class Startup : FunctionsStartup
+[Amazon.Lambda.Annotations.LambdaStartup]
+public class Startup
 {
-    public override void Configure(IFunctionsHostBuilder builder)
+    public void ConfigureServices(IServiceCollection services)
     {
-        builder.InjectApplication();
-        builder.InjectInfrastructure();
+        var configuration = UseConfiguration(services);
+        services.AddLogger();
+        services.InjectApplication();
+        services.InjectInfrastructure(configuration);
+
+        //// Add AWS Systems Manager as a potential provider for the configuration. This is 
+        //// available with the Amazon.Extensions.Configuration.SystemsManager NuGet package.
+        //builder.AddSystemsManager("/app/settings");
+
+        //// Example of using the AWSSDK.Extensions.NETCore.Setup NuGet package to add
+        //// the Amazon S3 service client to the dependency injection container.
+        //services.AddAWSService<Amazon.S3.IAmazonS3>();
     }
 
-    public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+    public void Configure(IApplicationBuilder app)
     {
-        base.ConfigureAppConfiguration(builder);
+        app.UseMiddleware<ExceptionMiddleware>();
 
-        builder.ConfigurationBuilder
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("host.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
-
-        AddSecrets(builder);
+        app.Build();
     }
 
-    private static IConfigurationBuilder AddSecrets(IFunctionsConfigurationBuilder builder) =>
-        builder.GetContext().EnvironmentName switch
-        {
-            var envName when envName == Environments.Development => AddDevelopmentSecrets(builder),
-            //var envName when envName == Environments.Production => AddProductionSecrets(builder),
-            _ => builder.ConfigurationBuilder
-        };
-    // No need for now
-    //private static IConfigurationBuilder AddProductionSecrets(
-    //    IFunctionsConfigurationBuilder builder)
-    //{
-    //    var vaultUri = new Uri(builder.ConfigurationBuilder.Build()["KeyVaultUri"] ??
-    //                           throw new ConfigurationErrorsException("Missing KeyVaultUri"));
+    private static IConfiguration UseConfiguration(IServiceCollection services)
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", true)
+            .Build();
 
-    //    return builder.ConfigurationBuilder
-    //        .AddAzureKeyVault(vaultUri, new DefaultAzureCredential())
-    //        .AddEnvironmentVariables();
-    //}
+        services.AddSingleton<IConfiguration>(configuration);
 
-    private static IConfigurationBuilder AddDevelopmentSecrets(
-        IFunctionsConfigurationBuilder builder) =>
-        builder.ConfigurationBuilder
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
+        return configuration;
+    }
 }

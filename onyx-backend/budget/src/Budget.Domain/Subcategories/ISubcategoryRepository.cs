@@ -1,14 +1,9 @@
-﻿using System.Linq.Expressions;
-using Models.Responses;
+﻿using Models.Responses;
 
 namespace Budget.Domain.Subcategories;
 
 public interface ISubcategoryRepository
 {
-    Result<IEnumerable<Subcategory>> GetWhere(
-        Expression<Func<Subcategory, bool>> filterPredicate,
-        CancellationToken cancellationToken);
-
     Task<Result<IEnumerable<Subcategory>>> GetManyByIdAsync(
         IEnumerable<SubcategoryId> ids,
         CancellationToken cancellationToken = default);
@@ -24,4 +19,6 @@ public interface ISubcategoryRepository
     Task<Result> RemoveAsync(SubcategoryId subcategoryId, CancellationToken cancellationToken);
 
     Task<Result<Subcategory>> UpdateAsync(Subcategory subcategory, CancellationToken cancellationToken);
+
+    Task<Result<IEnumerable<Subcategory>>> GetAllAsync(CancellationToken cancellationToken);
 }

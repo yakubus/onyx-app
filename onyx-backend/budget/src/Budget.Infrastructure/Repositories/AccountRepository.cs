@@ -1,30 +1,31 @@
-﻿using Budget.Application.Abstractions.Identity;
+﻿using Amazon.DynamoDBv2.DocumentModel;
+using Budget.Application.Abstractions.Identity;
 using Budget.Domain.Accounts;
-using Budget.Domain.Categories;
+using Budget.Infrastructure.Data.DataModels.Accounts;
 using Models.Responses;
 using SharedDAL;
-using CosmosDbContext = SharedDAL.CosmosDbContext;
+using SharedDAL.DataModels.Abstractions;
 
 namespace Budget.Infrastructure.Repositories;
 
 internal sealed class AccountRepository : BaseBudgetRepository<Account, AccountId>, IAccountRepository
 {
-    public AccountRepository(CosmosDbContext context, IBudgetContext budgetContext) : base(context, budgetContext)
+    public AccountRepository(
+        DbContext context,
+        IBudgetContext budgetContext,
+        IDataModelService<Account> dataModelService) : base(
+        context,
+        budgetContext,
+        dataModelService)
     {
     }
 
     public async Task<Result<Account>> GetByNameAsync(AccountName accountName, CancellationToken cancellationToken)
     {
-        var entities = await Task.Run(
-            () => Container.GetItemLinqQueryable<Account>(true)
-                .Where(a => a.Name == accountName)
-                .AsEnumerable(),
-            cancellationToken);
+        var scanFilter = new ScanFilter();
 
-        var entity = entities.SingleOrDefault();
+        scanFilter.AddCondition(nameof(AccountDataModel.Name), ScanOperator.Equal, accountName.Value);
 
-        return entity is null ?
-            Result.Failure<Account>(DataAccessErrors<Category>.NotFound) :
-            Result.Success(entity);
+        return await GetFirstAsync(scanFilter, cancellationToken);
     }
 }

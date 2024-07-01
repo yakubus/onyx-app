@@ -2,6 +2,4 @@
 
 namespace Budget.Application.Budgets.RemoveBudget;
 
-public sealed record RemoveBudgetCommand(Guid BudgetId) : ICommand
-{
-}
+public sealed record RemoveBudgetCommand(Guid BudgetId) : ICommand;

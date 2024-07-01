@@ -1,5 +1,7 @@
 ﻿using Abstractions.Messaging;
+using Budget.Application.Abstractions.Identity;
 using Budget.Application.Subcategories.Models;
+using Budget.Domain.Budgets;
 using Budget.Domain.Subcategories;
 using Budget.Domain.Transactions;
 using Models.DataTypes;
@@ -11,17 +13,39 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
 {
     private readonly ISubcategoryRepository _subcategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IBudgetRepository _budgetRepository;
+    private readonly IBudgetContext _budgetContext;
 
-    public UpdateTargetCommandHandler(ISubcategoryRepository subcategoryRepository, ITransactionRepository transactionRepository)
+    public UpdateTargetCommandHandler(ISubcategoryRepository subcategoryRepository, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetContext budgetContext)
     {
         _subcategoryRepository = subcategoryRepository;
         _transactionRepository = transactionRepository;
+        _budgetRepository = budgetRepository;
+        _budgetContext = budgetContext;
     }
 
     public async Task<Result<SubcategoryModel>> Handle(UpdateTargetCommand request, CancellationToken cancellationToken)
     {
         var subcategoryId = new SubcategoryId(request.SubcategoryId);
-        
+
+        var budgetIdGetResult = _budgetContext.GetBudgetId();
+
+        if (budgetIdGetResult.IsFailure)
+        {
+            return budgetIdGetResult.Error;
+        }
+
+        var budgetGetResult = await _budgetRepository.GetByIdAsync(
+            new(budgetIdGetResult.Value),
+            cancellationToken);
+
+        if (budgetGetResult.IsFailure)
+        {
+            return budgetGetResult.Error;
+        }
+
+        var budget = budgetGetResult.Value;
+
         var subcategoryGetResult = await _subcategoryRepository.GetByIdAsync(subcategoryId, cancellationToken);
 
         if (subcategoryGetResult.IsFailure)
@@ -31,7 +55,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
 
         var subcategory = subcategoryGetResult.Value;
 
-        var budgetCurrency = Currency.Usd; //TODO Fix when authentication implemented
+        var budgetCurrency = budget.BaseCurrency;
 
         var targetAmount = new Money(request.TargetAmount, budgetCurrency);
         var currentTarget = subcategory.Target;
@@ -41,6 +65,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
             subcategory,
             currentTarget,
             targetAmount,
+            request.StartedAt,
             request.TargetUpToMonth);
 
         if (targetUpdateResult.IsFailure)
@@ -58,7 +83,7 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
 
         var newTarget = subcategory.Target!;
 
-        var targetTransactResult = AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
+        var targetTransactResult = await AddExistingTransactionsForTarget(subcategory, newTarget, cancellationToken);
 
         if (targetTransactResult.IsFailure)
         {
@@ -76,18 +101,14 @@ internal sealed class UpdateTargetCommandHandler : ICommandHandler<UpdateTargetC
     }
 
 
-    private Result AddExistingTransactionsForTarget(
+    private async Task<Result> AddExistingTransactionsForTarget(
         Subcategory subcategory,
         Target target,
         CancellationToken cancellationToken)
     {
-        var relatedTransactionsGetResult = _transactionRepository.GetWhere(
-            t => t.SubcategoryId != null &&
-                 t.SubcategoryId == subcategory.Id &&
-                 t.TransactedAt.Month >= target.StartedAt.Month &&
-                 t.TransactedAt.Year >= target.StartedAt.Year &&
-                 t.TransactedAt.Month <= target.UpToMonth.Month &&
-                 t.TransactedAt.Year <= target.UpToMonth.Year,
+        var relatedTransactionsGetResult = await _transactionRepository.GetForTargetAsync(
+            subcategory.Id,
+            target,
             cancellationToken);
 
         if (relatedTransactionsGetResult.IsFailure)

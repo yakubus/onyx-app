@@ -5,10 +5,8 @@ using Budget.Domain.Shared.Abstractions;
 using Budget.Domain.Shared.Constants;
 using Budget.Domain.Shared.Errors;
 using Budget.Domain.Subcategories;
-using Converters.DateTime;
 using Models.DataTypes;
 using Models.Responses;
-using Newtonsoft.Json;
 
 namespace Budget.Domain.Transactions;
 
@@ -18,7 +16,6 @@ public sealed class Transaction : BudgetOwnedEntity<TransactionId>
     public Money Amount { get; init; }
     public Money BudgetAmount { get; init; }
     public Money OriginalAmount { get; init; }
-    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime TransactedAt { get; init; }
     public SubcategoryId? SubcategoryId { get; private set; }
     public CounterpartyId? CounterpartyId { get; private set; }

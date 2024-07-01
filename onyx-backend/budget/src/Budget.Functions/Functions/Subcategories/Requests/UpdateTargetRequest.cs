@@ -2,8 +2,4 @@
 
 namespace Budget.Functions.Functions.Subcategories.Requests;
 
-public sealed record UpdateTargetRequest
-{
-    public MonthDate TargetUpToMonth { get; set; }
-    public decimal TargetAmount { get; set; }
-}
+public sealed record UpdateTargetRequest(MonthDate StartedAt, MonthDate TargetUpToMonth, decimal TargetAmount);

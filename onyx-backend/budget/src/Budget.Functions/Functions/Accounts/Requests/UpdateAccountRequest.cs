@@ -2,8 +2,4 @@
 
 namespace Budget.Functions.Functions.Accounts.Requests;
 
-public sealed record UpdateAccountRequest
-{
-    public string? NewName { get; set; }
-    public MoneyModel? NewBalance { get; set; }
-}
+public sealed record UpdateAccountRequest(string? NewName, MoneyModel? NewBalance);

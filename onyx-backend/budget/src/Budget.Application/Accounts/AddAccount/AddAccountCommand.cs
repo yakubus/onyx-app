@@ -1,5 +1,4 @@
-﻿using Abstractions.Messaging;
-using Budget.Application.Abstractions.Messaging;
+﻿using Budget.Application.Abstractions.Messaging;
 using Budget.Application.Accounts.Models;
 using Budget.Application.Shared.Models;
 
@@ -9,6 +8,4 @@ public sealed record AddAccountCommand(
     string Name,
     MoneyModel Balance,
     string AccountType,
-    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<AccountModel>(BudgetId);

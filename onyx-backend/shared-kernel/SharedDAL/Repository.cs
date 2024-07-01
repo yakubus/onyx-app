@@ -1,129 +1,125 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
-using Abstractions.DomainBaseTypes;
-using Microsoft.Azure.Cosmos;
+﻿using Abstractions.DomainBaseTypes;
+using Amazon.DynamoDBv2.DocumentModel;
 using Models.Responses;
-using MongoDB.Bson.Serialization.Serializers;
-using Container = Microsoft.Azure.Cosmos.Container;
+using Newtonsoft.Json;
+using SharedDAL.DataModels.Abstractions;
 
 namespace SharedDAL;
 
-// TODO Add fetching only records for current budget
 public abstract class Repository<TEntity, TEntityId>
     where TEntity : Entity<TEntityId>
     where TEntityId : EntityId, new()
 {
-    protected readonly Container Container;
+    protected readonly Table Table;
+    protected readonly DbContext Context;
+    protected readonly IDataModelService<TEntity> DataModelService;
 
-    protected Repository(CosmosDbContext context)
+    protected Repository(DbContext context, IDataModelService<TEntity> dataModelService)
     {
-        Container = context.Set<TEntity>();
+        Context = context;
+        DataModelService = dataModelService;
+        Table = context.Set<TEntity>();
     }
 
-    public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken) =>
-        Result.Create(await Task.Run(
-            () => Container.GetItemLinqQueryable<TEntity>(true).Where(_ => true).AsEnumerable(),
-            cancellationToken));
+    public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var config = new ScanOperationConfig
+        {
+            Select = SelectValues.AllAttributes,
+            Filter = new ScanFilter(),
+            Limit = 1000
+        };
+
+        var scanner = Table.Scan(config);
+        var docs = new List<Document>();
+
+        do 
+            docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
+        while (!scanner.IsDone);
+
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
+        var enitites = records.Select(record => record.ToDomainModel());
+
+        return Result.Create(enitites);
+    }
 
     public async Task<Result<TEntity>> GetByIdAsync(
         TEntityId id,
         CancellationToken cancellationToken = default)
     {
-        var response = await Container.ReadItemAsync<TEntity>(
-            id.Value.ToString(),
-            new PartitionKey(id.Value.ToString()),
-            null,
-            cancellationToken);
+        var doc = await Table.GetItemAsync(new Primitive(id.Value.ToString()), cancellationToken);
 
-        var entity = response.Resource;
+        if (doc is null)
+        {
+            return DataAccessErrors<TEntity>.NotFound;
+        }
+        
+        var record = DataModelService.ConvertDocumentToDataModel(doc);
 
-        return entity is null ?
-            Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-            Result.Success(entity);
+        return record.ToDomainModel();
     }
 
-    public virtual Result<IEnumerable<TEntity>> GetWhere(
-        Expression<Func<TEntity, bool>> filterPredicate,
+    protected virtual async Task<Result<IEnumerable<TEntity>>> GetWhereAsync(
+        ScanFilter filter,
         CancellationToken cancellationToken = default)
     {
-        var queryable = Container.GetItemLinqQueryable<TEntity>(true);
-        var filteredQueryable = queryable.Where(filterPredicate);
-        var result = filteredQueryable.ToList();
+        var scanner = Table.Scan(filter);
 
-        return result;
+        var docs = new List<Document>();
+
+        do
+            docs.AddRange(await scanner.GetNextSetAsync(cancellationToken));
+        while (!scanner.IsDone);
+
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
+        var enitites = records.Select(record => record.ToDomainModel());
+
+        return Result.Create(enitites);
+    }
+
+    protected virtual async Task<Result<TEntity>> GetFirstAsync(
+        ScanFilter filter,
+        CancellationToken cancellationToken = default)
+    {
+        var scanner = Table.Scan(filter);
+
+        var docs = await scanner.GetNextSetAsync(cancellationToken);
+
+        var doc = docs.FirstOrDefault();
+
+        if (doc is null)
+        {
+            return DataAccessErrors<TEntity>.NotFound;
+        }
+
+        var record = DataModelService.ConvertDocumentToDataModel(doc);
+        var entity = record.ToDomainModel();
+
+        return entity;
     }
 
     public async Task<Result<IEnumerable<TEntity>>> GetManyByIdAsync(
         IEnumerable<TEntityId> ids,
         CancellationToken cancellationToken = default)
     {
-        var entityIds = ids.ToArray();
-        var query = entityIds.Select(
-            id => (id.Value.ToString(), new PartitionKey(id.Value.ToString())))
-            .ToList()
-            .AsReadOnly();
+        var batch = Table.CreateBatchGet();
 
-        var response = await Container.ReadManyItemsAsync<TEntity>(
-            query,
-            null,
-            cancellationToken);
+        ids.ToList().ForEach(id => batch.AddKey(new Primitive(id.Value.ToString())));
 
-        var entities = response.Resource;
+        await batch.ExecuteAsync(cancellationToken);
 
-        return Result.Create(entities);
-    }
+        var docs = batch.Results;
+        var records = docs.Select(DataModelService.ConvertDocumentToDataModel);
+        var enitites = records.Select(record => record.ToDomainModel());
 
-    public virtual Result<TEntity> GetFirst(
-        Expression<Func<TEntity, bool>> filterPredicate,
-        CancellationToken cancellationToken = default)
-    { 
-        var entities = Container.GetItemLinqQueryable<TEntity>(true).Where(filterPredicate).AsEnumerable();
-
-        var entity = entities.FirstOrDefault();
-
-        return entity is null ?
-            Result.Failure<TEntity>(DataAccessErrors<TEntity>.NotFound) :
-            Result.Success(entity);
-    }
-
-    public async Task<Result<TEntity>> AddAsync(
-        TEntity entity, 
-        CancellationToken cancellationToken = default)
-    {
-        var response = await Container.CreateItemAsync(
-            entity,
-            new(entity.Id.Value.ToString()),
-            null,
-            cancellationToken);
-
-        return Result.Create(response.Resource);
-    }
-
-    public async Task<Result> AddRangeAsync(
-        IEnumerable<TEntity> entities,
-        CancellationToken cancellationToken = default)
-    {
-        var tasks = entities.Select(
-            entity => Container.CreateItemAsync(
-                entity,
-                new PartitionKey(entity.Id.Value.ToString()),
-                null,
-                cancellationToken));
-
-        await Task.WhenAll(tasks);
-
-        return Result.Success();
+        return Result.Create(enitites);
     }
 
     public async Task<Result> RemoveAsync(
         TEntityId entityId, 
         CancellationToken cancellationToken = default)
     {
-        await Container.DeleteItemAsync<TEntity>(
-            entityId.Value.ToString(),
-            new PartitionKey(entityId.Value.ToString()),
-            null,
-            cancellationToken);
+        await Table.DeleteItemAsync(new Primitive(entityId.Value.ToString()), cancellationToken);
 
         return Result.Success();
     }
@@ -132,46 +128,56 @@ public abstract class Repository<TEntity, TEntityId>
         IEnumerable<TEntityId> entitiesId,
         CancellationToken cancellationToken = default)
     {
-        var tasks = entitiesId.Select(
-            id => Container.DeleteItemAsync<TEntity>(
-                id.Value.ToString(),
-                new PartitionKey(id.Value.ToString()),
-                null,
-                cancellationToken));
+        var batch = Table.CreateBatchWrite();
 
-        await Task.WhenAll(tasks);
+        entitiesId.ToList().ForEach(id => batch.AddKeyToDelete(new Primitive(id.Value.ToString())));
+
+        await batch.ExecuteAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result<TEntity>> AddAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        var record = DataModelService.ConvertDomainModelToDataModel(entity);
+        var json = JsonConvert.SerializeObject(record);
+        var doc = Document.FromJson(json);
+
+        await Table.PutItemAsync(doc, cancellationToken);
+
+        return Result.Success(entity);
+    }
+
+    public async Task<Result> AddRangeAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var batch = Table.CreateBatchWrite();
+
+        var records = entities.Select(DataModelService.ConvertDomainModelToDataModel);
+        var jsons = records.Select(JsonConvert.SerializeObject);
+        var docs = jsons.Select(Document.FromJson);
+
+        docs.ToList().ForEach(batch.AddDocumentToPut);
+
+        await batch.ExecuteAsync(cancellationToken);
 
         return Result.Success();
     }
 
     public async Task<Result<TEntity>> UpdateAsync(
-        TEntity entity, 
+        TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        var response = await Container.ReplaceItemAsync(
-            entity,
-            entity.Id.Value.ToString(),
-            new PartitionKey(entity.Id.Value.ToString()),
-            null,
-            cancellationToken);
-
-        return Result.Success(response.Resource);
+        return await AddAsync(entity, cancellationToken);
     }
 
     public async Task<Result> UpdateRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
-        var tasks = entities.Select(
-            entity => Container.ReplaceItemAsync(
-                entity,
-                entity.Id.Value.ToString(),
-                new PartitionKey(entity.Id.Value.ToString()),
-                null,
-                cancellationToken));
-
-        await Task.WhenAll(tasks);
-
-        return Result.Success();
+        return await AddRangeAsync(entities, cancellationToken);
     }
 }

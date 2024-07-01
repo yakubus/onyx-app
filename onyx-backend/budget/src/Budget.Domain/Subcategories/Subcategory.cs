@@ -19,14 +19,14 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
     private Subcategory(
         SubcategoryName name,
         SubcategoryDescription? description,
-        List<Assignment> assignments,
+        IEnumerable<Assignment> assignments,
         Target? target,
         BudgetId budgetId,
         SubcategoryId? id = null) : base(budgetId, id ?? new SubcategoryId())
     {
         Name = name;
         Description = description;
-        _assignments = assignments;
+        _assignments = assignments.ToList();
         Target = target;
     }
 
@@ -106,28 +106,6 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
         return Result.Success(assignment);
     }
 
-    public Result Unassign(int month, int year)
-    {
-        var monthDateCreateResult = MonthDate.Create(month, year);
-
-        if (monthDateCreateResult.IsFailure)
-        {
-            return Result.Failure<Assignment>(monthDateCreateResult.Error);
-        }
-
-        var monthDate = monthDateCreateResult.Value;
-        var assignment = _assignments.FirstOrDefault(x => x.Month == monthDate);
-
-        if (assignment is null)
-        {
-            return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
-        }
-
-        _assignments.Remove(assignment);
-
-        return Result.Success();
-    }
-
     internal Result<Assignment> Reassign(int month, int year, Money amount)
     {
         var monthDateCreateResult = MonthDate.Create(month, year);
@@ -143,6 +121,11 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
         if (assignment is null)
         {
             return Result.Failure<Assignment>(SubcategoryErrors.SubcategoryNotAssignedForMonth);
+        }
+
+        if (amount.Amount <= 0)
+        {
+            _assignments.Remove(assignment);
         }
 
         var reassignResult = assignment.ChangeAssignedAmount(amount);
@@ -207,14 +190,14 @@ public sealed class Subcategory : BudgetOwnedEntity<SubcategoryId>
         return Result.Success(assignment);
     }
 
-    public Result<Target> SetTarget(Money targetAmount, MonthDate upToMonth)
+    public Result<Target> SetTarget(Money targetAmount, MonthDate startedAt, MonthDate upToMonth)
     {
         if (Target is not null)
         {
             return Result.Failure<Target>(SubcategoryErrors.TargetAlreadySet);
         }
 
-        var targetCreateResult = Target.Create(upToMonth, targetAmount);
+        var targetCreateResult = Target.Create(startedAt, upToMonth, targetAmount);
 
         if (targetCreateResult.IsFailure)
         {

@@ -2,7 +2,6 @@
 using Budget.Application.Abstractions.Identity;
 using Budget.Application.Budgets.Models;
 using Budget.Domain.Budgets;
-using Budget.Domain.Users;
 using Models.Responses;
 
 namespace Budget.Application.Budgets.GetBudgets;
@@ -36,6 +35,6 @@ internal sealed class GetBudgetsQueryHandler : IQueryHandler<GetBudgetsQuery, IE
             return budgetsGetResult.Error;
         }
 
-        return Result.Create(budgetsGetResult.Value.Select(BudgetModel.FromDomainModel));
+        return Result.Create(budgetsGetResult.Value.Select(b => BudgetModel.FromDomainModel(b)));
     }
 }

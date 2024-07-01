@@ -1,5 +1,4 @@
-﻿using Abstractions.Messaging;
-using Budget.Application.Abstractions.Messaging;
+﻿using Budget.Application.Abstractions.Messaging;
 using Budget.Application.Shared.Models;
 using Budget.Application.Transactions.Models;
 
@@ -11,6 +10,4 @@ public sealed record AddTransactionCommand(
     DateTime TransactedAt,
     string CounterpartyName,
     Guid? SubcategoryId,
-    Guid BudgetId) : BudgetCommand<TransactionModel>(BudgetId)
-{
-}
+    Guid BudgetId) : BudgetCommand<TransactionModel>(BudgetId);

@@ -17,8 +17,8 @@ public sealed record LoggingGuard
     private static readonly Dictionary<int, int> userLockPolicy = new()
     {
         { 5, 1 },
-        { 10, 3 },
-        { 15, 5 },
+        { 10, 2 },
+        { 15, 3 },
     };
 
     private LoggingGuard(int loginAttempts, DateTime? lockedUntil)
@@ -35,7 +35,7 @@ public sealed record LoggingGuard
 
         switch (LoginAttempts)
         {
-            case 15:
+            case var x when x % 5 == 0 && x > 10:
                 LockedUntil = DateTime.UtcNow.AddMinutes(userLockPolicy[15]);
                 return UserErrors.UserLocked(userLockPolicy[15] * 60);
             case 10:

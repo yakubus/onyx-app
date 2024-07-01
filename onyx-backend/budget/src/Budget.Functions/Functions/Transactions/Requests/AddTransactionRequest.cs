@@ -2,11 +2,9 @@
 
 namespace Budget.Functions.Functions.Transactions.Requests;
 
-public sealed record AddTransactionRequest
-{
-    public Guid AccountId { get; set; }
-    public MoneyModel Amount { get; set; }
-    public DateTime TransactedAt { get; set; }
-    public string CounterpartyName { get; set; }
-    public Guid? SubcategoryId { get; set; }
-}
+public sealed record AddTransactionRequest(
+    Guid AccountId,
+    MoneyModel Amount,
+    DateTime TransactedAt,
+    string CounterpartyName,
+    Guid? SubcategoryId);
