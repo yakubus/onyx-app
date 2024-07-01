@@ -15,7 +15,7 @@ public sealed class EmailService
         var desitnation = new Destination([data.Recipient]);
         var message = new Message(
             new(data.Subject),
-            new Body { Html = new(data.HtmlBody), Text = new(data.PlainTextBody) });
+            new Body { Html = new(data.HtmlBody) });
 
         var sendRequest = new SendEmailRequest
         {

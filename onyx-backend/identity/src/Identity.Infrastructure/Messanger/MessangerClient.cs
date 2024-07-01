@@ -12,6 +12,7 @@ internal sealed class MessangerClient
         var publishRequest = new PublishRequest
         {
             TopicArn = topicArn,
+            Message = "Send email",
             MessageAttributes = data
         };
 

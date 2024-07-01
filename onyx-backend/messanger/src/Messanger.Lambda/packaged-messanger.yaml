@@ -1,30 +1,38 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
+Transform: AWS::Serverless-2016-10-31
 Resources:
   SendEmail:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: SendEmail
-
+    Metadata:
+      SamResourceId: SendEmail
   EmailSender:
     Type: AWS::Serverless::Function
     Properties:
       Handler: Messanger.Lambda::Messanger.Lambda.Functions.Emails.EmailLambda::FunctionHandler
       Runtime: dotnet8
-      CodeUri: .
+      CodeUri: s3://onyx-default/fa87cb51c482bfe53bbd859e1785630e
       MemorySize: 512
       Timeout: 30
       PackageType: Zip
       Role: arn:aws:iam::975049887576:role/FullAccess
       Environment:
         Variables:
-          TopicArn: !Ref SendEmail
+          TopicArn:
+            Ref: SendEmail
       Events:
         SnsEvent:
           Type: SNS
           Properties:
-            Topic: !Ref SendEmail
+            Topic:
+              Ref: SendEmail
+    Metadata:
+      SamResourceId: EmailSender
 Outputs:
   SendEmailTopicArn:
-    Description: "The ARN of the Send Email Topic"
-    Value: !GetAtt SendEmail.TopicArn
+    Description: The ARN of the Send Email Topic
+    Value:
+      Fn::GetAtt:
+      - SendEmail
+      - TopicArn

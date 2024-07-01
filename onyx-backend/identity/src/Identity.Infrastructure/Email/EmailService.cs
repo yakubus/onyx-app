@@ -1,7 +1,9 @@
 ﻿using Amazon.SimpleNotificationService.Model;
 using Identity.Domain;
 using Identity.Infrastructure.Email.Models;
+using Identity.Infrastructure.Email.Options;
 using Identity.Infrastructure.Messanger;
+using Microsoft.Extensions.Options;
 using Models.Responses;
 
 namespace Identity.Infrastructure.Email;
@@ -10,10 +12,12 @@ internal sealed class EmailService : IEmailService
 {
     private readonly MessangerClient _messangerClient;
     private const string topicArn = "arn:aws:sns:eu-central-1:975049887576:onyx-messanger-SendEmail-IW5o0b2XbfUF";
+    private readonly EmailOptions _options;
 
-    public EmailService(MessangerClient messangerClient)
+    public EmailService(MessangerClient messangerClient, IOptions<EmailOptions> options)
     {
         _messangerClient = messangerClient;
+        _options = options.Value;
     }
 
     public async Task<Result> SendEmailAsync(string recipient, string subject, string htmlBody, string plainTextBody)
@@ -35,7 +39,7 @@ internal sealed class EmailService : IEmailService
             { nameof(EmailMessage.PlainTextBody), new MessageAttributeValue {DataType = "String", StringValue = message.PlainTextBody.Value} },
         };
 
-        await _messangerClient.Message(topicArn, data);
+        await _messangerClient.Message(_options.TopicArn ?? topicArn, data);
 
         return Result.Success();
     }

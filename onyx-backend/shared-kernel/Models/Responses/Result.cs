@@ -47,6 +47,8 @@ public class Result
     {
         return results.FirstOrDefault(x => x.IsFailure) ?? Success();
     }
+
+    public static Result Aggregate(params Result[] results) => Aggregate(results);
 }
 
 public class Result<TValue> : Result

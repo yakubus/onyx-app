@@ -84,11 +84,23 @@ public sealed class AuthFunctions : BaseFunction
     }
 
     [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(ForgotPassword))]
-    [HttpApi(LambdaHttpMethod.Put, $"{authBaseRoute}/forgot-password")]
+    [HttpApi(LambdaHttpMethod.Put, $"{authBaseRoute}/forgot-password/request")]
     public async Task<APIGatewayHttpApiV2ProxyResponse> ForgotPassword(
-        [FromBody] ForgotPasswordRequest request)
+        [FromBody] NewPasswordRequest request)
     {
         var command = new ForgotPasswordCommand(request.Email);
+
+        var result = await Sender.Send(command);
+
+        return result.ReturnAPIResponse();
+    }
+
+    [LambdaFunction(Role = FullAccessRole, ResourceName = nameof(NewPassword))]
+    [HttpApi(LambdaHttpMethod.Put, $"{authBaseRoute}/forgot-password/new")]
+    public async Task<APIGatewayHttpApiV2ProxyResponse> NewPassword(
+        [FromBody] NewPasswordRequest request)
+    {
+        var command = new NewPasswordCommand(request.Email);
 
         var result = await Sender.Send(command);
 

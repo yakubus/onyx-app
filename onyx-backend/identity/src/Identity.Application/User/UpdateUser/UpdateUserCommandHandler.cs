@@ -48,9 +48,6 @@ internal sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserComma
                 user.ChangeCurrency(request.NewCurrency),
             _ when !string.IsNullOrWhiteSpace(request.NewUsername) =>
                 user.ChangeUsername(request.NewUsername),
-            _ when !string.IsNullOrWhiteSpace(request.NewPassword) &&
-                   !string.IsNullOrWhiteSpace(request.VerificationCode) =>
-                user.ChangePassword(request.NewPassword, request.VerificationCode),
             _ when !string.IsNullOrWhiteSpace(request.NewEmail) &&
                    !string.IsNullOrWhiteSpace(request.VerificationCode) =>
                 user.ChangeEmail(request.NewEmail, request.VerificationCode),
