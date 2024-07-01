@@ -71,6 +71,8 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
                 search={{
                   month: DEFAULT_MONTH_STRING,
                   year: DEFAULT_YEAR_STRING,
+                  accMonth: DEFAULT_MONTH_STRING,
+                  accYear: DEFAULT_YEAR_STRING,
                 }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"

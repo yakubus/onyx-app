@@ -19,10 +19,6 @@ export const Route = createLazyFileRoute(
   component: SingleBudget,
 });
 
-export interface AvailableDates {
-  [key: number]: number[];
-}
-
 function SingleBudget() {
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const { budgetId } = Route.useParams();

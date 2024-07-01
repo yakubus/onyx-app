@@ -1,9 +1,7 @@
 import { FC, useMemo } from "react";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import ToAssignPopover from "./ToAssignPopover";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Money } from "@/lib/validation/base";
 import { cn, formatAmount } from "@/lib/utils";
-import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/index.lazy";
 import { getToAssignQueryKey } from "@/lib/api/budget";
+import { type AvailableDates } from "@/components/dashboard/DatesMonthYearPicker";
+import DatesMonthYearPickerButtons from "../DatesMonthYearPickerButtons";
 
 interface BudgetAssignmentCardProps {
   toAssign: Money;
@@ -81,26 +80,12 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
             Select a month and display the amount to assign.
           </CardDescription>
         </div>
-        <div className="flex flex-col">
-          <Button
-            onClick={handleIncreaseMonth}
-            disabled={isMaxMonth || isFetching}
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-          >
-            <ChevronUp className="size-6" />
-          </Button>
-          <Button
-            onClick={handleDecreaseMonth}
-            disabled={isMinMonth || isFetching}
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-          >
-            <ChevronDown className="size-6" />
-          </Button>
-        </div>
+        <DatesMonthYearPickerButtons
+          decreaseButtonDisabled={isFetching || isMinMonth}
+          handleDecreaseMonth={handleDecreaseMonth}
+          handleIncreaseMonth={handleIncreaseMonth}
+          increaseButtonDisabled={isMaxMonth || isFetching}
+        />
       </div>
       <CardContent>
         <div className="w-full space-x-4 rounded-lg bg-primary px-4 py-2 text-start text-primary-foreground">

@@ -29,7 +29,7 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
               key={account.id}
               className="border-y pl-0 first-of-type:rounded-l first-of-type:border-l"
             >
-              <div className="h-full w-full bg-card px-4 py-7 md:px-8 xl:px-16">
+              <div className="h-full w-full bg-card px-4 py-7 md:px-14 xl:px-20">
                 <AccountCarouselCard account={account} />
               </div>
             </CarouselItem>
@@ -40,7 +40,7 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
             accounts.length === 0 && "rounded-l border-l",
           )}
         >
-          <div className="h-full w-full border-y bg-card px-4 py-7 md:px-8 xl:px-16">
+          <div className="h-full w-full border-y bg-card px-4 py-7 md:px-14 xl:px-20">
             <CreateAccountForm />
           </div>
         </CarouselItem>
