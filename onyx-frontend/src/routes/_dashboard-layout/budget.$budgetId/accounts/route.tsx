@@ -35,5 +35,6 @@ export const Route = createFileRoute(
       );
     }
   },
+  pendingComponent: () => <div>loading...</div>,
   validateSearch: SingleBudgetPageParamsSchema,
 });

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import AccountsCarousel from "@/components/dashboard/accounts/AccountsCarousel";
@@ -13,10 +14,24 @@ export const Route = createLazyFileRoute(
 
 function Accounts() {
   const { budgetId } = Route.useParams();
+  const { selectedAcc } = Route.useSearch();
+  const navigate = useNavigate();
 
   const [{ data: accounts }] = useSuspenseQueries({
     queries: [getAccountsQueryOptions(budgetId)],
   });
+
+  useEffect(() => {
+    const updateSelectedAcc = async () => {
+      if (!selectedAcc && accounts.length > 0) {
+        await navigate({
+          search: (prev) => ({ ...prev, selectedAcc: accounts[0].id }),
+          mask: "/budget/$budgetId/accounts",
+        });
+      }
+    };
+    updateSelectedAcc();
+  }, []);
 
   return (
     <div>

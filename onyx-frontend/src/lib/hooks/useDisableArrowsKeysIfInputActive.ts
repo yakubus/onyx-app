@@ -1,8 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-export const useCarouselKeyboardDisable = () => {
-  const emblaRef = useRef(null);
-
+export const useDisableArrowsKeysIfInputActive = () => {
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
       const activeElement = document.activeElement;
@@ -26,6 +24,4 @@ export const useCarouselKeyboardDisable = () => {
       document.removeEventListener("keydown", handleKeydown, true);
     };
   }, []);
-
-  return emblaRef;
 };
