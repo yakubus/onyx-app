@@ -3,6 +3,7 @@ using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.APIGatewayEvents;
 using Identity.Application.Auth.ForgotPassword;
 using Identity.Application.Auth.LoginUser;
+using Identity.Application.Auth.NewPassword;
 using Identity.Application.Auth.RefreshAccessToken;
 using Identity.Application.Auth.RegisterUser;
 using Identity.Application.Auth.ResendEmail;
@@ -100,7 +101,7 @@ public sealed class AuthFunctions : BaseFunction
     public async Task<APIGatewayHttpApiV2ProxyResponse> NewPassword(
         [FromBody] NewPasswordRequest request)
     {
-        var command = new NewPasswordCommand(request.Email);
+        var command = new NewPasswordCommand(request.Email, request.NewPassword, request.VerificationCode);
 
         var result = await Sender.Send(command);
 

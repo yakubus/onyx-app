@@ -31,6 +31,8 @@ public class Startup
     public void Configure(IApplicationBuilder app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
+        
+        app.Build();
     }
 
     private static IConfiguration UseConfiguration(IServiceCollection services)

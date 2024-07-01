@@ -39,7 +39,6 @@ public sealed class UserFunctions : BaseFunction
         var command = new UpdateUserCommand(
             request.NewEmail,
             request.NewUsername,
-            request.NewPassword,
             request.NewCurrency,
             request.VerificationCode);
 
