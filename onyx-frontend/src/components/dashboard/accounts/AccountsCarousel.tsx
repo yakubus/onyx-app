@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { type CarouselApi } from "@/components/ui/carousel";
 import { type Account } from "@/lib/validation/account";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 
 interface AccountsCarouselProps {
   accounts: Account[];
@@ -23,12 +24,14 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
   const { selectedAcc } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId/accounts",
   });
-  const navigate = useNavigate();
   const startIndex = Math.max(
     0,
     accounts.findIndex((acc) => acc.id === selectedAcc),
   );
+  const navigate = useNavigate();
   const [api, setApi] = useState<CarouselApi | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(startIndex);
+  const debouncedSelectedIndex = useDebounce(selectedIndex, 900);
 
   useEffect(() => {
     if (api) {
@@ -38,10 +41,7 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
         const i = api.selectedScrollSnap();
         if (i >= accounts.length) return;
         if (selectedAcc === accounts[i].id) return;
-        navigate({
-          search: (prev) => ({ ...prev, selectedAcc: accounts[i]?.id }),
-          mask: "/budget/$budgetId/accounts",
-        });
+        setSelectedIndex(i);
       };
 
       api.on("select", onSelect);
@@ -51,6 +51,18 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
       };
     }
   }, [api, startIndex, accounts, navigate]);
+
+  useEffect(() => {
+    if (debouncedSelectedIndex !== startIndex) {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          selectedAcc: accounts[debouncedSelectedIndex]?.id,
+        }),
+        mask: "/budget/$budgetId/accounts",
+      });
+    }
+  }, [debouncedSelectedIndex, startIndex, accounts, navigate]);
 
   return (
     <Carousel setApi={setApi}>
