@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import CreateAccountForm from "@/components/dashboard/accounts/CreateAccountForm";
-import AccountCarouselCard from "@/components/dashboard/accounts//AccountCarouselCard";
+import AccountCarouselCard from "@/components/dashboard/accounts/AccountCarouselCard";
 import {
   Carousel,
   CarouselContent,
@@ -39,8 +39,8 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
 
       const onSelect = () => {
         const i = api.selectedScrollSnap();
-        if (i >= accounts.length) return;
-        if (selectedAcc === accounts[i].id) return;
+        if (i >= accounts.length + 1) return;
+        if (i < accounts.length && selectedAcc === accounts[i]?.id) return;
         setSelectedIndex(i);
       };
 
@@ -50,16 +50,18 @@ const AccountsCarousel: FC<AccountsCarouselProps> = ({ accounts }) => {
         api.off("select", onSelect);
       };
     }
-  }, [api, startIndex, accounts, navigate]);
+  }, [api, startIndex, accounts, selectedAcc]);
 
   useEffect(() => {
-    if (debouncedSelectedIndex !== startIndex) {
+    if (
+      debouncedSelectedIndex !== startIndex &&
+      debouncedSelectedIndex < accounts.length
+    ) {
       navigate({
         search: (prev) => ({
           ...prev,
           selectedAcc: accounts[debouncedSelectedIndex]?.id,
         }),
-        mask: "/budget/$budgetId/accounts",
       });
     }
   }, [debouncedSelectedIndex, startIndex, accounts, navigate]);
