@@ -33,5 +33,6 @@
     "select_language":"wybierz język",
     "select_currency":"wybierz walutę",
     "budget_view_title": "Wszystkie Twoje budżety w jednym miejscu",
-    "budget_view_title_desctiption": "Wybieraj i zarządzaj istniejącymi budżetami lub twórz nowe!"
+    "budget_view_title_desctiption": "Wybieraj i zarządzaj istniejącymi budżetami lub twórz nowe!",
+     "add_budget": "Dodaj budżet"
   } 
