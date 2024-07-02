@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onyx_app/main.dart';
 import 'package:onyx_app/widgets/main_menu/main_menu.dart';
 import 'package:onyx_app/widgets/setings_view.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -14,6 +17,10 @@ class DefaultAppBar extends HookConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final darkMode = ref.read(settingsProvider).value?.darkMode ?? false;
+    final bgcolor =
+        darkMode ? const Color.fromRGBO(52, 85, 74, 1.000) : Colors.white;
+
     return Padding(
       padding: const EdgeInsets.all(5),
       child: AppBar(
@@ -29,7 +36,7 @@ class DefaultAppBar extends HookConsumerWidget implements PreferredSizeWidget {
         ),
         actions: [
           PopupMenuButton(
-            color: Theme.of(context).colorScheme.secondary,
+            color: bgcolor,
             child: const ShadAvatar(
               'https://app.requestly.io/delay/2000/avatars.githubusercontent.com/u/124599?v=4',
               placeholder: Text('CN'),

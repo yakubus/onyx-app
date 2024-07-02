@@ -18,8 +18,9 @@ ShadThemeData lightThemes = ShadThemeData(
       border: ShadBorder(color: Color.fromARGB(255, 67, 66, 66), width: 1),
     ),
   ),
-  cardTheme:
-      const ShadCardTheme(backgroundColor: Color.fromARGB(255, 35, 73, 35)),
+  cardTheme: const ShadCardTheme(
+    backgroundColor: Colors.white10,
+  ),
   sheetTheme: const ShadSheetTheme(
     backgroundColor: Color.fromRGBO(52, 85, 74, 1.000),
     mainAxisAlignment: MainAxisAlignment.start,
@@ -55,7 +56,7 @@ ShadThemeData darkThemes = ShadThemeData(
     ),
   ),
   cardTheme:
-      const ShadCardTheme(backgroundColor: Color.fromARGB(255, 38, 53, 38)),
+      const ShadCardTheme(backgroundColor: Color.fromRGBO(52, 85, 74, 1.000)),
   sheetTheme:
       const ShadSheetTheme(backgroundColor: Color.fromRGBO(52, 85, 74, 1.000)),
   linkButtonTheme: const ShadButtonTheme(

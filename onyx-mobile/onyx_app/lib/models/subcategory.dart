@@ -7,13 +7,15 @@ import 'package:onyx_app/models/target.dart';
 class Subcategory {
   final String id;
   final String name;
-  final Assignement assignement;
+  final List<Assignement> assignement;
+  final String description;
   Target? target;
 
   Subcategory({
     required this.id,
     required this.name,
     required this.assignement,
+    required this.description,
     this.target,
   });
 
@@ -21,7 +23,10 @@ class Subcategory {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'assignement': assignement.toMap(),
+      'assignement': assignement.map((x) {
+        return x.toMap();
+      }).toList(growable: false),
+      'description': description,
       'target': target?.toMap(),
     };
   }
@@ -30,8 +35,14 @@ class Subcategory {
     return Subcategory(
       id: (map["id"] ?? '') as String,
       name: (map["name"] ?? '') as String,
-      assignement: Assignement.fromMap((map["assignement"] ??
-          Map<String, dynamic>.from({})) as Map<String, dynamic>),
+      assignement: List<Assignement>.from(
+        ((map['assignement'] ?? const <Assignement>[]) as List)
+            .map<Assignement>((x) {
+          return Assignement.fromMap(
+              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
+        }),
+      ),
+      description: (map["description"] ?? '') as String,
       target: map['target'] != null
           ? Target.fromMap((map["target"] ?? Map<String, dynamic>.from({}))
               as Map<String, dynamic>)
