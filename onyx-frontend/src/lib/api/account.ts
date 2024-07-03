@@ -66,3 +66,6 @@ export const editAccountName = ({
   accountId,
 }: EditAccountName) =>
   privateApi.put(`/${budgetId}/accounts/${accountId}`, { newName });
+
+export const deleteAccount = ({ budgetId, accountId }: EditBase) =>
+  privateApi.delete(`/${budgetId}/accounts/${accountId}`);
