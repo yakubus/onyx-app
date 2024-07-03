@@ -4,7 +4,7 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import AccountsCarousel from "@/components/dashboard/accounts/AccountsCarousel";
-import TransactionsTable from "@/components/dashboard/accounts/TransactionsTable";
+import Transactions from "@/components/dashboard/accounts/Transactions";
 
 export const Route = createLazyFileRoute(
   "/_dashboard-layout/budget/$budgetId/accounts",
@@ -34,10 +34,10 @@ function Accounts() {
   }, []);
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <AccountsCarousel accounts={accounts} />
       {accounts.length > 0 ? (
-        <TransactionsTable accounts={accounts} />
+        <Transactions accounts={accounts} />
       ) : (
         <h2>Create your first account and add transactions.</h2>
       )}

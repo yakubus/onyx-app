@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
 import { getTransactionsQueryOptions } from "@/lib/api/transaction";
+import { getCategoriesQueryOptions } from "@/lib/api/category";
 
 export const Route = createFileRoute(
   "/_dashboard-layout/budget/$budgetId/accounts",
@@ -15,9 +16,10 @@ export const Route = createFileRoute(
     params: { budgetId },
     deps: { selectedAcc },
   }) => {
-    const accounts = await queryClient.ensureQueryData(
-      getAccountsQueryOptions(budgetId),
-    );
+    const [accounts] = await Promise.all([
+      queryClient.ensureQueryData(getAccountsQueryOptions(budgetId)),
+      queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
+    ]);
 
     if (selectedAcc) {
       queryClient.ensureQueryData(

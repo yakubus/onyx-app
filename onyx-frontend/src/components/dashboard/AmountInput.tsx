@@ -1,15 +1,24 @@
-import { ChangeEvent, FC } from "react";
-import { ControllerRenderProps } from "react-hook-form";
+import { ChangeEvent } from "react";
+import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { Input } from "../ui/input";
 import { amountLiveValidation } from "@/lib/validation/base";
 import { addSpacesToAmount, formatDecimals } from "@/lib/utils";
 
-interface AmountInputProps {
-  field: ControllerRenderProps<{ amount: string }, "amount">;
+interface AmountInputProps<
+  TFieldValues extends FieldValues,
+  TName extends Path<TFieldValues>,
+> {
+  field: ControllerRenderProps<TFieldValues, TName>;
   className?: string;
 }
 
-const AmountInput: FC<AmountInputProps> = ({ field, className }) => {
+const AmountInput = <
+  TFieldValues extends FieldValues,
+  TName extends Path<TFieldValues>,
+>({
+  field,
+  className,
+}: AmountInputProps<TFieldValues, TName>) => {
   return (
     <Input
       type="text"
@@ -27,6 +36,7 @@ const AmountInput: FC<AmountInputProps> = ({ field, className }) => {
         field.onChange(formattedValue);
       }}
       className={className}
+      name={field.name as string}
     />
   );
 };

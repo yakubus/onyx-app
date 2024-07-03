@@ -2,12 +2,26 @@ import { privateApi } from "@/lib/axios";
 import { TransactionResultSchema } from "@/lib/validation/transaction";
 import { getErrorMessage } from "@/lib/utils";
 import { queryOptions } from "@tanstack/react-query";
+import { Money } from "@/lib/validation/base";
 
 interface QueryParams {
   query?: string;
   counterpartyId?: string;
   accountId?: string;
   subcategoryId?: string;
+}
+
+export interface CreateTransactionPayload {
+  accountId: string;
+  amount: Money;
+  transactedAt: Date;
+  counterpartyName: string;
+  subcategoryId: string;
+}
+
+interface CreateTransaction {
+  budgetId: string;
+  payload: CreateTransactionPayload;
 }
 
 export const getTransactions = async (
@@ -62,3 +76,6 @@ export const getTransactionsQueryOptions = (
     queryKey: ["transactions", accountId],
     queryFn: () => getTransactions(budgetId, search),
   });
+
+export const createTransaction = ({ budgetId, payload }: CreateTransaction) =>
+  privateApi.post(`/${budgetId}/transactions`, payload);

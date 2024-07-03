@@ -1,35 +1,26 @@
 import { FC } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
-
-import {
-  getTransactions,
-  getTransactionsQueryKey,
-} from "@/lib/api/transaction";
-import { Account } from "@/lib/validation/account";
+import { Transaction } from "@/lib/validation/transaction";
 
 interface TransactionsTableProps {
-  accounts: Account[];
+  data: Transaction[] | undefined;
 }
 
-const TransactionsTable: FC<TransactionsTableProps> = ({ accounts }) => {
-  const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
-  });
-  const { selectedAcc } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
-  });
-  const { data, isPending } = useQuery({
-    queryKey: getTransactionsQueryKey(selectedAcc || accounts[0].id),
-    queryFn: () => getTransactions(budgetId, { accountId: selectedAcc }),
-    enabled: !!accounts.length && !!selectedAcc,
-  });
-
-  if (isPending) {
-    return <div>loading...</div>;
+const TransactionsTable: FC<TransactionsTableProps> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return (
+      <h2 className="font-bold">
+        No added transactions for this account in selected date.
+      </h2>
+    );
   }
 
-  return <div className="p-10">{JSON.stringify(data)}</div>;
+  return (
+    <div>
+      {data.map((transaction) => (
+        <div>{JSON.stringify(transaction)}</div>
+      ))}
+    </div>
+  );
 };
 
 export default TransactionsTable;
