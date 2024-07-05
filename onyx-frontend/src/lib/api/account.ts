@@ -50,7 +50,7 @@ export const getAccounts = async (budgetId: string) => {
 
 export const getAccountsQueryOptions = (budgetId: string) =>
   queryOptions({
-    queryKey: ["accounts"],
+    queryKey: ["accounts", budgetId],
     queryFn: () => getAccounts(budgetId),
   });
 

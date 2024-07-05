@@ -8,3 +8,7 @@ export const SingleBudgetPageParamsSchema = z.object({
   accYear: YearStringSchema,
   selectedAcc: z.string().optional(),
 });
+
+export type SingleBudgetPageSearchParams = z.infer<
+  typeof SingleBudgetPageParamsSchema
+>;
