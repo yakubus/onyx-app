@@ -17,6 +17,7 @@ import { useSingleBudgetLoadingState } from "@/lib/hooks/useSingleBudgetLoadingS
 import { useQuery } from "@tanstack/react-query";
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import { Account } from "@/lib/validation/account";
+import { SingleBudgetPageSearchParams } from "@/lib/validation/searchParams";
 
 export const Route = createLazyFileRoute("/_dashboard-layout")({
   component: Layout,
@@ -103,12 +104,12 @@ function Layout() {
                     budgetId={budgetId!}
                     accountsLength={accounts.length}
                   >
-                    {accounts?.map((account) => (
+                    {accounts.map((account) => (
                       <Link
                         key={account.id}
-                        to="/budget/$budgetId/accounts/$accountId"
+                        to={`/budget/${budgetId}/accounts/${account.id}`}
                         params={{ budgetId: budgetId!, accountId: account.id }}
-                        search={(prev) => prev}
+                        search={(prev) => prev as SingleBudgetPageSearchParams}
                         mask={{
                           to: `/budget/${budgetId}/accounts/${account.id}`,
                         }}
@@ -117,7 +118,6 @@ function Layout() {
                           className: "bg-background text-foreground",
                         }}
                         preload="intent"
-                        activeOptions={{ exact: true }}
                       >
                         {account.name}
                       </Link>

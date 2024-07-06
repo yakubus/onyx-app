@@ -6,7 +6,6 @@ export const SingleBudgetPageParamsSchema = z.object({
   year: YearStringSchema,
   accMonth: MonthStringSchema,
   accYear: YearStringSchema,
-  selectedAcc: z.string().optional(),
 });
 
 export type SingleBudgetPageSearchParams = z.infer<

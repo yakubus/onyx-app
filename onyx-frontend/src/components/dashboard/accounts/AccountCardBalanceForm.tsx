@@ -10,17 +10,17 @@ import { editBalance, getAccountsQueryOptions } from "@/lib/api/account";
 import { useParams } from "@tanstack/react-router";
 import useAmountForm from "@/lib/hooks/useAmountForm";
 
-interface CarouselCardBalanceFormProps {
+interface AccountCardBalanceFormProps {
   balance: Money;
   accountId: string;
 }
 
-const CarouselCardBalanceForm: FC<CarouselCardBalanceFormProps> = ({
+const AccountCardBalanceForm: FC<AccountCardBalanceFormProps> = ({
   balance,
   accountId,
 }) => {
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { amount, currency } = balance;
   const defaultAmount = formatAmount(amount.toString());
@@ -70,4 +70,4 @@ const CarouselCardBalanceForm: FC<CarouselCardBalanceFormProps> = ({
   );
 };
 
-export default CarouselCardBalanceForm;
+export default AccountCardBalanceForm;

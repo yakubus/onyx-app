@@ -18,6 +18,9 @@ export const AccountSchema = z.object({
 export const AccountResultSchema = ResultSchema.extend({
   value: z.array(AccountSchema),
 });
+export const SingleAccountResultSchema = ResultSchema.extend({
+  value: AccountSchema,
+});
 
 export type Account = z.infer<typeof AccountSchema>;
 

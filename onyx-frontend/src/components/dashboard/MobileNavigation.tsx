@@ -133,6 +133,7 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
                 >
                   {accounts.map((a) => (
                     <Button
+                      key={a.id}
                       onClick={() => onAccountLinkClick(a.id)}
                       size="lg"
                       variant="primaryDark"

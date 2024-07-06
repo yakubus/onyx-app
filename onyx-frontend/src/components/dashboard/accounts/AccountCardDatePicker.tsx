@@ -2,19 +2,19 @@ import { FC, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 
-import DatesMonthYearPicker from "../DatesMonthYearPicker";
-import DatesMonthYearPickerButtons from "../DatesMonthYearPickerButtons";
+import DatesMonthYearPicker from "@/components/dashboard/DatesMonthYearPicker";
+import DatesMonthYearPickerButtons from "@/components/dashboard/DatesMonthYearPickerButtons";
 
-interface CarouselCardDatePickerProps {}
+interface AccountCardDatePickerProps {}
 
-const CarouselCardDatePicker: FC<CarouselCardDatePickerProps> = ({}) => {
+const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({}) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { accMonth, accYear } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
 
   const numericSearchParamsAccMonth = Number(accMonth);
@@ -74,4 +74,4 @@ const CarouselCardDatePicker: FC<CarouselCardDatePickerProps> = ({}) => {
   );
 };
 
-export default CarouselCardDatePicker;
+export default AccountCardDatePicker;

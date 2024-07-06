@@ -1,7 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { privateApi } from "@/lib/axios";
 import { getErrorMessage } from "@/lib/utils";
-import { AccountResultSchema } from "@/lib/validation/account";
+import {
+  AccountResultSchema,
+  SingleAccountResultSchema,
+} from "@/lib/validation/account";
 import { AccountType, Money } from "@/lib/validation/base";
 
 export interface CreateAccountPayload {
@@ -54,8 +57,28 @@ export const getAccountsQueryOptions = (budgetId: string) =>
     queryFn: () => getAccounts(budgetId),
   });
 
-export const createAccount = ({ budgetId, payload }: CreateAccount) =>
-  privateApi.post(`/${budgetId}/accounts`, payload);
+export const createAccount = async ({ budgetId, payload }: CreateAccount) => {
+  try {
+    const { data } = await privateApi.post(`/${budgetId}/accounts`, payload);
+    const validatedData = SingleAccountResultSchema.safeParse(data);
+    if (!validatedData.success) {
+      console.log(validatedData.error?.issues);
+      throw new Error("Invalid data type.");
+    }
+
+    const { value, isFailure, error } = validatedData.data;
+    if (isFailure) {
+      throw new Error(error.message);
+    }
+
+    return {
+      accountId: value.id,
+    };
+  } catch (error) {
+    console.error(getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
+  }
+};
 
 export const editBalance = ({ budgetId, newBalance, accountId }: EditBalance) =>
   privateApi.put(`/${budgetId}/accounts/${accountId}`, { newBalance });

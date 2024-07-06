@@ -15,14 +15,16 @@ import {
 
 import { useDeleteAccountMutation } from "@/lib/hooks/mutations/useDeleteAccountMutation";
 
-interface DeleteAccountButtonProps {
+interface AccountCardDeleteButtonProps {
   accountId: string;
 }
 
-const DeleteAccountButton: FC<DeleteAccountButtonProps> = ({ accountId }) => {
+const AccountCardDeleteButton: FC<AccountCardDeleteButtonProps> = ({
+  accountId,
+}) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
 
   const onMutationError = () => {
@@ -73,4 +75,4 @@ const DeleteAccountButton: FC<DeleteAccountButtonProps> = ({ accountId }) => {
   );
 };
 
-export default DeleteAccountButton;
+export default AccountCardDeleteButton;

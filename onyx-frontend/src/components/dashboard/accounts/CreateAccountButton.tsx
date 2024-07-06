@@ -1,25 +1,12 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { FC, useState } from "react";
-
-import { useToast } from "@/components/ui/use-toast";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  CreateAccountSchema,
-  TCreateAccountForm,
-} from "@/lib/validation/account";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouteContext } from "@tanstack/react-router";
-import { useCreateAccountMutation } from "@/lib/hooks/mutations/useCreateAccountMutation";
-import { CreateAccountPayload } from "@/lib/api/account";
-import { removeSpacesFromAmount } from "@/lib/utils";
+
+import { Input } from "@/components/ui/input";
+import AmountInput from "@/components/dashboard/AmountInput";
+import LoadingButton from "@/components/LoadingButton";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
@@ -28,8 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import AmountInput from "../AmountInput";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -37,9 +30,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import {
+  CreateAccountSchema,
+  TCreateAccountForm,
+} from "@/lib/validation/account";
+import { useCreateAccountMutation } from "@/lib/hooks/mutations/useCreateAccountMutation";
+import { CreateAccountPayload } from "@/lib/api/account";
+import { removeSpacesFromAmount } from "@/lib/utils";
 import { CURRENCY } from "@/lib/constants/currency";
 import { ACCOUNT_TYPES } from "@/lib/constants/account";
-
 interface CreateAccountButtonProps {
   budgetId: string;
 }
@@ -76,7 +76,7 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ budgetId }) => {
     });
   };
 
-  const { mutate } = useCreateAccountMutation({
+  const { mutate, isPending } = useCreateAccountMutation({
     budgetId,
     onMutationSuccess,
     onMutationError,
@@ -209,13 +209,14 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ budgetId }) => {
                 )}
               />
             </div>
-            <Button
+            <LoadingButton
+              isLoading={isPending}
               type="submit"
               size="lg"
               className="w-full tracking-widest shadow-xl shadow-primaryDark/40"
             >
               Create
-            </Button>
+            </LoadingButton>
           </form>
         </Form>
       </DialogContent>
