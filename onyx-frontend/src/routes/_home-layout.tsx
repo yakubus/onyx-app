@@ -3,6 +3,7 @@ import Hero from "@/components/home/Hero";
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import Services from "@/components/home/Services";
+import Pricing from "@/components/home/Pricing";
 import Cta from "@/components/home/Cta";
 import About from "@/components/home/About";
 import LatestNews from "@/components/home/LatestNews";
@@ -16,8 +17,9 @@ export const Route = createFileRoute("/_home-layout")({
       <Hero />
       <Services />
       <About />      
-      <Cta />
+      <Cta />      
       <LatestNews />
+      <Pricing />
       <Footer />
     </div>
   ),
