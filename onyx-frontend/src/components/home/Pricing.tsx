@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 
 const Pricing = () => {
     return (
-        <div className="h-auto max-w-1440px w-full bg-white w-full border-2 flex justify-start flex-col" >
+        <div className="h-auto max-w-1440px w-full bg-white w-full flex justify-start flex-col" >
             <div className="h-500px bg-gray-800 flex justify-start flex-col py-8 ">
                  <p className="text-3xl font-bold pt-8 mb-8 w-full text-center text-card ">Quality Business Services at Affordable Price</p>
                 <p className="w-3/5 mx-auto block text-center text-card ">On the other hand we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment so blinded by desire.</p>
