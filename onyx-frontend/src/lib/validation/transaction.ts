@@ -34,6 +34,7 @@ export const CreateTransactionSchema = z.object({
   }),
   transactedAt: z.date(),
   subcategoryId: RequiredString,
+  categoryId: RequiredString,
 });
 
 export type TCreateTransactionSchema = z.infer<typeof CreateTransactionSchema>;

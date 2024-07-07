@@ -51,19 +51,23 @@ import {
   createTransaction,
 } from "@/lib/api/transaction";
 
-interface SelectableSubcategories {
+interface Selectable {
   label: string;
   value: string;
 }
 
+interface SelectableCategories extends Selectable {
+  subcategories: Selectable[];
+}
+
 interface CreateTransactionButtonProps {
   account: Account;
-  selectableSubcategories: SelectableSubcategories[];
+  selectableCategories: SelectableCategories[];
 }
 
 const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   account,
-  selectableSubcategories,
+  selectableCategories,
 }) => {
   const [transactionSign, setTransactionSign] = useState<"+" | "-">("+");
   const form = useForm<TCreateTransactionSchema>({
@@ -72,17 +76,23 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
       counterpartyName: "",
       subcategoryId: "",
       transactedAt: new Date(),
+      categoryId: "",
     },
     resolver: zodResolver(CreateTransactionSchema),
   });
   const { accMonth, accYear } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
 
-  const { control, setFocus, handleSubmit } = form;
+  const { control, setFocus, handleSubmit, watch, reset } = form;
+  const selectedCategoryId = watch("categoryId");
+  const selectableSubcategories =
+    selectedCategoryId &&
+    selectableCategories.find((c) => c.value === selectedCategoryId)!
+      .subcategories;
   const {
     balance: { currency },
   } = account;
@@ -91,6 +101,9 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
     mutationFn: createTransaction,
     onError: (err) => {
       console.error(err);
+    },
+    onSuccess: () => {
+      reset();
     },
   });
 
@@ -216,6 +229,33 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
               />
               <FormField
                 control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category:</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select transaction category..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {selectableCategories.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>
+                            {c.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="subcategoryId"
                 render={({ field }) => (
                   <FormItem>
@@ -223,6 +263,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      disabled={!selectedCategoryId}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -230,11 +271,12 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {selectableSubcategories.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>
-                            {s.label}
-                          </SelectItem>
-                        ))}
+                        {selectableSubcategories &&
+                          selectableSubcategories.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

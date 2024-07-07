@@ -3,6 +3,7 @@ import { getAccountsQueryOptions } from "@/lib/api/account";
 import { getTransactionsQueryOptions } from "@/lib/api/transaction";
 import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
 import RouteLoadingError from "@/components/RouteLoadingError";
+import { getCategoriesQueryOptions } from "@/lib/api/category";
 
 export const Route = createFileRoute(
   "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
@@ -15,6 +16,7 @@ export const Route = createFileRoute(
         }),
       ),
       queryClient.ensureQueryData(getAccountsQueryOptions(budgetId)),
+      queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
     ]);
   },
   pendingComponent: () => <div>loading..</div>,
