@@ -26,6 +26,7 @@
     "team": "Team",
     "subscription": "Subscription",
     "name": "name",
+    "undo": "undo",
 
 
     "start_tekst": "The only budget planner you'll ever need.",
@@ -33,7 +34,11 @@
     "select_currency":"Select a Currency",
     "budget_view_title": "All your budgets in one place.",
     "budget_view_title_desctiption": "Select and manage your existing budgets as you wish or create new ones!",
-    "add_budget": "Add budget"
+    "add_budget": "Add budget",
+    "login_error": "Login error",
+    "login_error_desc": "Login failed, please try again"
+    
+
   
   
   }

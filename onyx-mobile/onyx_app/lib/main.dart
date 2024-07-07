@@ -15,6 +15,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'routing/routing.dart';
 
 final userToken = StateProvider<String>((ref) => '');
+final isLogged = StateProvider<bool>((ref) => false);
 
 final settingsProvider =
     AsyncNotifierProvider<Settings, SettingsData>(Settings.new);

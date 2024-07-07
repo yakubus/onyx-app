@@ -82,16 +82,20 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
         () => ref.watch(userServiceProvider).getUserData(token));
   }
 
-  Future<void> login(String email, String password) async {
+  Future<UserServiceModel> login(String email, String password) async {
     ref.watch(userDataServiceProvider.notifier).state =
         await ref.read(userServiceProvider).loginUser(email, password);
 
     ref.read(userToken.notifier).state =
         ref.watch(userDataServiceProvider.notifier).state.value?.accessToken ??
             '';
+    ref.read(isLogged.notifier).state =
+        ref.watch(userDataServiceProvider.notifier).state.isSuccess ?? false;
+
     refresh();
 
     log("userToken: ${ref.read(userToken.notifier).state}");
+    return state.value!;
   }
 
   Future<void> register(

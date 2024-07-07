@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/currency_dict.dart';
 
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -66,14 +67,18 @@ class AddBudgetDialog extends HookConsumerWidget {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 ShadButton.link(
                   text: Text(AppLocalizations.of(context)!.add,
                       style: GoogleFonts.lato(
                           fontSize: 15, fontWeight: FontWeight.bold)),
-                  onPressed: () {},
+                  onPressed: () {
+                    ref
+                        .read(budgetServiceDataProvider.notifier)
+                        .addBudget(budgetNameController.text, budgetCurrency);
+                  },
                 )
               ],
             )));

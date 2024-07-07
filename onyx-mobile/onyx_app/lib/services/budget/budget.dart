@@ -122,4 +122,17 @@ class BudgetNotifier extends AsyncNotifier<BudgetServiceModel> {
     log("BudgetNotifier build result $result");
     return result;
   }
+
+  Future<void> refresh() async {
+    String token = ref.watch(userToken.notifier).state;
+    state = await AsyncValue.guard(
+        () => ref.watch(budgetServiceProvider).getBudgets(token));
+  }
+
+  Future<void> addBudget(String name, String currency) async {
+    String token = ref.watch(userToken.notifier).state;
+    state = await AsyncValue.guard(() =>
+        ref.watch(budgetServiceProvider).addBudget(token, name, currency));
+    refresh();
+  }
 }
