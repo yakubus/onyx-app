@@ -1,10 +1,16 @@
 import { FC, useState } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 
-import { cn } from "@/lib/utils";
-
-import { AlignJustify, Undo2 } from "lucide-react";
+import {
+  AlignJustify,
+  AreaChart,
+  Goal,
+  HelpCircle,
+  Undo2,
+  Wallet,
+} from "lucide-react";
 import Logo from "@/components/Logo";
+import AccountsLinksAccordion from "@/components/dashboard/AccountsLinksAccordion";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,56 +20,67 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { BUDGET_LINKS, SIDEBAR_BOTTOM_LINKS } from "@/lib/constants/links";
+import { Account } from "@/lib/validation/account";
+import { cn } from "@/lib/utils";
+
 interface MobileNavigationProps {
-  isBudgetSelected: boolean;
-  isSingleBudgetLoadingError: boolean;
+  linksAvailable: boolean;
+  budgetId: string | undefined;
+  accounts: Account[];
 }
 
 const MobileNavigation: FC<MobileNavigationProps> = ({
-  isBudgetSelected,
-  isSingleBudgetLoadingError,
+  linksAvailable,
+  budgetId,
+  accounts,
 }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  const onBudgetLinkClick = (href: string) => {
-    navigate({
-      to: `/budget/$budgetId/${href}`,
-      search: (prev) => prev,
-      mask: { to: `/budget/$budgetId/${href}` },
-    });
-    setIsNavOpen(false);
-  };
-
-  const onButgetsLinkClick = () => {
-    navigate({
-      to: isBudgetSelected ? "/budget/$budgetId" : "/budget",
-      search: (prev) => prev,
-      mask: { to: isBudgetSelected ? "/budget/$budgetId" : "/budget" },
-    });
-    setIsNavOpen(false);
-  };
-
-  const onBottomLinkClick = (href: string) => {
-    navigate({ to: href });
-    setIsNavOpen(false);
-  };
 
   const onBackToBudgetsClick = () => {
     navigate({ to: "/budget" });
     setIsNavOpen(false);
   };
 
-  const { icon: BudgetIcon } = BUDGET_LINKS[0];
-
-  const isBudgetLinkSelected = (pathname: string) => {
-    return (
-      pathname.startsWith("/budget") &&
-      !BUDGET_LINKS.slice(1).some((link) => pathname.includes(link.href))
-    );
+  const onButgetsLinkClick = () => {
+    navigate({
+      to: budgetId ? "/budget/$budgetId" : "/budget",
+      search: (prev) => prev,
+      mask: { to: budgetId ? "/budget/$budgetId" : "/budget" },
+    });
+    setIsNavOpen(false);
   };
+
+  const onAccountLinkClick = (id: string) => {
+    navigate({
+      to: `/budget/${budgetId}/accounts/${id}`,
+      search: (prev) => prev,
+      mask: `/budget/${budgetId}/accounts/${id}`,
+    });
+    setIsNavOpen(false);
+  };
+
+  const onBudgetLayoutLinkClick = (route: string) => {
+    navigate({
+      to: `/budget/${budgetId}/${route}`,
+      search: (prev) => prev,
+      mask: `/budget/${budgetId}/${route}`,
+    });
+    setIsNavOpen(false);
+  };
+
+  const onNoLayoutLinkClick = (path: string) => {
+    navigate({
+      to: path,
+    });
+    setIsNavOpen(false);
+  };
+
+  const isBudgetLinkSelected = (pathname: string) =>
+    pathname === `/budget/${budgetId}` || pathname === "/budget";
+
+  const isRouteLinkSelected = (route: string) => pathname.includes(route);
 
   return (
     <Sheet open={isNavOpen} onOpenChange={setIsNavOpen}>
@@ -82,8 +99,8 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
           </SheetTitle>
         </SheetHeader>
         <div className="flex flex-grow flex-col justify-between py-12">
-          <div className="flex flex-col space-y-8">
-            {isBudgetSelected && (
+          <div className="flex flex-col space-y-4">
+            {budgetId && (
               <Button
                 onClick={onBackToBudgetsClick}
                 size="lg"
@@ -104,43 +121,75 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
                   "bg-background text-foreground",
               )}
             >
-              <BudgetIcon />
-              <span>{isBudgetSelected ? "Budget" : "Budgets"}</span>
+              <Wallet />
+              <span>{budgetId ? "Budget" : "Budgets"}</span>
             </Button>
-            {!isSingleBudgetLoadingError &&
-              BUDGET_LINKS.slice(1).map(({ label, href, icon: Icon }) => (
+
+            {linksAvailable && (
+              <>
+                <AccountsLinksAccordion
+                  accountsLength={accounts.length}
+                  budgetId={budgetId!}
+                >
+                  {accounts.map((a) => (
+                    <Button
+                      key={a.id}
+                      onClick={() => onAccountLinkClick(a.id)}
+                      size="lg"
+                      variant="primaryDark"
+                      className={cn(
+                        "justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
+                        pathname.includes(a.id) &&
+                          "bg-background text-foreground",
+                      )}
+                    >
+                      <span>{a.name}</span>
+                    </Button>
+                  ))}
+                </AccountsLinksAccordion>
                 <Button
-                  key={label}
-                  onClick={() => onBudgetLinkClick(href)}
+                  onClick={() => onBudgetLayoutLinkClick("statistics")}
                   size="lg"
                   variant="primaryDark"
                   className={cn(
                     "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
-                    pathname.endsWith(href) && "bg-background text-foreground",
-                    !isBudgetSelected && "hidden",
+                    isRouteLinkSelected("statistics") &&
+                      "bg-background text-foreground",
                   )}
                 >
-                  <Icon />
-                  <span>{label}</span>
+                  <AreaChart />
+                  <span>Statistics</span>
                 </Button>
-              ))}
+
+                <Button
+                  onClick={() => onBudgetLayoutLinkClick("goals")}
+                  size="lg"
+                  variant="primaryDark"
+                  className={cn(
+                    "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
+                    isRouteLinkSelected("goals") &&
+                      "bg-background text-foreground",
+                  )}
+                >
+                  <Goal />
+                  <span>Goals</span>
+                </Button>
+              </>
+            )}
           </div>
           <div className="flex flex-col space-y-4">
-            {SIDEBAR_BOTTOM_LINKS.map(({ label, href, icon: Icon }) => (
-              <Button
-                key={label}
-                onClick={() => onBottomLinkClick(href)}
-                size="lg"
-                variant="primaryDark"
-                className={cn(
-                  "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
-                  pathname === href && "bg-background text-foreground",
-                )}
-              >
-                <Icon />
-                <span>{label}</span>
-              </Button>
-            ))}
+            <Button
+              onClick={() => onNoLayoutLinkClick("/help")}
+              size="lg"
+              variant="primaryDark"
+              className={cn(
+                "h-14 justify-start space-x-4 rounded-l-full rounded-r-none text-sm font-semibold tracking-widest transition-colors duration-300 hover:bg-background hover:text-foreground",
+                isRouteLinkSelected("help") && "bg-background text-foreground",
+              )}
+            >
+              <HelpCircle />
+              <span>Help</span>
+            </Button>
           </div>
         </div>
       </SheetContent>

@@ -14,18 +14,18 @@ import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { editAccountName, getAccountsQueryOptions } from "@/lib/api/account";
 import { useParams } from "@tanstack/react-router";
 
-interface CarouselCardNameFormProps {
+interface AccountCardNameFormProps {
   defaultName: string;
   accountId: string;
 }
 
-const CarouselCardNameForm: FC<CarouselCardNameFormProps> = ({
+const AccountCardNameForm: FC<AccountCardNameFormProps> = ({
   defaultName,
   accountId,
 }) => {
   const queryClient = useQueryClient();
   const { budgetId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts",
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const form = useForm<TEditAccountSchema>({
     defaultValues: {
@@ -89,6 +89,12 @@ const CarouselCardNameForm: FC<CarouselCardNameFormProps> = ({
     }
   }, [isError, reset]);
 
+  useEffect(() => {
+    reset({
+      name: defaultName,
+    });
+  }, [defaultName, reset]);
+
   const formRef = useClickOutside<HTMLFormElement>(() => {
     if (isDirty) {
       handleSubmit(onSubmit)();
@@ -118,4 +124,4 @@ const CarouselCardNameForm: FC<CarouselCardNameFormProps> = ({
   );
 };
 
-export default CarouselCardNameForm;
+export default AccountCardNameForm;

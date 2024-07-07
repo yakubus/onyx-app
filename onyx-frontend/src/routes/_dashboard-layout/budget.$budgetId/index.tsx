@@ -6,9 +6,13 @@ import RouteLoadingError from "@/components/RouteLoadingError";
 import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { getToAssignQueryOptions } from "@/lib/api/budget";
+import { getAccountsQueryOptions } from "@/lib/api/account";
 
 export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId/")({
-  loaderDeps: ({ search: { month, year } }) => ({ month, year }),
+  loaderDeps: ({ search: { month, year } }) => ({
+    month,
+    year,
+  }),
   loader: ({
     context: { queryClient },
     params: { budgetId },
@@ -19,6 +23,7 @@ export const Route = createFileRoute("/_dashboard-layout/budget/$budgetId/")({
       queryClient.ensureQueryData(
         getToAssignQueryOptions({ budgetId, month, year }),
       ),
+      queryClient.ensureQueryData(getAccountsQueryOptions(budgetId)),
     ]);
   },
   pendingComponent: () => <SingleBudgetLoadingSkeleton />,

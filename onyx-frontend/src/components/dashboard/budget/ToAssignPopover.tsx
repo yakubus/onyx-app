@@ -2,9 +2,9 @@ import { FC, useCallback } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 
-import MonthYearPicker, { DisableConfig } from "../MonthYearPicker";
-import { type AvailableDates } from "@/routes/_dashboard-layout/budget.$budgetId/index.lazy";
-
+import DatesMonthYearPicker, {
+  AvailableDates,
+} from "@/components/dashboard/DatesMonthYearPicker";
 interface ToAssignPopoverProps {
   selectedMonth: number;
   selectedYear: number;
@@ -41,24 +41,12 @@ const ToAssignPopover: FC<ToAssignPopoverProps> = ({
     [budgetId, isFetching, navigate, queryClient],
   );
 
-  const availableYears = Object.keys(availableDates).map(Number);
-
-  const config: DisableConfig = {
-    isDecreaseYearDisabled: (_selectedMonth, _selectedYear, localYear) =>
-      availableYears.indexOf(localYear) === 0,
-    isIncreaseYearDisabled: (_selectedMonth, _selectedYear, localYear) =>
-      availableYears.indexOf(localYear) === availableYears.length - 1,
-    isUnselectable: (month: number, year: number) =>
-      !availableDates[year] || !availableDates[year].includes(month),
-  };
-
   return (
-    <MonthYearPicker
-      onDateChange={handleSetNewDate}
+    <DatesMonthYearPicker
+      availableDates={availableDates}
+      handleSetNewDate={handleSetNewDate}
       selectedMonth={selectedMonth}
       selectedYear={selectedYear}
-      disableConfig={config}
-      availableYears={availableYears}
     />
   );
 };
