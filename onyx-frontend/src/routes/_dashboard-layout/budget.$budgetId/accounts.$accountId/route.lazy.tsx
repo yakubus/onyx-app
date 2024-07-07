@@ -23,14 +23,12 @@ function Account() {
     ],
   });
 
-  console.log(transactions);
-
   const selectedAccount = useMemo(
     () => accounts.find((acc) => acc.id === accountId),
     [accountId, accounts],
   );
 
-  if (!selectedAccount) return <div>error</div>;
+  if (!selectedAccount) throw new Error("Incorrect account ID");
 
   return (
     <div className="p-4">

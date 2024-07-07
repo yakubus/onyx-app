@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 
 import AccountCardBalanceForm from "@/components/dashboard/accounts/AccountCardBalanceForm";
 import AccountCardNameForm from "@/components/dashboard/accounts/AccountCardNameForm";
@@ -22,9 +22,15 @@ const AccountCard: FC<AccountCardProps> = ({
   accounts,
   budgetId,
 }) => {
-  const selectedAccountIndex = accounts.findIndex(
-    (a) => a.id === selectedAccount.id,
+  const selectedAccountIndex = useMemo(
+    () => accounts.findIndex((a) => a.id === selectedAccount.id),
+    [accounts, selectedAccount.id],
   );
+  const nextAccountId =
+    selectedAccountIndex < accounts.length - 1 &&
+    accounts[selectedAccountIndex + 1].id;
+  const prevAccountId =
+    selectedAccountIndex !== 0 && accounts[selectedAccountIndex - 1].id;
 
   return (
     <div
@@ -33,7 +39,7 @@ const AccountCard: FC<AccountCardProps> = ({
         selectedAccount.optimistic && "opacity-50",
       )}
     >
-      {selectedAccountIndex < accounts.length - 1 && (
+      {nextAccountId && (
         <Button
           variant="outline"
           size="icon"
@@ -41,17 +47,17 @@ const AccountCard: FC<AccountCardProps> = ({
           asChild
         >
           <Link
-            to={`/budget/${budgetId}/accounts/${accounts[selectedAccountIndex + 1].id}`}
+            to={`/budget/${budgetId}/accounts/${nextAccountId}`}
             search={(prev) => prev}
             mask={{
-              to: `/budget/${budgetId}/accounts/${accounts[selectedAccountIndex + 1].id}`,
+              to: `/budget/${budgetId}/accounts/${nextAccountId}`,
             }}
           >
             <ArrowRight />
           </Link>
         </Button>
       )}
-      {selectedAccountIndex !== 0 && (
+      {prevAccountId && (
         <Button
           variant="outline"
           size="icon"
@@ -59,10 +65,10 @@ const AccountCard: FC<AccountCardProps> = ({
           asChild
         >
           <Link
-            to={`/budget/${budgetId}/accounts/${accounts[selectedAccountIndex - 1].id}`}
+            to={`/budget/${budgetId}/accounts/${prevAccountId}`}
             search={(prev) => prev}
             mask={{
-              to: `/budget/${budgetId}/accounts/${accounts[selectedAccountIndex - 1].id}`,
+              to: `/budget/${budgetId}/accounts/${prevAccountId}`,
             }}
           >
             <ArrowLeft />

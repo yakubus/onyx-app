@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
@@ -27,18 +28,17 @@ const AccountCardDeleteButton: FC<AccountCardDeleteButtonProps> = ({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
 
-  const onMutationError = () => {
-    setIsDeleteDialogOpen(true);
+  const onMutationSuccess = () => {
+    setIsDeleteDialogOpen(false);
   };
 
-  const { mutate, isError } = useDeleteAccountMutation({
+  const { mutate, isError, isPending } = useDeleteAccountMutation({
     budgetId,
-    onMutationError,
+    onMutationSuccess,
   });
 
   const onDelete = () => {
     mutate({ accountId, budgetId });
-    setIsDeleteDialogOpen(false);
   };
 
   return (
@@ -66,9 +66,14 @@ const AccountCardDeleteButton: FC<AccountCardDeleteButtonProps> = ({
               Something went wrong. Please try again.
             </p>
           )}
-          <Button type="submit" variant="destructive" onClick={onDelete}>
+          <LoadingButton
+            type="submit"
+            variant="destructive"
+            onClick={onDelete}
+            isLoading={isPending}
+          >
             Delete
-          </Button>
+          </LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

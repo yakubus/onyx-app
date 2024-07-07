@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouteContext } from "@tanstack/react-router";
 
+import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AmountInput from "@/components/dashboard/AmountInput";
 import LoadingButton from "@/components/LoadingButton";
@@ -40,6 +41,7 @@ import { CreateAccountPayload } from "@/lib/api/account";
 import { removeSpacesFromAmount } from "@/lib/utils";
 import { CURRENCY } from "@/lib/constants/currency";
 import { ACCOUNT_TYPES } from "@/lib/constants/account";
+
 interface CreateAccountButtonProps {
   budgetId: string;
 }
@@ -95,10 +97,11 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ budgetId }) => {
 
   return (
     <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-      <DialogTrigger asChild>
-        <button className="w-full rounded-l-full py-4 pl-9 text-start text-sm font-semibold transition-all duration-300 hover:bg-accent hover:text-foreground">
+      <DialogTrigger className="flex items-center justify-between rounded-l-full py-4 pl-9 pr-4 transition-all duration-300 hover:bg-accent hover:text-foreground">
+        <span className="text-sm font-semibold tracking-wide">
           Create account
-        </button>
+        </span>
+        <Plus className="size-6 shrink-0 opacity-60" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
