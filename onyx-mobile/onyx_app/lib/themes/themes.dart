@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 ShadThemeData lightThemes = ShadThemeData(
@@ -22,7 +23,7 @@ ShadThemeData lightThemes = ShadThemeData(
     backgroundColor: Colors.white10,
   ),
   sheetTheme: const ShadSheetTheme(
-    backgroundColor: Color.fromRGBO(52, 85, 74, 1.000),
+    backgroundColor: Color.fromRGBO(90, 122, 112, 1),
     mainAxisAlignment: MainAxisAlignment.start,
   ),
   primaryDialogTheme: const ShadDialogTheme(
@@ -31,6 +32,13 @@ ShadThemeData lightThemes = ShadThemeData(
   linkButtonTheme: const ShadButtonTheme(
     textDecoration: TextDecoration.underline,
     foregroundColor: Colors.black,
+  ),
+  outlineButtonTheme: const ShadButtonTheme(
+    backgroundColor: Color.fromARGB(255, 35, 73, 35),
+    foregroundColor: Colors.white,
+    decoration: ShadDecoration(
+      border: ShadBorder(radius: BorderRadius.all(Radius.circular(100))),
+    ),
   ),
   secondaryButtonTheme: const ShadButtonTheme(
     backgroundColor: Color.fromARGB(255, 35, 73, 35),
@@ -66,6 +74,13 @@ ShadThemeData darkThemes = ShadThemeData(
   secondaryButtonTheme: const ShadButtonTheme(
     backgroundColor: Color.fromARGB(255, 35, 73, 35),
     foregroundColor: Colors.white,
+  ),
+  outlineButtonTheme: const ShadButtonTheme(
+    backgroundColor: Color.fromARGB(255, 35, 73, 35),
+    foregroundColor: Colors.white,
+    decoration: ShadDecoration(
+      border: ShadBorder(radius: BorderRadius.all(Radius.circular(100))),
+    ),
   ),
   switchTheme: const ShadSwitchTheme(
       checkedTrackColor: Color.fromRGBO(96, 133, 121, 1),

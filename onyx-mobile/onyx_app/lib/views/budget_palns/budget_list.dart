@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:onyx_app/main.dart';
-import 'package:onyx_app/services/budget/budget.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final headings = [
   'name',
@@ -22,34 +20,46 @@ class BudgetList extends HookConsumerWidget {
     return budget.when(
       data: (budgetServiceModel) {
         final budgetList = budgetServiceModel.value;
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.9,
-              maxHeight: MediaQuery.of(context).size.height * 0.5),
-          child: Center(
-            child: ShadTable(
-              columnCount: headings.length,
-              rowCount: budgetList.length,
-              header: (context, column) {
-                final isLast = column == headings.length - 1;
-                return ShadTableCell.header(
-                  alignment: isLast ? Alignment.centerRight : null,
-                  child: Text(headings[column]),
-                );
-              },
-              builder: (context, index) {
-                final budget = budgetList[index.row];
-                final cellValue = [
-                  budget.name,
-                  budget.currency,
-                ];
-                return ShadTableCell(
-                  child: Text(
-                    cellValue[index.column],
-                    style: index.column == 0
-                        ? const TextStyle(fontWeight: FontWeight.w500)
-                        : null,
-                  ),
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.95,
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: ListView.builder(
+              itemCount: budgetList.length,
+              itemBuilder: (context, index) {
+                final budget = budgetList[index];
+                return Column(
+                  children: [
+                    ShadCard(
+                      content: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                budget.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 50),
+                            Expanded(
+                              child: Text(
+                                budget.currency,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 );
               },
             ),

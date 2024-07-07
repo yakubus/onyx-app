@@ -1,12 +1,12 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onyx_app/themes/logo.dart';
-import 'package:onyx_app/widgets/log_in_dialog.dart';
+import 'package:onyx_app/widgets/login_register/log_in_dialog.dart';
 import 'package:onyx_app/themes/scafold_onyx.dart';
 import 'package:onyx_app/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:onyx_app/widgets/register_user.dart';
+import 'package:onyx_app/widgets/login_register/register_user.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class Home extends HookConsumerWidget {
