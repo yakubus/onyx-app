@@ -33,6 +33,8 @@ function Account() {
     [accountId, accounts],
   );
 
+  console.log("selectedAccount", selectedAccount, "accounts", accounts);
+
   if (!selectedAccount) throw new Error("Incorrect account ID");
 
   return (

@@ -11,12 +11,12 @@ import { AccountSchema } from "@/lib/validation/account";
 
 export const TransactionSchema = z.object({
   id: RequiredString,
-  subcategory: SubcategorySchema.optional(),
+  subcategory: SubcategorySchema.nullable(),
   amount: MoneySchema,
   originalAmount: MoneySchema.optional(),
   account: AccountSchema,
-  counterParty: CounterpartySchema,
-  transactedAt: z.date(),
+  counterparty: CounterpartySchema,
+  transactedAt: RequiredString,
   optimistic: z.boolean().optional(),
 });
 export type Transaction = z.infer<typeof TransactionSchema>;

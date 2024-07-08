@@ -28,23 +28,29 @@ export const useDeleteAccountMutation = ({
     };
 
     if (!accounts || accounts.length === 0) {
+      const url = `/budget/${budgetId}`;
       navigate({
-        to: `/budget/${budgetId}`,
+        to: url,
         search: (prev: SingleBudgetPageSearchParams) => ({
           ...prev,
           ...defaultSearchParams,
         }),
-        mask: `/budget/${budgetId}`,
+        mask: {
+          to: url,
+        },
       });
     } else {
       const lastAccountId = accounts[accounts.length - 1].id;
+      const url = `/budget/${budgetId}/accounts/${lastAccountId}`;
       navigate({
-        to: `/budget/${budgetId}/accounts/${lastAccountId}`,
+        to: url,
         search: (prev: SingleBudgetPageSearchParams) => ({
           ...prev,
           ...defaultSearchParams,
         }),
-        mask: `/budget/${budgetId}/accounts/${lastAccountId}`,
+        mask: {
+          to: url,
+        },
       });
     }
   };
@@ -53,7 +59,7 @@ export const useDeleteAccountMutation = ({
     mutationKey: ["deleteAccount"],
     mutationFn: deleteAccount,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey });
+      await queryClient.fetchQuery({ queryKey });
       const accounts = queryClient.getQueryData(queryKey);
       onMutationSuccess();
       handleNavigation(accounts);

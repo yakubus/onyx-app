@@ -4,5 +4,5 @@ import { RequiredString } from "@/lib/validation/base";
 export const CounterpartySchema = z.object({
   id: RequiredString,
   name: RequiredString,
-  type: z.enum(["Payee, Payer"]),
+  type: z.enum(["Payee", "Payer"]),
 });
