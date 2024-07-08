@@ -29,6 +29,7 @@ export const CreateTransactionSchema = z.object({
     50,
     "Max length of counterparty name is 50 characters.",
   ),
+  currency: RequiredString,
   amount: RequiredString.refine((v) => parseFloat(v) !== 0, {
     message: "Amount cannot be 0.",
   }),

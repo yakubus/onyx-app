@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useSearch } from "@tanstack/react-router";
@@ -53,6 +53,8 @@ import {
 } from "@/lib/api/transaction";
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
+import { CURRENCY } from "@/lib/constants/currency";
+import LoadingButton from "@/components/LoadingButton";
 
 interface Selectable {
   label: string;
@@ -72,36 +74,56 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   account,
   selectableCategories,
 }) => {
-  const queryClient = useQueryClient();
-  const [transactionSign, setTransactionSign] = useState<"+" | "-">("+");
-  const form = useForm<TCreateTransactionSchema>({
-    defaultValues: {
-      amount: "0.00",
-      counterpartyName: "",
-      subcategoryId: "",
-      transactedAt: new Date(),
-      categoryId: "",
-    },
-    resolver: zodResolver(CreateTransactionSchema),
-  });
   const { accMonth, accYear } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { budgetId, accountId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
+  const queryClient = useQueryClient();
+  const [transactionSign, setTransactionSign] = useState<"+" | "-">("-");
+  const {
+    balance: { currency: accountCurrency },
+  } = account;
+  const isCurrentMonthSelected =
+    Number(accMonth) === new Date().getMonth() + 1 &&
+    Number(accYear) === new Date().getFullYear();
+  const dafaultTransactedAt = useMemo(
+    () =>
+      isCurrentMonthSelected
+        ? new Date()
+        : new Date(`${accYear}-${accMonth}-01`),
+    [accMonth, accYear, isCurrentMonthSelected],
+  );
 
+  const form = useForm<TCreateTransactionSchema>({
+    defaultValues: {
+      currency: accountCurrency,
+      amount: "0.00",
+      counterpartyName: "",
+      subcategoryId: "",
+      transactedAt: dafaultTransactedAt,
+      categoryId: "",
+    },
+    resolver: zodResolver(CreateTransactionSchema),
+  });
   const { control, setFocus, handleSubmit, watch, reset } = form;
   const selectedCategoryId = watch("categoryId");
+  const selectedCurrency = watch("currency");
+
+  useEffect(() => {
+    reset((defaultValues) => ({
+      ...defaultValues,
+      transactedAt: dafaultTransactedAt,
+    }));
+  }, [dafaultTransactedAt, reset]);
+
   const selectableSubcategories =
     selectedCategoryId &&
     selectableCategories.find((c) => c.value === selectedCategoryId)!
       .subcategories;
-  const {
-    balance: { currency },
-  } = account;
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createTransaction,
     onError: (err) => {
       console.error(err);
@@ -121,7 +143,8 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   });
 
   const onSubmit: SubmitHandler<TCreateTransactionSchema> = (data) => {
-    const { amount, counterpartyName, subcategoryId, transactedAt } = data;
+    const { amount, counterpartyName, subcategoryId, transactedAt, currency } =
+      data;
     const formattedAmount =
       transactionSign === "-"
         ? Number(transactionSign + amount)
@@ -148,7 +171,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
           Add Transaction
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[400px]">
+      <DialogContent className="h-full w-full overflow-y-auto md:h-auto md:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>New Transaction</DialogTitle>
           <Form {...form}>
@@ -162,6 +185,30 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency:</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CURRENCY.map(({ value, label }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -181,7 +228,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                           className="absolute left-7 text-sm"
                           onClick={() => setFocus("amount")}
                         >
-                          {currency}
+                          {selectedCurrency || accountCurrency}
                         </span>
                         <PlusMinusButton
                           state={transactionSign}
@@ -228,9 +275,8 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) =>
-                            date.getMonth() !== Number(accMonth) - 1 ||
-                            date.getFullYear() !== Number(accYear) ||
-                            date.getDate() > new Date().getDate()
+                            isCurrentMonthSelected &&
+                            date.getDate() >= new Date().getDate()
                           }
                           initialFocus
                           disableNavigation
@@ -298,9 +344,13 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                 )}
               />
               <div className="pt-6">
-                <Button className="w-full" type="submit">
+                <LoadingButton
+                  isLoading={isPending}
+                  className="w-full"
+                  type="submit"
+                >
                   Create
-                </Button>
+                </LoadingButton>
               </div>
             </form>
           </Form>

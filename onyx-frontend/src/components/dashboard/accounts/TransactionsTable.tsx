@@ -47,7 +47,7 @@ const TransactionsTable: FC<TransactionsTableProps> = ({
         </h2>
       ) : (
         data.map((transaction) => (
-          <div key={transaction.id}>{JSON.stringify(transaction)}</div>
+          <div key={transaction.id}>{transaction.amount.amount}</div>
         ))
       )}
     </div>
