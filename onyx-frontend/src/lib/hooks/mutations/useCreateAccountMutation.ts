@@ -28,19 +28,22 @@ export const useCreateAccountMutation = ({
       console.error("Mutation error:", err);
       onMutationError();
     },
-    onSuccess: ({ accountId }) => {
+    onSuccess: async ({ accountId }) => {
+      const queryKey = getAccountsQueryOptions(budgetId).queryKey;
+      await queryClient.fetchQuery({ queryKey });
       onMutationSuccess();
-      queryClient.invalidateQueries({
-        queryKey: getAccountsQueryOptions(budgetId).queryKey,
-      });
+
       navigate({
         to: `/budget/${budgetId}/accounts/${accountId}`,
+        params: { accountId, budgetId },
         search: (prev: SingleBudgetPageSearchParams) => ({
           ...prev,
           accMonth: DEFAULT_MONTH_STRING,
           accYear: DEFAULT_YEAR_STRING,
         }),
-        mask: `/budget/${budgetId}/accounts/${accountId}`,
+        mask: {
+          to: `/budget/${budgetId}/accounts/${accountId}`,
+        },
       });
     },
   });

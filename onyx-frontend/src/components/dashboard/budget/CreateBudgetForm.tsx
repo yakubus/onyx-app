@@ -69,7 +69,6 @@ const CreateBudgetForm: FC<CreateBudgetFormProps> = ({
   });
 
   const onSubmit: SubmitHandler<CreateBudget> = (data) => {
-    console.log(data);
     const { name: budgetName, currency: budgetCurrency, userId } = data;
     mutate({ budgetName, budgetCurrency, userId });
   };
