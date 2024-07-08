@@ -45,11 +45,14 @@ import {
   TCreateTransactionSchema,
 } from "@/lib/validation/transaction";
 import { Account } from "@/lib/validation/account";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   CreateTransactionPayload,
   createTransaction,
+  getTransactionsQueryOptions,
 } from "@/lib/api/transaction";
+import { getAccountsQueryOptions } from "@/lib/api/account";
+import { getCategoriesQueryOptions } from "@/lib/api/category";
 
 interface Selectable {
   label: string;
@@ -69,6 +72,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   account,
   selectableCategories,
 }) => {
+  const queryClient = useQueryClient();
   const [transactionSign, setTransactionSign] = useState<"+" | "-">("+");
   const form = useForm<TCreateTransactionSchema>({
     defaultValues: {
@@ -83,7 +87,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   const { accMonth, accYear } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
-  const { budgetId } = useParams({
+  const { budgetId, accountId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
 
@@ -102,7 +106,16 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
     onError: (err) => {
       console.error(err);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries(
+          getTransactionsQueryOptions(budgetId, accountId, {
+            accountId,
+          }),
+        ),
+        queryClient.invalidateQueries(getAccountsQueryOptions(budgetId)),
+        queryClient.invalidateQueries(getCategoriesQueryOptions(budgetId)),
+      ]);
       reset();
     },
   });
@@ -216,7 +229,8 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                           onSelect={field.onChange}
                           disabled={(date) =>
                             date.getMonth() !== Number(accMonth) - 1 ||
-                            date.getFullYear() !== Number(accYear)
+                            date.getFullYear() !== Number(accYear) ||
+                            date.getDate() > new Date().getDate()
                           }
                           initialFocus
                           disableNavigation

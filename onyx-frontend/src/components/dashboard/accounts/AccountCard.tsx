@@ -9,19 +9,38 @@ import { Account } from "@/lib/validation/account";
 import { cn, formatAmount } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
+
+interface TransactionsData {
+  [x: number]: {
+    balance: {
+      [x: number]: {
+        income: number;
+        expenses: number;
+      };
+    };
+  };
+  availableDates: {
+    [x: number]: number[];
+  };
+}
 
 interface AccountCardProps {
   selectedAccount: Account;
   accounts: Account[];
   budgetId: string;
+  transactionsData: TransactionsData;
 }
 
 const AccountCard: FC<AccountCardProps> = ({
   selectedAccount,
   accounts,
   budgetId,
+  transactionsData,
 }) => {
+  const { accMonth, accYear } = useSearch({
+    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
+  });
   const selectedAccountIndex = useMemo(
     () => accounts.findIndex((a) => a.id === selectedAccount.id),
     [accounts, selectedAccount.id],
@@ -101,18 +120,34 @@ const AccountCard: FC<AccountCardProps> = ({
         </div>
       </div>
       <div className="m-auto max-w-[400px] space-y-10 md:mx-0 md:my-auto md:w-auto md:space-y-4 lg:justify-self-start">
-        <AccountCardDatePicker />
+        <AccountCardDatePicker
+          availableDates={transactionsData.availableDates}
+        />
         <div className="grid h-fit grid-cols-2 md:w-full">
           <div className="mr-2 space-y-2 px-1">
             <h3 className="text-xl font-semibold">Income:</h3>
-            <p className="text-lg font-semibold">
-              PLN {formatAmount("123456789.67")}
+            <p className="space-x-2 text-lg font-semibold">
+              <span>{selectedAccount.balance.currency}</span>
+              <span>
+                {formatAmount(
+                  transactionsData[Number(accYear)].balance[
+                    Number(accMonth)
+                  ].income.toString() || "0",
+                )}
+              </span>
             </p>
           </div>
           <div className="ml-2 space-y-2 px-1">
-            <h3 className="text-xl font-semibold">Outcome:</h3>
-            <p className="text-lg font-semibold text-destructive">
-              PLN {formatAmount("123456789.67")}
+            <h3 className="text-xl font-semibold">Expenses:</h3>
+            <p className="space-x-2 text-lg font-semibold">
+              <span>{selectedAccount.balance.currency}</span>
+              <span>
+                {formatAmount(
+                  transactionsData[Number(accYear)].balance[
+                    Number(accMonth)
+                  ].expenses.toString() || "0",
+                )}
+              </span>
             </p>
           </div>
         </div>
