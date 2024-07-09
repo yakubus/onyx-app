@@ -1,4 +1,5 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onyx_app/main.dart';
 import 'package:onyx_app/themes/logo.dart';
 import 'package:onyx_app/widgets/login_register/log_in_dialog.dart';
 import 'package:onyx_app/themes/scafold_onyx.dart';
@@ -62,35 +63,37 @@ class Home extends HookConsumerWidget {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.lato(fontSize: 35)),
                   const SizedBox(height: 70),
-                  ShadButton.secondary(
-                    size: ShadButtonSize.lg,
-                    text: Text(AppLocalizations.of(context)!.login,
-                        style: GoogleFonts.lato(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const LogInDialog();
-                        },
-                      );
-                    },
-                  ),
-                  ShadButton.link(
-                    text: Text(AppLocalizations.of(context)!.registrations,
-                        style: GoogleFonts.lato(
-                            fontSize: 15, fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const RegisterUserDialog();
-                        },
-                      );
-                    },
-                  )
+                  if (ref.watch(isLogged) != true)
+                    ShadButton.secondary(
+                      size: ShadButtonSize.lg,
+                      text: Text(AppLocalizations.of(context)!.login,
+                          style: GoogleFonts.lato(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const LogInDialog();
+                          },
+                        );
+                      },
+                    ),
+                  if (ref.watch(isLogged) != true)
+                    ShadButton.link(
+                      text: Text(AppLocalizations.of(context)!.registrations,
+                          style: GoogleFonts.lato(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const RegisterUserDialog();
+                          },
+                        );
+                      },
+                    )
                 ],
               ),
             ),

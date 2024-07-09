@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/error.dart';
+import 'package:onyx_app/services/budget/budget.dart';
+import 'package:onyx_app/services/saving_read_data_locally.dart';
 import 'package:onyx_app/services/user/user_repo.dart';
 
 final userDataServiceProvider =
@@ -82,20 +84,25 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
         () => ref.watch(userServiceProvider).getUserData(token));
   }
 
-  Future<UserServiceModel> login(String email, String password) async {
-    ref.watch(userDataServiceProvider.notifier).state =
-        await ref.read(userServiceProvider).loginUser(email, password);
+  Future<UserData> login(String email, String password) async {
+    try {
+      ref.read(userDataServiceProvider.notifier).state =
+          await ref.read(userServiceProvider).loginUser(email, password);
 
-    ref.read(userToken.notifier).state =
-        ref.watch(userDataServiceProvider.notifier).state.value?.accessToken ??
-            '';
-    ref.read(isLogged.notifier).state =
-        ref.watch(userDataServiceProvider.notifier).state.isSuccess ?? false;
+      ref.read(userToken.notifier).state =
+          ref.read(userDataServiceProvider.notifier).state.value?.accessToken ??
+              '';
+      ref.read(isLogged.notifier).state =
+          ref.read(userDataServiceProvider.notifier).state.isSuccess ?? false;
 
-    refresh();
+      refresh();
 
-    log("userToken: ${ref.read(userToken.notifier).state}");
-    return state.value!;
+      log("userToken: ${ref.read(userToken.notifier).state}");
+      return ref.read(userDataServiceProvider.notifier).state.value!;
+    } catch (e) {
+      log("Login error: $e");
+      rethrow;
+    }
   }
 
   Future<void> register(
@@ -104,5 +111,21 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
         .read(userServiceProvider)
         .registerUser(email, password, currency, username);
     refresh();
+  }
+
+  void userLogout() {
+    ref.read(userToken.notifier).state = '';
+    ref.read(isLogged.notifier).state = false;
+    ref.read(userDataServiceProvider.notifier).state = UserServiceModel();
+    ref.read(budgetServiceDataProvider.notifier).state = AsyncValue.data(
+      BudgetServiceModel(
+        value: [],
+        isSuccess: false,
+        isFailure: true,
+        error: const ErrorOnyx(message: 'Token is empty', code: "401"),
+      ),
+    );
+
+    clearAppPreferences();
   }
 }

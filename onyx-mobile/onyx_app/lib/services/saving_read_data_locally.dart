@@ -12,3 +12,8 @@ Future<Map<String, String>> getAppPreferences() async {
   final String language = prefs.getString('language') ?? 'en';
   return <String, String>{'appMode': appMode, 'language': language};
 }
+
+Future<void> clearAppPreferences() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+}
