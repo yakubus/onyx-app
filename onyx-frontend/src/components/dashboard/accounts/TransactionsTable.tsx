@@ -46,7 +46,9 @@ const TransactionsTable: FC<TransactionsTableProps> = ({
           No added transactions for this account in selected date.
         </h2>
       ) : (
-        data.map((transaction) => <div>{JSON.stringify(transaction)}</div>)
+        data.map((transaction) => (
+          <div key={transaction.id}>{transaction.amount.amount}</div>
+        ))
       )}
     </div>
   );

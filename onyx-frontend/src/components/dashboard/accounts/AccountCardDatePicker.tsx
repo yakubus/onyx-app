@@ -1,16 +1,18 @@
 import { FC, useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 
 import DatesMonthYearPicker from "@/components/dashboard/DatesMonthYearPicker";
 import DatesMonthYearPickerButtons from "@/components/dashboard/DatesMonthYearPickerButtons";
 
-interface AccountCardDatePickerProps {}
+interface AccountCardDatePickerProps {
+  availableDates: { [key: number]: number[] };
+}
 
-const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({}) => {
-  const queryClient = useQueryClient();
+const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({
+  availableDates,
+}) => {
   const navigate = useNavigate();
-  const { budgetId } = useParams({
+  const { budgetId, accountId } = useParams({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { accMonth, accYear } = useSearch({
@@ -19,10 +21,6 @@ const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({}) => {
 
   const numericSearchParamsAccMonth = Number(accMonth);
   const numericSearchParamsAccYear = Number(accYear);
-
-  const availableDates: { [key: number]: number[] } = {
-    2024: [3, 4, 6, 7],
-  };
 
   const months = availableDates[numericSearchParamsAccYear] || [];
   const monthIndex = months.indexOf(numericSearchParamsAccMonth);
@@ -36,9 +34,9 @@ const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({}) => {
   const handleMonthChange = async (newMonth: number) => {
     await navigate({
       search: (prev) => ({ ...prev, accMonth: newMonth.toString() }),
-      mask: { to: `/budget/${budgetId}/accounts` },
+      params: { accountId, budgetId },
+      mask: { to: `/budget/${budgetId}/accounts/${accountId}` },
     });
-    // queryClient.refetchQueries({ queryKey: getToAssignQueryKey(budgetId) });
   };
 
   const handleDecreaseMonth = () => {
@@ -58,7 +56,7 @@ const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({}) => {
           availableDates={availableDates}
           selectedMonth={numericSearchParamsAccMonth}
           selectedYear={numericSearchParamsAccYear}
-          handleSetNewDate={() => {}}
+          handleSetNewDate={handleMonthChange}
         />
         <p className="pt-2 text-sm font-thin tracking-normal text-muted-foreground">
           Select a month and track your expenses.

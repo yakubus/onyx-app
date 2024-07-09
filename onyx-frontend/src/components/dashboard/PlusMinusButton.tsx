@@ -1,16 +1,16 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface PlusMinusButtonProps {
   state: "+" | "-";
-  setState: Dispatch<SetStateAction<"+" | "-">>;
+  setState: (state: "+" | "-") => void;
 }
 
 const PlusMinusButton: FC<PlusMinusButtonProps> = ({ state, setState }) => {
   const handleClick = () => {
-    setState((prev) => (prev === "+" ? "-" : "+"));
+    setState(state === "+" ? "-" : "+");
   };
 
   return (
