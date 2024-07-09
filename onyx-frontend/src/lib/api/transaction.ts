@@ -16,7 +16,7 @@ export interface CreateTransactionPayload {
   amount: Money;
   transactedAt: Date;
   counterpartyName: string;
-  subcategoryId: string;
+  subcategoryId?: string | null;
 }
 
 interface CreateTransaction {
