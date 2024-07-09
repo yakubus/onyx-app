@@ -69,7 +69,7 @@ export const formatDecimals = (amount: string) => {
 
 export const formatAmount = (amount: string) => {
   const parts = amount.split(".");
-  // Apply commas to the integer part
+
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
   if (parts[1]) {

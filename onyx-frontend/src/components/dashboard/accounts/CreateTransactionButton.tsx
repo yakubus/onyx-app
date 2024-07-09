@@ -38,7 +38,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { cn } from "@/lib/utils";
+import { cn, removeSpacesFromAmount } from "@/lib/utils";
 import { format } from "date-fns";
 import {
   CreateTransactionSchema,
@@ -128,7 +128,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
     [selectedCategoryId, selectableCategories],
   );
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: createTransaction,
     onError: (err) => {
       console.error(err);
@@ -143,9 +143,12 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
         queryClient.invalidateQueries(getAccountsQueryOptions(budgetId)),
         queryClient.invalidateQueries(getCategoriesQueryOptions(budgetId)),
       ]);
-      reset();
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) reset();
+  }, [isSuccess, reset]);
 
   const onSubmit: SubmitHandler<TCreateTransactionSchema> = (data) => {
     const {
@@ -158,8 +161,8 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
     } = data;
     const formattedAmount =
       transactionSign === "-"
-        ? Number(transactionSign + amount)
-        : Number(amount);
+        ? Number(transactionSign + removeSpacesFromAmount(amount))
+        : Number(removeSpacesFromAmount(amount));
 
     const payload: CreateTransactionPayload = {
       accountId: account.id,
@@ -328,7 +331,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                         <FormLabel>Category:</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -355,7 +358,7 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                         <FormLabel>Subcategory:</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                           disabled={!selectedCategoryId}
                         >
                           <FormControl>
