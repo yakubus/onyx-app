@@ -40,7 +40,7 @@ function Account() {
     useAccountCardTransactionsData(transactions);
 
   return (
-    <div className="p-4">
+    <div className="px-4 xl:px-8">
       <AccountCard
         selectedAccount={selectedAccount}
         accounts={accounts}
@@ -48,8 +48,8 @@ function Account() {
         transactionsData={accountCardTransactionsData}
       />
       <TransactionsTable
-        account={selectedAccount}
-        data={transactions}
+        selectedAccount={selectedAccount}
+        transactions={transactions}
         categories={categories}
       />
     </div>

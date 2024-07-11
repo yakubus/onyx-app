@@ -6,3 +6,5 @@ export const CounterpartySchema = z.object({
   name: RequiredString,
   type: z.enum(["Payee", "Payer"]),
 });
+
+export type Counterparty = z.infer<typeof CounterpartySchema>;
