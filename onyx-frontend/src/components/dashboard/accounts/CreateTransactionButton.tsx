@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useSearch } from "@tanstack/react-router";
 
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import AmountInput from "@/components/dashboard/AmountInput";
 import PlusMinusButton from "@/components/dashboard/PlusMinusButton";
 import { Button } from "@/components/ui/button";
@@ -188,8 +188,9 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Add Transaction
+        <Button variant="outline" className="space-x-2">
+          <Plus className="inline-flex size-5 flex-shrink-0" />
+          <span className="inline-flex">Create</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="h-full w-full overflow-y-auto px-4 md:h-auto md:max-w-[400px] md:overflow-y-hidden">

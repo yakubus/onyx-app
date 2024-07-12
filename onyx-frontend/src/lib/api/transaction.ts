@@ -1,9 +1,17 @@
 import { privateApi } from "@/lib/axios";
-import { TransactionResultSchema } from "@/lib/validation/transaction";
+import {
+  Transaction,
+  TransactionResultSchema,
+} from "@/lib/validation/transaction";
 import { getErrorMessage } from "@/lib/utils";
 import { queryOptions } from "@tanstack/react-query";
 import { Money } from "@/lib/validation/base";
+import { Row } from "@tanstack/react-table";
 
+interface TransactionBudget {
+  budgetId: string;
+  transactionId: string;
+}
 interface QueryParams {
   query?: string;
   counterpartyId?: string;
@@ -22,6 +30,11 @@ export interface CreateTransactionPayload {
 interface CreateTransaction {
   budgetId: string;
   payload: CreateTransactionPayload;
+}
+
+interface DeleteMultipleTransactions {
+  budgetId: string;
+  rows: Row<Transaction>[];
 }
 
 export const getTransactions = async (
@@ -79,3 +92,20 @@ export const getTransactionsQueryOptions = (
 
 export const createTransaction = ({ budgetId, payload }: CreateTransaction) =>
   privateApi.post(`/${budgetId}/transactions`, payload);
+
+export const deleteTransaction = ({
+  budgetId,
+  transactionId,
+}: TransactionBudget) =>
+  privateApi.delete(`/${budgetId}/transactions/${transactionId}`);
+
+export const deleteMultipleTransactions = ({
+  budgetId,
+  rows,
+}: DeleteMultipleTransactions) => {
+  const deletePromises = rows.map((r) =>
+    deleteTransaction({ budgetId, transactionId: r.original.id }),
+  );
+
+  return Promise.all(deletePromises);
+};

@@ -24,6 +24,7 @@ import { Category } from "@/lib/validation/category";
 import { columns } from "./TransactionsTableColumns";
 import CreateTransactionButton from "./CreateTransactionButton";
 import { useDebounce } from "@/lib/hooks/useDebounce";
+import DeleteTransactionsButton from "./DeleteTransactionsButton";
 
 interface TransactionsTable {
   transactions: Transaction[];
@@ -92,10 +93,17 @@ const TransactionsTable: FC<TransactionsTable> = ({
   return (
     <div className="pt-7">
       <div className="flex flex-col justify-between space-y-2 py-4 md:flex-row md:space-y-0">
-        <CreateTransactionButton
-          account={selectedAccount}
-          selectableCategories={selectableCategories}
-        />
+        <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
+          <CreateTransactionButton
+            account={selectedAccount}
+            selectableCategories={selectableCategories}
+          />
+          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+            <DeleteTransactionsButton
+              rows={table.getFilteredSelectedRowModel().rows}
+            />
+          )}
+        </div>
 
         <Input
           placeholder="Search..."

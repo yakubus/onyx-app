@@ -58,9 +58,10 @@ export const columns: ColumnDef<Transaction>[] = [
     accessorKey: "subcategory.name",
     id: "subcategory",
     header: ({ column }) => <SortButton column={column} label="Subcategory" />,
-    cell: ({ row }) => (
-      <div className="pl-4">{row.getValue("subcategory")}</div>
-    ),
+    cell: ({ row }) => {
+      const subcategoryName = row.getValue<string>("subcategory") || "N/A";
+      return <div className="pl-4">{subcategoryName}</div>;
+    },
     sortUndefined: "last",
   },
   {
