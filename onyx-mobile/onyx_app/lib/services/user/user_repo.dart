@@ -34,7 +34,7 @@ class UserService {
     if (response.statusCode == 200) {
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('${response.statusCode}:Failed to load user');
+      throw Exception('${response.statusCode}:Failed to login user');
     }
   }
 
@@ -52,17 +52,9 @@ class UserService {
     );
 
     if (response.statusCode == 200) {
-      log('registerUser response.body: ${response.body}');
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
-      String request = jsonEncode({
-        "email": email,
-        "password": password,
-        "currency": currency,
-        "username": username,
-      });
-      log('registerUser response.body: $request');
-      throw Exception('Failed to register user');
+      throw Exception('${response.statusCode}:Failed to register user');
     }
   }
 }
