@@ -25,6 +25,10 @@ import { columns } from "./TransactionsTableColumns";
 import CreateTransactionButton from "./CreateTransactionButton";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import DeleteTransactionsButton from "./DeleteTransactionsButton";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { Minus, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
+import CreateTransactionTableForm from "./CreateTransactionTableForm";
 
 interface TransactionsTable {
   transactions: Transaction[];
@@ -37,6 +41,8 @@ const TransactionsTable: FC<TransactionsTable> = ({
   selectedAccount,
   categories,
 }) => {
+  const isLargeDevice = useMediaQuery("(min-width: 1024px)");
+  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -94,10 +100,27 @@ const TransactionsTable: FC<TransactionsTable> = ({
     <div className="pt-7">
       <div className="flex flex-col justify-between space-y-2 py-4 md:flex-row md:space-y-0">
         <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
-          <CreateTransactionButton
-            account={selectedAccount}
-            selectableCategories={selectableCategories}
-          />
+          {isLargeDevice ? (
+            <Button
+              variant="outline"
+              className="space-x-2"
+              onClick={() => setIsCreateFormVisible(!isCreateFormVisible)}
+            >
+              {isCreateFormVisible ? (
+                <Minus className="inline-flex size-5 flex-shrink-0" />
+              ) : (
+                <Plus className="inline-flex size-5 flex-shrink-0" />
+              )}
+              <span className="inline-flex">
+                {isCreateFormVisible ? "Hide" : "Create"}
+              </span>
+            </Button>
+          ) : (
+            <CreateTransactionButton
+              account={selectedAccount}
+              selectableCategories={selectableCategories}
+            />
+          )}
           {table.getFilteredSelectedRowModel().rows.length > 0 && (
             <DeleteTransactionsButton
               rows={table.getFilteredSelectedRowModel().rows}
@@ -133,6 +156,22 @@ const TransactionsTable: FC<TransactionsTable> = ({
             ))}
           </TableHeader>
           <TableBody>
+            {isLargeDevice && (
+              <TableRow
+                className={cn(!isCreateFormVisible && "border-none py-0")}
+              >
+                <TableCell colSpan={columns.length} className="py-0">
+                  <div
+                    className={cn(
+                      "grid grid-rows-[0fr] transition-all duration-300",
+                      isCreateFormVisible && "grid-rows-[1fr] py-2",
+                    )}
+                  >
+                    <CreateTransactionTableForm />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

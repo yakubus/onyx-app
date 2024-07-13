@@ -87,3 +87,11 @@ export const formatAmount = (amount: string) => {
 export const removeSpacesFromAmount = (amount: string) => {
   return amount.replace(/ /g, "");
 };
+
+export const getFormattedCurrency = (amount: number, currency: string) => {
+  const userLocale = navigator.language || "en-US";
+  return new Intl.NumberFormat(userLocale, {
+    style: "currency",
+    currency,
+  }).format(amount);
+};

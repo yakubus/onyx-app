@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { Transaction } from "@/lib/validation/transaction";
-import { cn, formatAmount } from "@/lib/utils";
+import { cn, getFormattedCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<Transaction>[] = [
   {
@@ -74,6 +74,8 @@ export const columns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row }) => {
       const amount = row.getValue("amount") as number;
+      const currency = row.original.amount.currency;
+      const formatted = getFormattedCurrency(amount, currency);
 
       return (
         <div
@@ -82,7 +84,7 @@ export const columns: ColumnDef<Transaction>[] = [
             amount < 0 ? "text-destructive" : "text-primary",
           )}
         >
-          <span>{formatAmount(amount.toFixed(2))}</span>
+          <span>{formatted}</span>
         </div>
       );
     },
