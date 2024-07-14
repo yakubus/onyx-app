@@ -19,7 +19,19 @@ class AddBudgetDialog extends HookConsumerWidget {
     return ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: ShadDialog(
-            title: Text(AppLocalizations.of(context)!.add_budget),
+            title: Row(children: [
+              Text(AppLocalizations.of(context)!.add_budget),
+              const Spacer(),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ]),
             content: Column(
               children: [
                 Row(

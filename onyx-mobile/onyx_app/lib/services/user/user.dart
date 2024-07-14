@@ -125,6 +125,7 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
 
       log("userToken: ${ref.read(userToken.notifier).state}");
       log("isLogged: ${ref.read(isLogged.notifier).state}");
+
       return ref.read(userDataServiceProvider.notifier).state.value!;
     } catch (e) {
       log("Register error: $e");

@@ -29,14 +29,16 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(title),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => showShadSheet(
-            side: ShadSheetSide.left,
-            context: context,
-            builder: (context) => const MainMenu(),
-          ),
-        ),
+        leading: ref.watch(isLogged)
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => showShadSheet(
+                  side: ShadSheetSide.left,
+                  context: context,
+                  builder: (context) => const MainMenu(),
+                ),
+              )
+            : null,
         actions: [
           PopupMenuButton(
             color: bgcolor,

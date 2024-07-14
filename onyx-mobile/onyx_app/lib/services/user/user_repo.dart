@@ -26,11 +26,15 @@ class UserService {
   }
 
   Future<UserServiceModel> loginUser(String email, String password) async {
-    final response = await http.post(
+    final response = await http
+        .post(
       Uri.parse("$apiUrl/login"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"email": email, "password": password}),
-    );
+    )
+        .timeout(const Duration(seconds: 15), onTimeout: () {
+      throw Exception('Connection timeout');
+    });
     if (response.statusCode == 200) {
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
@@ -40,7 +44,8 @@ class UserService {
 
   Future<UserServiceModel> registerUser(
       String email, String password, String currency, String username) async {
-    final response = await http.post(
+    final response = await http
+        .post(
       Uri.parse("$apiUrl/register"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
@@ -49,7 +54,10 @@ class UserService {
         "currency": currency,
         "username": username,
       }),
-    );
+    )
+        .timeout(const Duration(seconds: 15), onTimeout: () {
+      throw Exception('Connection timeout');
+    });
 
     if (response.statusCode == 200) {
       return UserServiceModel.fromJson(jsonDecode(response.body));

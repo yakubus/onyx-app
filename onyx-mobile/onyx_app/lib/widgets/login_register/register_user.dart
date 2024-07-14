@@ -128,7 +128,6 @@ class RegisterUserDialog extends HookConsumerWidget {
 
                               if (ref.read(isLogged)) {
                                 log("User logged in successfully");
-
                                 Navigator.of(context).pop();
                               }
                             } catch (e) {
