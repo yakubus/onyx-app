@@ -87,7 +87,9 @@ function SingleBudget() {
         />
       </div>
       {activeCategoryData && (
-        <SubcategoriesCard activeCategory={activeCategoryData} />
+        <div className="lg:col-span-3">
+          <SubcategoriesCard activeCategory={activeCategoryData} />
+        </div>
       )}
     </div>
   );

@@ -62,12 +62,14 @@ const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({
           Select a month and track your expenses.
         </p>
       </div>
-      <DatesMonthYearPickerButtons
-        decreaseButtonDisabled={isMinMonth}
-        increaseButtonDisabled={isMaxMonth}
-        handleDecreaseMonth={handleDecreaseMonth}
-        handleIncreaseMonth={handleIncreaseMonth}
-      />
+      <div className="ml-6">
+        <DatesMonthYearPickerButtons
+          decreaseButtonDisabled={isMinMonth}
+          increaseButtonDisabled={isMaxMonth}
+          handleDecreaseMonth={handleDecreaseMonth}
+          handleIncreaseMonth={handleIncreaseMonth}
+        />
+      </div>
     </div>
   );
 };
