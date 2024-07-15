@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { Target } from "@/lib/validation/base";
 import { MONTHS } from "@/lib/constants/date";
-import { cn, formatAmount } from "@/lib/utils";
+import { cn, getFormattedCurrency } from "@/lib/utils";
 
 interface TargetCardListProps {
   currentTarget: Target;
@@ -31,7 +31,7 @@ const TargetCardList: FC<TargetCardListProps> = ({
         <li className="space-x-4 border-b-2 border-primary py-1">
           <span>Amount:</span>
           <span className="font-semibold">
-            {formatAmount(targetAmount.amount.toString())} {currencyToDisplay}
+            {getFormattedCurrency(targetAmount.amount, currencyToDisplay)}
           </span>
         </li>
         <li className="space-x-4 border-b-2 border-primary py-1">
@@ -49,15 +49,16 @@ const TargetCardList: FC<TargetCardListProps> = ({
         <li className="space-x-4 border-b-2 border-primary py-1">
           <span>Collected:</span>
           <span className="font-semibold">
-            {formatAmount(collectedAmount.amount.toString())}{" "}
-            {collectedAmount.currency.toString()}
+            {getFormattedCurrency(collectedAmount.amount, currencyToDisplay)}
           </span>
         </li>
         <li className="space-x-4 border-b-2 border-primary py-1">
           <span>Assigned every month:</span>
           <span className="font-semibold">
-            {formatAmount(amountAssignedEveryMonth.amount.toString())}{" "}
-            {amountAssignedEveryMonth.currency.toString()}
+            {getFormattedCurrency(
+              amountAssignedEveryMonth.amount,
+              currencyToDisplay,
+            )}
           </span>
         </li>
       </ul>

@@ -38,9 +38,9 @@ import {
 } from "@/lib/validation/account";
 import { useCreateAccountMutation } from "@/lib/hooks/mutations/useCreateAccountMutation";
 import { CreateAccountPayload } from "@/lib/api/account";
-import { removeSpacesFromAmount } from "@/lib/utils";
 import { CURRENCY } from "@/lib/constants/currency";
 import { ACCOUNT_TYPES } from "@/lib/constants/account";
+import { formatToDotDecimal } from "@/lib/utils";
 
 interface CreateAccountButtonProps {
   budgetId: string;
@@ -86,12 +86,13 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ budgetId }) => {
 
   const onSubmit: SubmitHandler<TCreateAccountForm> = (data) => {
     const { accountType, amount, currency, name } = data;
-    const amountWithoutCommas = removeSpacesFromAmount(amount);
+    const formattedAmount = formatToDotDecimal(amount);
     const payload: CreateAccountPayload = {
       name,
       accountType,
-      balance: { amount: Number(amountWithoutCommas), currency },
+      balance: { amount: Number(formattedAmount), currency },
     };
+
     mutate({ budgetId, payload });
   };
 
@@ -146,7 +147,8 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ budgetId }) => {
                       <FormControl>
                         <AmountInput
                           field={field}
-                          className="bg-transparent text-lg focus-visible:ring-0 focus-visible:ring-primary-foreground focus-visible:ring-offset-1"
+                          currency={user!.currency}
+                          className="border bg-transparent text-left text-lg focus-visible:ring-0 focus-visible:ring-primary-foreground focus-visible:ring-offset-1"
                         />
                       </FormControl>
                     </FormItem>

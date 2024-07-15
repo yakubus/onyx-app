@@ -34,7 +34,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { cn, removeSpacesFromAmount } from "@/lib/utils";
+import { cn, formatToDotDecimal } from "@/lib/utils";
 import {
   CreateTransactionSchema,
   TCreateTransactionSchema,
@@ -155,8 +155,8 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
     } = data;
     const formattedAmount =
       transactionSign === "-"
-        ? Number(transactionSign + removeSpacesFromAmount(amount))
-        : Number(removeSpacesFromAmount(amount));
+        ? Number(transactionSign + formatToDotDecimal(amount))
+        : Number(formatToDotDecimal(amount));
 
     const payload: CreateTransactionPayload = {
       accountId: account.id,
@@ -243,19 +243,14 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                       </FormLabel>
                       <FormControl>
                         <div className="flex items-center space-x-2">
-                          <AmountInput
-                            field={field}
-                            className="relative pl-11"
-                          />
-                          <span
-                            className="absolute left-7 text-sm"
-                            onClick={() => setFocus("amount")}
-                          >
-                            {selectedCurrency || accountCurrency}
-                          </span>
                           <PlusMinusButton
                             state={transactionSign}
                             setState={handlePlusMinusBtn}
+                          />
+                          <AmountInput
+                            field={field}
+                            currency={selectedCurrency || accountCurrency}
+                            className="border text-left"
                           />
                         </div>
                       </FormControl>

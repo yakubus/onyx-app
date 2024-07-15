@@ -4,11 +4,11 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import AmountInput from "../AmountInput";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Money } from "@/lib/validation/base";
-import { formatAmount, removeSpacesFromAmount } from "@/lib/utils";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { editBalance, getAccountsQueryOptions } from "@/lib/api/account";
 import { useParams } from "@tanstack/react-router";
 import useAmountForm from "@/lib/hooks/useAmountForm";
+import { formatToDotDecimal } from "@/lib/utils";
 
 interface AccountCardBalanceFormProps {
   balance: Money;
@@ -23,23 +23,22 @@ const AccountCardBalanceForm: FC<AccountCardBalanceFormProps> = ({
     from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
   });
   const { amount, currency } = balance;
-  const defaultAmount = formatAmount(amount.toString());
   const { mutate, isDirty, handleSubmit, control, form } = useAmountForm({
-    defaultAmount,
+    defaultAmount: amount.toString(),
     mutationFn: editBalance,
     queryKey: getAccountsQueryOptions(budgetId).queryKey,
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { amount } = data;
-    const amountWithoutCommas = removeSpacesFromAmount(amount);
-
-    if (Number(amountWithoutCommas) === Number(defaultAmount)) return;
+    const formattedAmount = formatToDotDecimal(amount);
+    if (Number(formattedAmount) === amount) return;
 
     const newBalance: Money = {
-      amount: Number(amountWithoutCommas),
+      amount: Number(formattedAmount),
       currency,
     };
+
     mutate({ budgetId, newBalance, accountId });
   };
 
@@ -57,10 +56,10 @@ const AccountCardBalanceForm: FC<AccountCardBalanceFormProps> = ({
           name="amount"
           render={({ field }) => (
             <FormItem className="flex items-center space-x-1 space-y-0">
-              <p className="text-lg md:text-xl">{currency}</p>
               <AmountInput
                 field={field}
-                className="border-0 bg-transparent pl-1 text-lg focus-visible:ring-0 focus-visible:ring-primary-foreground focus-visible:ring-offset-1 md:text-xl"
+                currency={currency}
+                className="border-0 bg-transparent pl-1 text-left text-lg focus-visible:ring-0 focus-visible:ring-primary-foreground focus-visible:ring-offset-1 md:text-xl"
               />
             </FormItem>
           )}

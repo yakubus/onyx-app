@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import type { UserWithToken } from "@/lib/validation/user";
+import { USER_LOCALE } from "./constants/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,54 +45,19 @@ export function setStoredUser(user: UserWithToken | null, key: string) {
   }
 }
 
-export const addSpacesToAmount = (amount: string) => {
-  const parts = amount.split(".");
-  // Apply spaces to the integer part
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-
-  return parts.join(".");
-};
-
-export const formatDecimals = (amount: string) => {
-  const parts = amount.split(".");
-
-  if (parts[1]) {
-    if (parts[1].length === 1) {
-      parts[1] += "0";
-    } else {
-      parts[1] = parts[1].substring(0, 2);
-    }
-  } else {
-    parts[1] = "00";
-  }
-  return parts.join(".");
-};
-
-export const formatAmount = (amount: string) => {
-  const parts = amount.split(".");
-
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-
-  if (parts[1]) {
-    if (parts[1].length === 1) {
-      parts[1] += "0";
-    } else {
-      parts[1] = parts[1].substring(0, 2);
-    }
-  } else {
-    parts[1] = "00";
-  }
-  return parts.join(".");
-};
-
-export const removeSpacesFromAmount = (amount: string) => {
-  return amount.replace(/ /g, "");
-};
-
 export const getFormattedCurrency = (amount: number, currency: string) => {
-  const userLocale = navigator.language || "en-US";
-  return new Intl.NumberFormat(userLocale, {
+  return new Intl.NumberFormat(USER_LOCALE, {
     style: "currency",
     currency,
   }).format(amount);
+};
+
+export const formatToDotDecimal = (str: string): string => {
+  const index = str.indexOf(",");
+
+  if (index !== -1) {
+    return str.substring(0, index) + "." + str.substring(index + 1);
+  }
+
+  return str;
 };
