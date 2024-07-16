@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Money } from "@/lib/validation/base";
-import { cn, formatAmount } from "@/lib/utils";
+import { cn, getFormattedCurrency } from "@/lib/utils";
 import { getToAssignQueryKey } from "@/lib/api/budget";
 import { type AvailableDates } from "@/components/dashboard/DatesMonthYearPicker";
 import DatesMonthYearPickerButtons from "../DatesMonthYearPickerButtons";
@@ -96,7 +96,7 @@ const BudgetAssignmentCard: FC<BudgetAssignmentCardProps> = ({
               isFetching && "opacity-50",
             )}
           >
-            {formatAmount(amount.toString())} {currency}
+            {getFormattedCurrency(amount, currency)}
           </p>
         </div>
       </CardContent>

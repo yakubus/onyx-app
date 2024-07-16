@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface PlusMinusButtonProps {
   state: "+" | "-";
@@ -17,9 +18,13 @@ const PlusMinusButton: FC<PlusMinusButtonProps> = ({ state, setState }) => {
     <Button
       type="button"
       onClick={handleClick}
-      variant={state === "-" ? "destructive" : "default"}
-      size="sm"
-      className="h-10"
+      variant="outline"
+      size="icon"
+      className={cn(
+        state === "+"
+          ? "text-primary hover:text-primary"
+          : "text-destructive hover:text-destructive",
+      )}
     >
       {state === "+" ? <Plus /> : <Minus />}
     </Button>

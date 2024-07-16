@@ -8,11 +8,11 @@ import { Form, FormField, FormItem } from "@/components/ui/form";
 import { useClickOutside } from "@/lib/hooks/useClickOutside";
 import { FormAssignment, assign } from "@/lib/api/subcategory";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
-import { formatAmount, removeSpacesFromAmount } from "@/lib/utils";
 import useAmountForm from "@/lib/hooks/useAmountForm";
+import { formatToDotDecimal } from "@/lib/utils";
 
 interface AssignmentFormProps {
-  defaultAmount: string | undefined;
+  defaultAmount: number | undefined;
   subcategoryId: string;
   currencyToDisplay: string;
 }
@@ -28,22 +28,20 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
   const { month, year } = useSearch({
     from: "/_dashboard-layout/budget/$budgetId/",
   });
-  const defaultInputValue = defaultAmount
-    ? formatAmount(defaultAmount)
-    : "0.00";
+
   const { control, form, handleSubmit, isDirty, mutate } = useAmountForm({
-    defaultAmount: defaultInputValue,
+    defaultAmount: defaultAmount?.toString() || "0",
     mutationFn: assign,
     queryKey: getCategoriesQueryOptions(selectedBudget).queryKey,
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { amount } = data;
-    const amountWithoutCommas = removeSpacesFromAmount(amount);
-    if (Number(amountWithoutCommas) === Number(defaultAmount)) return;
+    const amountFormatted = formatToDotDecimal(amount);
+    if (Number(amountFormatted) === Number(defaultAmount)) return;
 
     const assignment: FormAssignment = {
-      assignedAmount: Number(amountWithoutCommas),
+      assignedAmount: Number(amountFormatted),
       assignmentMonth: {
         month: Number(month),
         year: Number(year),
@@ -68,11 +66,9 @@ const AssignmentForm: FC<AssignmentFormProps> = ({
             <FormItem className="flex items-center space-y-0">
               <AmountInput
                 field={field}
-                className="relative h-8 border-none bg-transparent px-1 pr-10 text-right text-base"
+                currency={currencyToDisplay}
+                className="h-8 border-none bg-transparent px-1 text-right text-base"
               />
-              <p className="absolute right-12 pl-2 text-base">
-                {currencyToDisplay}
-              </p>
             </FormItem>
           )}
         />

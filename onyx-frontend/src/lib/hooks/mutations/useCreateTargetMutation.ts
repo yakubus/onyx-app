@@ -74,7 +74,8 @@ export const useCreateTargetMutation = ({
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
     },
-    onError: (_err, _newTodo, context) => {
+    onError: (err, _newTodo, context) => {
+      console.log(err);
       queryClient.setQueryData(queryKey, context);
       onMutationError();
     },

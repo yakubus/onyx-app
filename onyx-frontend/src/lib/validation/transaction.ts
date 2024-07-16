@@ -24,30 +24,24 @@ export const TransactionResultSchema = ResultSchema.extend({
   value: z.array(TransactionSchema),
 });
 
-const CategoryAssignmentSchema = z
+const SubcategoryIdSchema = z
   .object({
     transactionSign: z.enum(["+", "-"]),
     subcategoryId: z.string().optional(),
-    categoryId: z.string().optional(),
+    subcategoryName: z.string().optional(),
   })
-  .superRefine((data, ctx) => {
-    if (data.transactionSign === "-") {
-      if (!data.subcategoryId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["subcategoryId"],
-          message: "Required.",
-        });
+  .refine(
+    (data) => {
+      if (data.transactionSign === "-" && !data.subcategoryId) {
+        return false;
       }
-      if (!data.categoryId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["categoryId"],
-          message: "Required.",
-        });
-      }
-    }
-  });
+      return true;
+    },
+    {
+      message: "Required.",
+      path: ["subcategoryId"],
+    },
+  );
 
 export const CreateTransactionSchema = z
   .object({
@@ -61,6 +55,6 @@ export const CreateTransactionSchema = z
     }),
     transactedAt: z.date(),
   })
-  .and(CategoryAssignmentSchema);
+  .and(SubcategoryIdSchema);
 
 export type TCreateTransactionSchema = z.infer<typeof CreateTransactionSchema>;

@@ -44,7 +44,9 @@ const useAmountForm = ({
   });
 
   useEffect(() => {
-    reset({ amount: defaultAmount });
+    reset({
+      amount: defaultAmount,
+    });
   }, [defaultAmount, reset]);
 
   useEffect(() => {

@@ -1,14 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+
+import RouteLoadingError from "@/components/RouteLoadingError";
+import AccountsLoadingSkeleton from "@/components/dashboard/accounts/AccountsLoadingSkeleton";
+
 import { getAccountsQueryOptions } from "@/lib/api/account";
 import { getTransactionsQueryOptions } from "@/lib/api/transaction";
 import { SingleBudgetPageParamsSchema } from "@/lib/validation/searchParams";
-import RouteLoadingError from "@/components/RouteLoadingError";
 import { getCategoriesQueryOptions } from "@/lib/api/category";
 
 export const Route = createFileRoute(
   "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
 )({
-  loader: ({ context: { queryClient }, params: { budgetId, accountId } }) => {
+  loader: async ({
+    context: { queryClient },
+    params: { budgetId, accountId },
+  }) => {
     Promise.all([
       queryClient.ensureQueryData(
         getTransactionsQueryOptions(budgetId, accountId, {
@@ -19,7 +25,7 @@ export const Route = createFileRoute(
       queryClient.ensureQueryData(getCategoriesQueryOptions(budgetId)),
     ]);
   },
-  pendingComponent: () => <div>loading..</div>,
+  pendingComponent: () => <AccountsLoadingSkeleton />,
   errorComponent: ({ reset }) => <RouteLoadingError reset={reset} />,
   validateSearch: SingleBudgetPageParamsSchema,
 });

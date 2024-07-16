@@ -4,7 +4,6 @@ import { useParams, useSearch } from "@tanstack/react-router";
 
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -13,17 +12,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
+import AmountInput from "@/components/dashboard/AmountInput";
 
-import { Target, amountLiveValidation } from "@/lib/validation/base";
+import { Target } from "@/lib/validation/base";
 import { CreateTarget } from "@/lib/validation/subcategory";
 import TargetCardFormDatePicker from "./TargetCardFormDatePicker";
 import { FormTarget } from "@/lib/api/subcategory";
-import {
-  addSpacesToAmount,
-  formatAmount,
-  formatDecimals,
-  removeSpacesFromAmount,
-} from "@/lib/utils";
+import { formatToDotDecimal } from "@/lib/utils";
 import { useCreateTargetMutation } from "@/lib/hooks/mutations/useCreateTargetMutation";
 
 interface TargetCardFormProps {
@@ -48,9 +43,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
   const { toast } = useToast();
 
   const isEditing = !!currentTarget;
-  const defaultAmount = currentTarget
-    ? formatAmount(currentTarget.targetAmount.amount.toString())
-    : "0.00";
+  const defaultAmount = currentTarget?.targetAmount.amount.toString() || "0";
   const defaultMonth = currentTarget
     ? currentTarget.upToMonth.month.toString()
     : searchMonth;
@@ -87,9 +80,10 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
 
   const onSubmit: SubmitHandler<CreateTarget> = (data) => {
     const { month, year, amount } = data;
-    const amountWithoutCommas = removeSpacesFromAmount(amount);
+    const formattedAmount = formatToDotDecimal(amount);
+
     const target: FormTarget = {
-      targetAmount: Number(amountWithoutCommas),
+      targetAmount: Number(formattedAmount),
       startedAt: {
         month: new Date().getMonth() + 1,
         year: new Date().getFullYear(),
@@ -99,6 +93,7 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
         year: Number(year),
       },
     };
+    console.log(target);
     mutate({
       budgetId: selectedBudget,
       subcategoryId,
@@ -118,23 +113,10 @@ const TargetCardForm: FC<TargetCardFormProps> = ({
               <FormItem className="grid grid-cols-3 items-center gap-x-1 space-y-0">
                 <FormLabel className="col-span-1">Amount:</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    autoComplete="off"
-                    {...field}
-                    onChange={(e) => {
-                      let { value } = e.target;
-                      value = amountLiveValidation(value);
-                      value = addSpacesToAmount(value);
-                      field.onChange(value);
-                    }}
-                    onBlur={(e) => {
-                      const { value } = e.target;
-                      const formattedValue = formatDecimals(value);
-                      field.onChange(formattedValue);
-                    }}
-                    className="col-span-2 bg-card text-base"
+                  <AmountInput
+                    field={field}
+                    currency={currencyToDisplay}
+                    className="col-span-2 border bg-card text-start text-base"
                   />
                 </FormControl>
               </FormItem>

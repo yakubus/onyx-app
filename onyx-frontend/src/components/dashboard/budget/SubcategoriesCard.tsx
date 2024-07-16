@@ -16,16 +16,16 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
   );
 
   return (
-    <Card className="lg:col-span-3">
-      <div className="grid grid-cols-3 gap-x-4 rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
-        <p className="col-span-1 truncate">Subcategory</p>
+    <Card className="w-full overflow-auto">
+      <div className="grid min-w-[400px] grid-cols-3 gap-x-4  rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
+        <p className="col-span-1">Subcategory</p>
         <div className="col-span-2 grid grid-cols-2 justify-items-end">
-          <p className="truncate">Actual Amount</p>
+          <p>Actual Amount</p>
           <p>Assigned</p>
         </div>
       </div>
       {activeCategory?.subcategories && (
-        <div className="p-1">
+        <div className="min-w-[400px] p-1">
           <ul>
             {activeCategory.subcategories.map((subcategory) => (
               <SubcategoryAccordion

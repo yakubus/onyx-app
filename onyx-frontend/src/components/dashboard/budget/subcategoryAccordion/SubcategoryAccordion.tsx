@@ -8,7 +8,7 @@ import AssignmentForm from "@/components/dashboard/budget/subcategoryAccordion/A
 import NameForm from "@/components/dashboard/budget/subcategoryAccordion/NameForm";
 
 import { Subcategory } from "@/lib/validation/subcategory";
-import { cn, formatAmount } from "@/lib/utils";
+import { cn, getFormattedCurrency } from "@/lib/utils";
 import { Money } from "@/lib/validation/base";
 import { getToAssignQueryKey } from "@/lib/api/budget";
 
@@ -86,15 +86,15 @@ const SubcategoryAccordion: FC<SubcategoryAccordionProps> = ({
         </div>
         <div className="col-span-2 grid grid-cols-2 items-center justify-items-end gap-x-4">
           <p>
-            {currentlyAssigned
-              ? formatAmount(currentlyAssigned.actualAmount.amount.toString())
-              : "0.00"}{" "}
-            {currencyToDisplay}
+            {getFormattedCurrency(
+              currentlyAssigned?.actualAmount.amount || 0,
+              currencyToDisplay,
+            )}
           </p>
           <div className="md:ml-10" ref={assignFormRef}>
             {currencyToDisplay && (
               <AssignmentForm
-                defaultAmount={currentlyAssigned?.assignedAmount.amount.toString()}
+                defaultAmount={currentlyAssigned?.assignedAmount.amount}
                 subcategoryId={subcategory.id}
                 currencyToDisplay={currencyToDisplay}
               />
