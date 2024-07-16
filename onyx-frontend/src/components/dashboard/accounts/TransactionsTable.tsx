@@ -129,8 +129,8 @@ const TransactionsTable: FC<TransactionsTable> = ({
             />
           )}
         </div>
-
         <Input
+          disabled={transactions.length === 0}
           placeholder="Search..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}

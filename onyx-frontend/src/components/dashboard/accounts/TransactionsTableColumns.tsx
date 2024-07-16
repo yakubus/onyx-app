@@ -1,4 +1,4 @@
-import { Column, ColumnDef } from "@tanstack/react-table";
+import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 import { ArrowUpDown, ArrowUp, ArrowDown, Ellipsis } from "lucide-react";
@@ -40,7 +40,9 @@ export const columns: ColumnDef<Transaction>[] = [
       return formattedDate;
     },
     id: "date",
-    header: ({ column }) => <SortButton column={column} label="Date" />,
+    header: ({ column, table }) => (
+      <SortButton column={column} label="Date" table={table} />
+    ),
     cell: ({ row }) => {
       return <div className="pl-4">{row.getValue("date")}</div>;
     },
@@ -50,7 +52,9 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "counterparty.name",
     id: "counterparty",
-    header: ({ column }) => <SortButton column={column} label="Counterparty" />,
+    header: ({ column, table }) => (
+      <SortButton column={column} label="Counterparty" table={table} />
+    ),
     cell: ({ row }) => (
       <div className="pl-4">{capitalize(row.getValue("counterparty"))}</div>
     ),
@@ -58,7 +62,9 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "subcategory.name",
     id: "subcategory",
-    header: ({ column }) => <SortButton column={column} label="Subcategory" />,
+    header: ({ column, table }) => (
+      <SortButton column={column} label="Subcategory" table={table} />
+    ),
     cell: ({ row }) => {
       const subcategoryName = row.getValue<string>("subcategory") || "N/A";
 
@@ -69,9 +75,9 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "amount.amount",
     id: "amount",
-    header: ({ column }) => (
+    header: ({ column, table }) => (
       <div className="text-right">
-        <SortButton column={column} label="Amount" />
+        <SortButton column={column} label="Amount" table={table} />
       </div>
     ),
     cell: ({ row }) => {
@@ -103,15 +109,24 @@ export const columns: ColumnDef<Transaction>[] = [
 const SortButton = ({
   column,
   label,
+  table,
 }: {
   column: Column<Transaction>;
   label: string;
+  table: Table<Transaction>;
 }) => {
   const isSorted = column.getIsSorted();
+
+  const hasValues = table.getRowModel().rows.some((row) => {
+    const value = row.getValue(column.id);
+    return value !== null && value !== undefined;
+  });
+
   return (
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(undefined, true)}
+      disabled={!hasValues}
     >
       <span className="inline-flex font-semibold tracking-wide">{label}</span>
       {isSorted === "asc" && (
