@@ -99,7 +99,7 @@ const TransactionsTable: FC<TransactionsTable> = ({
     );
 
   return (
-    <div className="pt-7">
+    <div className="pt-3">
       <div className="flex flex-col justify-between space-y-2 py-4 md:flex-row md:space-y-0">
         <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
           {isLargeDevice ? (
