@@ -31,6 +31,7 @@
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "lucide-react": "^0.378.0",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.8.0",

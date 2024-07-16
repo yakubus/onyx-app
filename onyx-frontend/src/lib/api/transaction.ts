@@ -27,7 +27,7 @@ export interface CreateTransactionPayload {
   subcategoryId?: string | null;
 }
 
-interface CreateTransaction {
+export interface CreateTransaction {
   budgetId: string;
   payload: CreateTransactionPayload;
 }

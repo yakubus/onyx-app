@@ -1,12 +1,12 @@
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown, Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { Transaction } from "@/lib/validation/transaction";
-import { cn, getFormattedCurrency } from "@/lib/utils";
+import { capitalize, cn, getFormattedCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<Transaction>[] = [
   {
@@ -45,13 +45,14 @@ export const columns: ColumnDef<Transaction>[] = [
       return <div className="pl-4">{row.getValue("date")}</div>;
     },
     sortDescFirst: true,
+    sortingFn: "alphanumeric",
   },
   {
     accessorKey: "counterparty.name",
     id: "counterparty",
     header: ({ column }) => <SortButton column={column} label="Counterparty" />,
     cell: ({ row }) => (
-      <div className="pl-4">{row.getValue("counterparty")}</div>
+      <div className="pl-4">{capitalize(row.getValue("counterparty"))}</div>
     ),
   },
   {
@@ -60,6 +61,7 @@ export const columns: ColumnDef<Transaction>[] = [
     header: ({ column }) => <SortButton column={column} label="Subcategory" />,
     cell: ({ row }) => {
       const subcategoryName = row.getValue<string>("subcategory") || "N/A";
+
       return <div className="pl-4">{subcategoryName}</div>;
     },
     sortUndefined: "last",
@@ -75,16 +77,23 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const amount = row.getValue("amount") as number;
       const currency = row.original.amount.currency;
+      const accCurrency = row.original.account.balance.currency;
       const formatted = getFormattedCurrency(amount, currency);
 
       return (
         <div
           className={cn(
-            "space-x-1 pr-5 text-right font-semibold",
+            "flex justify-end space-x-1 pr-5 font-semibold",
             amount < 0 ? "text-destructive" : "text-primary",
           )}
         >
-          <span>{formatted}</span>
+          <span>
+            {accCurrency === currency ? (
+              formatted
+            ) : (
+              <Ellipsis className="animate-pulse" />
+            )}
+          </span>
         </div>
       );
     },

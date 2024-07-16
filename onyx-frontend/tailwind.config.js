@@ -9,7 +9,7 @@ export default {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-  ],  
+  ],
   prefix: "",
   theme: {
     container: {
@@ -17,7 +17,7 @@ export default {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
-        'xs': "639px"
+        xs: "639px",
       },
     },
     extend: {
@@ -65,6 +65,9 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      gridTemplateColumns: {
+        "table-layout": "auto 0.77fr 1.2fr 0.85fr 1.15fr",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -79,7 +82,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      height: {   
+      height: {
         "900px": "900px",
         "1320px": "1320px",
         "1200px": "1200px",
@@ -90,10 +93,10 @@ export default {
         "750px": "750px",
         "500px": "500px",
         "600px": "600px",
-        "518px": "518px" 
+        "518px": "518px",
       },
-      width: {   
-        "1440px": "1440px",   
+      width: {
+        "1440px": "1440px",
         "1196px": "1196px",
         "498px": "498px",
         "990px": "990px",
@@ -103,8 +106,8 @@ export default {
         "52px": "52px",
         "30%": "30%",
         "40%": "40%",
-        "60%": "60%"
-      },      
+        "60%": "60%",
+      },
     },
   },
   plugins: [tailwindcssAnimate, tailwindScrollbar({ nocompatible: true })],

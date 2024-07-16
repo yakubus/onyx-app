@@ -61,3 +61,7 @@ export const formatToDotDecimal = (str: string): string => {
 
   return str;
 };
+
+export const isCurrentDate = (month: string, year: string) =>
+  Number(month) === new Date().getMonth() + 1 &&
+  Number(year) === new Date().getFullYear();

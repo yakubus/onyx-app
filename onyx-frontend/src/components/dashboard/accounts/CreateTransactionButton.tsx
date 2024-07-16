@@ -1,7 +1,4 @@
-import { FC, useCallback, useEffect, useMemo } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { FC } from "react";
 
 import { Plus } from "lucide-react";
 import AmountInput from "@/components/dashboard/AmountInput";
@@ -34,30 +31,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { cn, formatToDotDecimal } from "@/lib/utils";
-import {
-  CreateTransactionSchema,
-  TCreateTransactionSchema,
-} from "@/lib/validation/transaction";
+import { cn } from "@/lib/utils";
 import { Account } from "@/lib/validation/account";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  CreateTransactionPayload,
-  createTransaction,
-  getTransactionsQueryOptions,
-} from "@/lib/api/transaction";
-import { getAccountsQueryOptions } from "@/lib/api/account";
-import { getCategoriesQueryOptions } from "@/lib/api/category";
 import { CURRENCY } from "@/lib/constants/currency";
-
-interface Selectable {
-  label: string;
-  value: string;
-}
-
-interface SelectableCategories extends Selectable {
-  subcategories: Selectable[];
-}
+import { useCreateTransactionForm } from "@/lib/hooks/useCreateTransactionForm";
+import SubcategoriesPopoverFormField, {
+  type SelectableCategories,
+} from "@/components/dashboard/accounts/SubcategoriesPopoverFormField";
 
 interface CreateTransactionButtonProps {
   account: Account;
@@ -68,116 +48,20 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
   account,
   selectableCategories,
 }) => {
-  const { accMonth, accYear } = useSearch({
-    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
-  });
-  const { budgetId, accountId } = useParams({
-    from: "/_dashboard-layout/budget/$budgetId/accounts/$accountId",
-  });
-  const queryClient = useQueryClient();
   const {
-    balance: { currency: accountCurrency },
-  } = account;
-  const isCurrentMonthSelected =
-    Number(accMonth) === new Date().getMonth() + 1 &&
-    Number(accYear) === new Date().getFullYear();
-  const dafaultTransactedAt = useMemo(
-    () =>
-      isCurrentMonthSelected
-        ? new Date()
-        : new Date(`${accYear}-${accMonth}-01`),
-    [accMonth, accYear, isCurrentMonthSelected],
-  );
-
-  const form = useForm<TCreateTransactionSchema>({
-    defaultValues: {
-      currency: accountCurrency,
-      amount: "0.00",
-      counterpartyName: "",
-      subcategoryId: "",
-      transactedAt: dafaultTransactedAt,
-      categoryId: "",
-      transactionSign: "-",
-    },
-    resolver: zodResolver(CreateTransactionSchema),
-  });
-  const { control, setFocus, handleSubmit, watch, reset, setValue } = form;
-  const selectedCategoryId = watch("categoryId");
-  const selectedCurrency = watch("currency");
-  const transactionSign = watch("transactionSign");
-
-  useEffect(() => {
-    reset((defaultValues) => ({
-      ...defaultValues,
-      transactedAt: dafaultTransactedAt,
-    }));
-  }, [dafaultTransactedAt, reset]);
-
-  const selectableSubcategories = useMemo(
-    () =>
-      selectedCategoryId
-        ? selectableCategories.find((c) => c.value === selectedCategoryId)
-            ?.subcategories
-        : [],
-    [selectedCategoryId, selectableCategories],
-  );
-
-  const { mutate, isPending, isSuccess } = useMutation({
-    mutationFn: createTransaction,
-    onError: (err) => {
-      console.error(err);
-    },
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries(
-          getTransactionsQueryOptions(budgetId, accountId, {
-            accountId,
-          }),
-        ),
-        queryClient.invalidateQueries(getAccountsQueryOptions(budgetId)),
-        queryClient.invalidateQueries(getCategoriesQueryOptions(budgetId)),
-      ]);
-    },
-  });
-
-  useEffect(() => {
-    if (isSuccess) reset();
-  }, [isSuccess, reset]);
-
-  const onSubmit: SubmitHandler<TCreateTransactionSchema> = (data) => {
-    const {
-      amount,
-      counterpartyName,
-      subcategoryId,
-      transactedAt,
-      currency,
-      transactionSign,
-    } = data;
-    const formattedAmount =
-      transactionSign === "-"
-        ? Number(transactionSign + formatToDotDecimal(amount))
-        : Number(formatToDotDecimal(amount));
-
-    const payload: CreateTransactionPayload = {
-      accountId: account.id,
-      amount: {
-        amount: formattedAmount,
-        currency,
-      },
-      counterpartyName,
-      subcategoryId: subcategoryId === "" ? null : subcategoryId,
-      transactedAt,
-    };
-
-    mutate({ budgetId, payload });
-  };
-
-  const handlePlusMinusBtn = useCallback(
-    (state: "+" | "-") => {
-      setValue("transactionSign", state);
-    },
-    [setValue],
-  );
+    handlePlusMinusBtn,
+    form,
+    handleSubmit,
+    onSubmit,
+    control,
+    setFocus,
+    transactionSign,
+    selectedCurrency,
+    isCurrentMonthSelected,
+    isPending,
+    selectedSubcategoryName,
+    setValue,
+  } = useCreateTransactionForm({ account });
 
   return (
     <Dialog>
@@ -249,7 +133,9 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                           />
                           <AmountInput
                             field={field}
-                            currency={selectedCurrency || accountCurrency}
+                            currency={
+                              selectedCurrency || account.balance.currency
+                            }
                             className="border text-left"
                           />
                         </div>
@@ -289,56 +175,16 @@ const CreateTransactionButton: FC<CreateTransactionButtonProps> = ({
                 <div className="mt-4 space-y-4 overflow-hidden px-1.5 pb-1.5">
                   <FormField
                     control={form.control}
-                    name="categoryId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category:</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select transaction category..." />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {selectableCategories.map((c) => (
-                              <SelectItem key={c.value} value={c.value}>
-                                {c.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="subcategoryId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Subcategory:</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={!selectedCategoryId}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select transaction subcategory..." />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {selectableSubcategories &&
-                              selectableSubcategories.map((s) => (
-                                <SelectItem key={s.value} value={s.value}>
-                                  {s.label}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
+                        <SubcategoriesPopoverFormField
+                          field={field}
+                          selectableCategories={selectableCategories}
+                          selectedSubcategoryName={selectedSubcategoryName}
+                          setValue={setValue}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}

@@ -8,6 +8,12 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+
+import { Minus, Plus } from "lucide-react";
+import CreateTransactionTableForm from "@/components/dashboard/accounts/CreateTransactionTableForm";
+import { columns } from "@/components/dashboard/accounts/TransactionsTableColumns";
+import CreateTransactionButton from "@/components/dashboard/accounts/CreateTransactionButton";
+import DeleteTransactionsButton from "@/components/dashboard/accounts/DeleteTransactionsButton";
 import {
   Table,
   TableBody,
@@ -17,18 +23,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "../../ui/input";
+import { Input } from "@/components/ui/input";
+
 import { Transaction } from "@/lib/validation/transaction";
 import { Account } from "@/lib/validation/account";
 import { Category } from "@/lib/validation/category";
-import { columns } from "./TransactionsTableColumns";
-import CreateTransactionButton from "./CreateTransactionButton";
 import { useDebounce } from "@/lib/hooks/useDebounce";
-import DeleteTransactionsButton from "./DeleteTransactionsButton";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
-import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import CreateTransactionTableForm from "./CreateTransactionTableForm";
 
 interface TransactionsTable {
   transactions: Transaction[];
@@ -160,14 +162,19 @@ const TransactionsTable: FC<TransactionsTable> = ({
               <TableRow
                 className={cn(!isCreateFormVisible && "border-none py-0")}
               >
-                <TableCell colSpan={columns.length} className="py-0">
+                <TableCell id="none" colSpan={columns.length} className="py-0">
                   <div
                     className={cn(
                       "grid grid-rows-[0fr] transition-all duration-300",
                       isCreateFormVisible && "grid-rows-[1fr] py-2",
                     )}
                   >
-                    <CreateTransactionTableForm />
+                    <div className="overflow-hidden">
+                      <CreateTransactionTableForm
+                        account={selectedAccount}
+                        selectableCategories={selectableCategories}
+                      />
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>
