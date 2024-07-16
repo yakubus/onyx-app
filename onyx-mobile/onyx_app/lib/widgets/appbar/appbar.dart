@@ -47,30 +47,34 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
               placeholder: Text('CN'),
             ),
             itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.profile,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.profile,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.billing,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.billing,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.team,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.team,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.subscription,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.subscription,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
               PopupMenuItem(
                 child: Text(
                   AppLocalizations.of(context)!.settings,

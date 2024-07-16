@@ -32,67 +32,72 @@ class AddBudgetDialog extends HookConsumerWidget {
                 ),
               ),
             ]),
-            content: Column(
-              children: [
-                Row(
+            content: MediaQuery.removeViewInsets(
+              removeTop: true,
+              context: context,
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(AppLocalizations.of(context)!.name),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ShadInput(
-                        controller: budgetNameController,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(AppLocalizations.of(context)!.currency),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ShadSelect<String>(
-                        placeholder:
-                            Text(AppLocalizations.of(context)!.select_currency),
-                        options: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(32, 6, 6, 6),
-                            child: Text(
-                              AppLocalizations.of(context)!.currency,
-                              textAlign: TextAlign.start,
-                            ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(AppLocalizations.of(context)!.name),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ShadInput(
+                            controller: budgetNameController,
                           ),
-                          ...currencyDict.entries
-                              .map((e) => ShadOption(
-                                  value: e.key, child: Text(e.value)))
-                              .toList(),
-                        ],
-                        selectedOptionBuilder: (context, value) =>
-                            Text(currencyDict[value]!),
-                        onChanged: (value) {
-                          budgetCurrency = value;
-                        },
-                      ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(AppLocalizations.of(context)!.currency),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ShadSelect<String>(
+                            placeholder: Text(
+                                AppLocalizations.of(context)!.select_currency),
+                            options: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(32, 6, 6, 6),
+                                child: Text(
+                                  AppLocalizations.of(context)!.currency,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              ...currencyDict.entries
+                                  .map((e) => ShadOption(
+                                      value: e.key, child: Text(e.value)))
+                                  .toList(),
+                            ],
+                            selectedOptionBuilder: (context, value) =>
+                                Text(currencyDict[value]!),
+                            onChanged: (value) {
+                              budgetCurrency = value;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ShadButton.link(
+                      text: Text(AppLocalizations.of(context)!.add,
+                          style: GoogleFonts.lato(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        ref.read(budgetServiceDataProvider.notifier).addBudget(
+                            budgetNameController.text, budgetCurrency);
+                      },
                     )
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ShadButton.link(
-                  text: Text(AppLocalizations.of(context)!.add,
-                      style: GoogleFonts.lato(
-                          fontSize: 15, fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    ref
-                        .read(budgetServiceDataProvider.notifier)
-                        .addBudget(budgetNameController.text, budgetCurrency);
-                  },
-                )
-              ],
+              ),
             )));
   }
 }
