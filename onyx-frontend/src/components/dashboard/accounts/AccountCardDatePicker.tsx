@@ -58,7 +58,7 @@ const AccountCardDatePicker: FC<AccountCardDatePickerProps> = ({
           selectedYear={numericSearchParamsAccYear}
           handleSetNewDate={handleMonthChange}
         />
-        <p className="pt-2 text-sm font-thin tracking-normal text-muted-foreground">
+        <p className="pt-2 text-sm font-normal tracking-wide text-muted-foreground">
           Select a month and track your expenses.
         </p>
       </div>

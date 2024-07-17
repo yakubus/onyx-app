@@ -41,7 +41,7 @@ function Budget() {
         <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl">
           All your budgets in one place.
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm">
           Select and manage your existing budgets as you wish or create new
           ones!
         </p>

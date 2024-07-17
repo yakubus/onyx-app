@@ -106,7 +106,7 @@ const AccountCard: FC<AccountCardProps> = ({
           <AccountCardDeleteButton accountId={selectedAccount.id} />
         </div>
         <div className="pl-3">
-          <span className="text-xs font-thin">BALANCE</span>
+          <span className="text-xs">BALANCE</span>
           <div className="-ml-1">
             <AccountCardBalanceForm
               balance={selectedAccount.balance}
