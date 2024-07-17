@@ -2,9 +2,9 @@ import { FC, useState } from "react";
 
 import CreateSubcategoryButton from "@/components/dashboard/budget/CreateSubcategoryButton";
 import SubcategoryAccordion from "@/components/dashboard/budget/subcategoryAccordion/SubcategoryAccordion";
-import { Card } from "@/components/ui/card";
 
 import { Category } from "@/lib/validation/category";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SubcategoriesCardProps {
   activeCategory: Category;
@@ -16,8 +16,8 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
   );
 
   return (
-    <Card className="w-full overflow-auto">
-      <div className="grid min-w-[400px] grid-cols-3 gap-x-4  rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
+    <ScrollArea className="h-full w-full overflow-auto rounded-lg border bg-card lg:col-span-3">
+      <div className="sticky top-0 z-10 grid min-w-[400px] grid-cols-3 gap-x-4  rounded-t-md bg-primary px-4 py-1 text-primary-foreground">
         <p className="col-span-1">Subcategory</p>
         <div className="col-span-2 grid grid-cols-2 justify-items-end">
           <p>Actual Amount</p>
@@ -41,7 +41,7 @@ const SubcategoriesCard: FC<SubcategoriesCardProps> = ({ activeCategory }) => {
           </div>
         </div>
       )}
-    </Card>
+    </ScrollArea>
   );
 };
 

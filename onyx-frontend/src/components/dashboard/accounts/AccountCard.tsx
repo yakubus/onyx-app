@@ -62,7 +62,7 @@ const AccountCard: FC<AccountCardProps> = ({
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-5 top-1/2 hidden -translate-y-1/2 rounded-full  lg:inline-flex"
+          className="absolute right-5 top-1/2 hidden -translate-y-1/2 rounded-full lg:inline-flex"
           asChild
         >
           <Link
@@ -95,7 +95,7 @@ const AccountCard: FC<AccountCardProps> = ({
         </Button>
       )}
 
-      <div className="w-full max-w-[400px] space-y-2 justify-self-center rounded-xl bg-gradient-to-b from-primary via-primary to-primaryDark p-4 text-primary-foreground shadow-lg shadow-primaryDark/50 lg:justify-self-end">
+      <div className="w-full max-w-[400px] space-y-2 justify-self-center rounded-xl bg-gradient-to-b from-primary via-primary to-primaryDark p-4 text-primary-foreground shadow-lg shadow-primaryDark/50 md:justify-self-end">
         <div className="flex items-center space-x-2 text-lg text-primary-foreground md:text-2xl">
           <div className="flex-1">
             <AccountCardNameForm
