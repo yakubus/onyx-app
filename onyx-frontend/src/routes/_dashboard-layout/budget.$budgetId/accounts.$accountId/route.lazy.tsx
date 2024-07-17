@@ -44,7 +44,7 @@ function Account() {
   );
 
   return (
-    <div className="px-4 xl:px-8">
+    <div>
       <AccountCard
         selectedAccount={selectedAccount}
         accounts={accounts}

@@ -98,7 +98,7 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
             <Logo />
           </SheetTitle>
         </SheetHeader>
-        <div className="flex flex-grow flex-col justify-between py-12">
+        <div className="flex flex-grow flex-col justify-between overflow-y-auto py-12">
           <div className="flex flex-col space-y-4">
             {budgetId && (
               <Button

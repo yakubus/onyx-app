@@ -74,8 +74,8 @@ function SingleBudget() {
   }
 
   return (
-    <div className="relative grid h-full grid-cols-1 gap-x-8 gap-y-4 rounded-md px-4 md:px-8 lg:grid-cols-5">
-      <div className="flex h-full flex-col space-y-4 overflow-hidden lg:col-span-2">
+    <div className="grid h-full grid-cols-1 gap-x-8 gap-y-4 overflow-hidden rounded-md px-4 md:px-8 lg:grid-cols-5">
+      <div className="flex h-full flex-col space-y-4 lg:col-span-2">
         <BudgetAssignmentCard
           toAssign={toAssign}
           availableDates={availableDates}
@@ -87,9 +87,7 @@ function SingleBudget() {
         />
       </div>
       {activeCategoryData && (
-        <div className="lg:col-span-3">
-          <SubcategoriesCard activeCategory={activeCategoryData} />
-        </div>
+        <SubcategoriesCard activeCategory={activeCategoryData} />
       )}
     </div>
   );

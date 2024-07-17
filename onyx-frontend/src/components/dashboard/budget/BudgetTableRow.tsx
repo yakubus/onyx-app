@@ -76,7 +76,7 @@ const BudgetTableRow: FC<BudgetTableRowProps> = ({ budget }) => {
                 }}
                 mask={{ to: `/budget/${budget.id}` }}
                 preload="intent"
-                className="grid w-full grid-cols-3 gap-x-4 px-4 py-8 hover:bg-accent md:grid-cols-9"
+                className="grid w-full grid-cols-3 gap-x-4 px-4 py-8 font-medium hover:bg-accent md:grid-cols-9"
               >
                 <p className="md:col-span-3">{budget.name}</p>
                 <p className="md:col-span-2">{budget.currency}</p>
