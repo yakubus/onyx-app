@@ -26,21 +26,28 @@ class UserService {
   }
 
   Future<UserServiceModel> loginUser(String email, String password) async {
-    final response = await http.post(
+    final response = await http
+        .post(
       Uri.parse("$apiUrl/login"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"email": email, "password": password}),
-    );
+    )
+        .timeout(const Duration(seconds: 15), onTimeout: () {
+      throw Exception('Connection timeout');
+    });
     if (response.statusCode == 200) {
+      log("loginUser service response: ${response.body}");
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('${response.statusCode}:Failed to load user');
+      log("loginUser exeption service response: ${response.body}");
+      throw Exception('${response.statusCode}:Failed to login user');
     }
   }
 
   Future<UserServiceModel> registerUser(
       String email, String password, String currency, String username) async {
-    final response = await http.post(
+    final response = await http
+        .post(
       Uri.parse("$apiUrl/register"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
@@ -49,20 +56,17 @@ class UserService {
         "currency": currency,
         "username": username,
       }),
-    );
+    )
+        .timeout(const Duration(seconds: 15), onTimeout: () {
+      throw Exception('Connection timeout');
+    });
 
     if (response.statusCode == 200) {
-      log('registerUser response.body: ${response.body}');
+      log("registerUser service response: ${response.body}");
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
-      String request = jsonEncode({
-        "email": email,
-        "password": password,
-        "currency": currency,
-        "username": username,
-      });
-      log('registerUser response.body: $request');
-      throw Exception('Failed to register user');
+      log("registerUser exeption service response: ${response.body}");
+      throw Exception('${response.statusCode}:Failed to register user');
     }
   }
 }

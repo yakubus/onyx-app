@@ -29,14 +29,16 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(title),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => showShadSheet(
-            side: ShadSheetSide.left,
-            context: context,
-            builder: (context) => const MainMenu(),
-          ),
-        ),
+        leading: ref.watch(isLogged)
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => showShadSheet(
+                  side: ShadSheetSide.left,
+                  context: context,
+                  builder: (context) => const MainMenu(),
+                ),
+              )
+            : null,
         actions: [
           PopupMenuButton(
             color: bgcolor,
@@ -45,30 +47,34 @@ class DefaultAppBar extends ConsumerWidget implements PreferredSizeWidget {
               placeholder: Text('CN'),
             ),
             itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.profile,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.profile,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.billing,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.billing,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.team,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.team,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
-              PopupMenuItem(
-                child: Text(
-                  AppLocalizations.of(context)!.subscription,
+              if (ref.watch(isLogged) == true)
+                PopupMenuItem(
+                  child: Text(
+                    AppLocalizations.of(context)!.subscription,
+                  ),
+                  onTap: () {},
                 ),
-                onTap: () {},
-              ),
               PopupMenuItem(
                 child: Text(
                   AppLocalizations.of(context)!.settings,

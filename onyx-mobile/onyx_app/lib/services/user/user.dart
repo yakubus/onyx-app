@@ -105,12 +105,32 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
     }
   }
 
-  Future<void> register(
+  Future<UserData> register(
       String email, String password, String currency, String username) async {
-    ref.watch(userDataServiceProvider.notifier).state = await ref
-        .read(userServiceProvider)
-        .registerUser(email, password, currency, username);
-    refresh();
+    try {
+      // Rejestracja użytkownika
+      ref.read(userDataServiceProvider.notifier).state = await ref
+          .read(userServiceProvider)
+          .registerUser(email, password, currency, username);
+
+      // Ustawienie tokenu i statusu logowania
+      ref.read(userToken.notifier).state =
+          ref.read(userDataServiceProvider.notifier).state.value?.accessToken ??
+              '';
+      ref.read(isLogged.notifier).state =
+          ref.read(userDataServiceProvider.notifier).state.isSuccess ?? false;
+
+      // Odświeżenie stanu
+      refresh();
+
+      log("userToken: ${ref.read(userToken.notifier).state}");
+      log("isLogged: ${ref.read(isLogged.notifier).state}");
+
+      return ref.read(userDataServiceProvider.notifier).state.value!;
+    } catch (e) {
+      log("Register error: $e");
+      rethrow;
+    }
   }
 
   void userLogout() {
