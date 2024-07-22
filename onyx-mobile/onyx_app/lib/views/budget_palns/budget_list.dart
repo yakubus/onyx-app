@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import 'package:onyx_app/main.dart';
 import 'package:onyx_app/services/budget/budget.dart';
 
 final headings = [

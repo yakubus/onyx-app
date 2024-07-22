@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:onyx_app/config.dart';
@@ -35,8 +36,10 @@ class UserService {
       throw Exception('Connection timeout');
     });
     if (response.statusCode == 200) {
+      log("loginUser service response: ${response.body}");
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
+      log("loginUser exeption service response: ${response.body}");
       throw Exception('${response.statusCode}:Failed to login user');
     }
   }
@@ -59,8 +62,10 @@ class UserService {
     });
 
     if (response.statusCode == 200) {
+      log("registerUser service response: ${response.body}");
       return UserServiceModel.fromJson(jsonDecode(response.body));
     } else {
+      log("registerUser exeption service response: ${response.body}");
       throw Exception('${response.statusCode}:Failed to register user');
     }
   }
