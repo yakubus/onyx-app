@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/currency_dict.dart';
-import 'package:onyx_app/services/user/user.dart';
+
 import 'package:onyx_app/services/user/user_repo.dart';
 import 'package:onyx_app/widgets/login_register/login_error_toast.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';

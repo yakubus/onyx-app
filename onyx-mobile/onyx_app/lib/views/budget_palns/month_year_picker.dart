@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:onyx_app/services/budget/date.dart';
+import 'package:onyx_app/widgets/data_picker/date_selector.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class MonthYearPicker extends HookConsumerWidget {
   const MonthYearPicker({super.key});
@@ -20,18 +21,11 @@ class MonthYearPicker extends HookConsumerWidget {
           },
         ),
         InkWell(
-          onTap: () async {
-            final pickedDate = await showDatePicker(
-              context: context,
-              initialDate: selectedDate,
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2100),
-              initialDatePickerMode: DatePickerMode.year,
-            );
-            if (pickedDate != null) {
-              dateNotifier.setDate(pickedDate);
-            }
-          },
+          onTap: () => showShadSheet(
+            side: ShadSheetSide.left,
+            context: context,
+            builder: (context) => const DateSelector(),
+          ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -39,7 +33,7 @@ class MonthYearPicker extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              DateFormat.yMMMM().format(selectedDate),
+              "date",
               style: const TextStyle(fontSize: 16),
             ),
           ),

@@ -36,8 +36,22 @@
     "budget_view_title_desctiption": "Select and manage your existing budgets as you wish or create new ones!",
     "add_budget": "Add budget",
     "login_error": "Login error",
-    "login_error_desc": "Login failed, please try again"
+    "login_error_desc": "Login failed, please try again",
+    "select_date": "select month and year",
     
+
+    "jan": "JAN",
+    "feb": "FEB",
+    "mar": "MAR",
+    "apr": "APR",
+    "may": "MAY",
+    "jun": "JUN",
+    "jul": "JUL",
+    "aug": "AUG",
+    "sep": "SEP",
+    "oct": "OCT",
+    "nov": "NOV",
+    "dec": "DEC"
 
   
   

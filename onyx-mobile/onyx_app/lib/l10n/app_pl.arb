@@ -28,14 +28,32 @@
     "name": "nazwa",
     "undo": "wstecz",
 
-
     
     "start_tekst": "Jedyny planer budżetu, jakiego będziesz potrzebować.",
     "select_language":"wybierz język",
     "select_currency":"wybierz walutę",
     "budget_view_title": "Wszystkie Twoje budżety w jednym miejscu",
     "budget_view_title_desctiption": "Wybieraj i zarządzaj istniejącymi budżetami lub twórz nowe!",
-     "add_budget": "Dodaj budżet",
-     "login_error": "Błąd logowania",     
-     "login_error_desc": "Logowanie nie powiodło się, spróbuj ponownie"
+    "add_budget": "Dodaj budżet",
+    "login_error": "Błąd logowania",     
+    "login_error_desc": "Logowanie nie powiodło się, spróbuj ponownie",
+    "select_date": "wybierz miesiąc i rok",
+
+
+
+    "jan": "STY",
+    "feb": "LUT",
+    "mar": "MAR",
+    "apr": "KWI",
+    "may": "MAJ",
+    "jun": "CZE",
+    "jul": "LIP",
+    "aug": "SIE",
+    "sep": "WRZ",
+    "oct": "PAZ",
+    "nov": "LIS",
+    "dec": "GRU"
+
+
+    
   } 
