@@ -1,4 +1,6 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onyx_app/log/logger.dart';
 import 'package:onyx_app/main.dart';
 import 'package:onyx_app/themes/logo.dart';
 import 'package:onyx_app/widgets/login_register/log_in_dialog.dart';
@@ -15,6 +17,19 @@ class Home extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    useEffect(() {
+      Future<void> initialize() async {
+        await fetchLongLivedToken(ref);
+        ref.read(userServiceDataProvider.notifier).keepAlive();
+      }
+
+      initialize();
+
+      // Return a cleanup function if needed, otherwise return null
+      return null;
+    }, []);
+
+    logger("HookConsumerWidget -> build -> useEffect: initialized ");
     return ScafoldOnyx(
       appBar: const DefaultAppBar(
         title: "ONYX",

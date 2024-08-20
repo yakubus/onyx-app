@@ -2,8 +2,8 @@
 import 'dart:convert';
 
 class MonthDate {
-  final int month;
-  final int year;
+  int month;
+  int year;
 
   MonthDate({required this.month, required this.year});
 
@@ -25,4 +25,22 @@ class MonthDate {
 
   factory MonthDate.fromJson(String source) =>
       MonthDate.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  void setMonth(int month) {
+    if (month > 12) {
+      this.month = 12;
+    } else if (month < 1) {
+      this.month = 1;
+    } else {
+      this.month = month;
+    }
+  }
+
+  void setYear(int year) {
+    if (year < 2000) {
+      this.year = 2000;
+    } else {
+      this.year = year;
+    }
+  }
 }

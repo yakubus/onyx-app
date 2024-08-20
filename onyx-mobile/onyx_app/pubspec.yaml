@@ -31,6 +31,7 @@ dependencies:
   carousel_slider_plus: ^5.0.1+1
   shadcn_ui: ^0.5.2
   google_fonts: ^6.2.1
+  stack_trace: ^1.11.1
 
 
 dev_dependencies:

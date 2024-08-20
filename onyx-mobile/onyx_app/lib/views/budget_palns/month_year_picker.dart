@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:onyx_app/services/budget/date.dart';
+import 'package:onyx_app/widgets/data_picker/date_selector_service.dart';
 import 'package:onyx_app/widgets/data_picker/date_selector.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -9,15 +9,12 @@ class MonthYearPicker extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedDate = ref.watch(dateProvider);
-    final dateNotifier = ref.read(dateProvider.notifier);
-
     return Row(
       children: [
         IconButton(
           icon: const Icon(Icons.arrow_left),
           onPressed: () {
-            dateNotifier.decrementMonth();
+            ref.watch(budgetDataProvider).decrementMonth();
           },
         ),
         InkWell(
@@ -33,7 +30,7 @@ class MonthYearPicker extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              "date",
+              ref.watch(budgetDataProvider).toString(),
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -41,7 +38,7 @@ class MonthYearPicker extends HookConsumerWidget {
         IconButton(
           icon: const Icon(Icons.arrow_right),
           onPressed: () {
-            dateNotifier.incrementMonth();
+            ref.watch(budgetDataProvider).incrementMonth();
           },
         ),
       ],

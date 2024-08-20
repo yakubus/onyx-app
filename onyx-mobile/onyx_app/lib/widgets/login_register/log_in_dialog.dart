@@ -74,6 +74,11 @@ class LogInDialog extends HookConsumerWidget {
                           if (context.mounted) {
                             Navigator.of(context).pop();
                           }
+                        } else {
+                          if (context.mounted) {
+                            ShadToaster.of(context).show(
+                                createLoginErrorToast(context, "e.toString()"));
+                          }
                         }
                       } catch (e) {
                         if (context.mounted) {

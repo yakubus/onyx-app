@@ -1,6 +1,10 @@
 class Config {
   // ignore: constant_identifier_names
-  static const String API_URL = 'http://10.0.2.2:8080/api/v1';
+  static const String API_URL_ID =
+      'https://u0fys2wmi8.execute-api.eu-central-1.amazonaws.com/api/v1';
+  // ignore: constant_identifier_names
+  static const String API_URL_BD =
+      'https://5q6tw0dulc.execute-api.eu-central-1.amazonaws.com/api/v1';
 
   //style config
   // ignore: constant_identifier_names

@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:developer';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onyx_app/log/logger.dart';
+
 import 'package:onyx_app/main.dart';
 import 'package:onyx_app/models/error.dart';
 import 'package:onyx_app/services/budget/budget.dart';
@@ -22,36 +25,42 @@ class UserServiceModel {
     return UserServiceModel(
       isSuccess: json['isSuccess'],
       isFailure: json['isFailure'],
-      error: ErrorOnyx.fromJson(json['error']),
-      value: UserData.fromJson(json['value']),
+      error: json['error'] != null ? ErrorOnyx.fromJson(json['error']) : null,
+      value: json['value'] != null ? UserData.fromJson(json['value']) : null,
     );
   }
 }
 
 class UserData {
-  final String id;
-  final String username;
-  final String email;
-  final String currency;
-  final String accessToken;
-  final List<String> budgetIds;
+  final String? id;
+  final String? username;
+  final String? email;
+  final String? currency;
+  final String? accessToken;
+  final String? longLivedToken;
+  final List<String>? budgetIds;
 
-  UserData(
-      {required this.id,
-      required this.username,
-      required this.email,
-      required this.currency,
-      required this.accessToken,
-      required this.budgetIds});
+  UserData({
+    this.id,
+    this.username,
+    this.email,
+    this.currency,
+    this.accessToken,
+    this.longLivedToken,
+    this.budgetIds,
+  });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      id: json['id'],
-      username: json['username'],
-      email: json['email'],
-      currency: json['currency'],
-      accessToken: json['accessToken'],
-      budgetIds: List<String>.from(json['budgetIds'].map((x) => x)),
+      id: json['id'] as String?,
+      username: json['username'] as String?,
+      email: json['email'] as String?,
+      currency: json['currency'] as String?,
+      accessToken: json['accessToken'] as String?,
+      longLivedToken: json['longLivedToken'] as String?,
+      budgetIds: json['budgetIds'] != null
+          ? List<String>.from(json['budgetIds'])
+          : null,
     );
   }
 }
@@ -86,21 +95,39 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
 
   Future<UserData> login(String email, String password) async {
     try {
-      ref.read(userDataServiceProvider.notifier).state =
+      // Wywołanie loginUser w celu uzyskania danych użytkownika
+      final userDataModel =
           await ref.read(userServiceProvider).loginUser(email, password);
 
+      // Sprawdzenie, czy zwrócony obiekt UserData nie jest null
+      if (userDataModel.value == null) {
+        throw Exception('Login failed: User data is null');
+      }
+
+      // Zapisanie UserData w stanie globalnym
+      ref.read(userDataServiceProvider.notifier).state = userDataModel;
+
+      // Aktualizacja tokenów i statusu logowania
       ref.read(userToken.notifier).state =
-          ref.read(userDataServiceProvider.notifier).state.value?.accessToken ??
-              '';
-      ref.read(isLogged.notifier).state =
-          ref.read(userDataServiceProvider.notifier).state.isSuccess ?? false;
+          userDataModel.value?.accessToken ?? '';
 
-      refresh();
+      ref.read(longLivedToken.notifier).state =
+          userDataModel.value?.longLivedToken ?? '';
 
-      log("userToken: ${ref.read(userToken.notifier).state}");
-      return ref.read(userDataServiceProvider.notifier).state.value!;
+      await saveLongLivedToken(
+          ref.read(longLivedToken.notifier).state.toString());
+      ref.read(isLogged.notifier).state = userDataModel.isSuccess ?? false;
+
+      // Odświeżenie danych użytkownika, jeśli logowanie się powiodło
+      if (ref.read(isLogged.notifier).state) {
+        await refresh();
+      }
+
+      logger("UserNotifier -> login: User is loged in");
+
+      return userDataModel.value!;
     } catch (e) {
-      log("Login error: $e");
+      logger("UserNotifier -> login: error {$e}");
       rethrow;
     }
   }
@@ -123,12 +150,10 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
       // Odświeżenie stanu
       refresh();
 
-      log("userToken: ${ref.read(userToken.notifier).state}");
-      log("isLogged: ${ref.read(isLogged.notifier).state}");
-
+      logger("UserNotifier -> register: ");
       return ref.read(userDataServiceProvider.notifier).state.value!;
     } catch (e) {
-      log("Register error: $e");
+      logger("UserNotifier -> register: error {$e}");
       rethrow;
     }
   }
@@ -147,5 +172,22 @@ class UserNotifier extends AsyncNotifier<UserServiceModel> {
     );
 
     clearAppPreferences();
+    logger("UserNotifier -> userLogout: user is loged out");
+  }
+
+  void keepAlive() {
+    if (ref.read(longLivedToken.notifier).state == null) return;
+    ref
+        .read(userServiceProvider)
+        .keepALive(ref.read(longLivedToken.notifier).state ?? '');
+
+    ref.read(userToken.notifier).state =
+        ref.read(userDataServiceProvider.notifier).state.value?.accessToken ??
+            '';
+    ref.read(isLogged.notifier).state =
+        ref.read(userDataServiceProvider.notifier).state.isSuccess ?? false;
+
+    refresh();
+    logger("UserNotifier -> keepAlive: try refresh user token");
   }
 }

@@ -7,7 +7,7 @@ import 'package:onyx_app/services/budget/budget.dart';
 import 'package:http/http.dart' as http;
 
 final budgetServiceProvider = Provider((ref) => BudgetService());
-const String apiUrl = '${Config.API_URL}/budgets';
+const String apiUrl = '${Config.API_URL_BD}/budgets';
 
 class BudgetService {
   Future<BudgetServiceModel> getBudgets(String token) async {

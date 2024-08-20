@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+
+final currentYear = StateProvider<int>((ref) => DateTime.now().year);
 
 class DateSelector extends HookConsumerWidget {
   const DateSelector({super.key});
@@ -13,6 +17,32 @@ class DateSelector extends HookConsumerWidget {
       child: ShadDialog(
         content: Column(
           children: [
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_left),
+                  onPressed: () {
+                    log(ref.read(currentYear).toString());
+                  },
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    ref.read(currentYear).toString(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_right),
+                  onPressed: () {},
+                ),
+              ],
+            ),
             Row(
               children: [
                 Expanded(

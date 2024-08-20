@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:onyx_app/services/budget/budget.dart';
+import 'package:onyx_app/services/saving_read_data_locally.dart';
 import 'package:onyx_app/services/user/user.dart';
 import 'package:onyx_app/themes/themes.dart';
 import 'package:onyx_app/services/app_settings/settings.dart';
@@ -15,6 +17,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'routing/routing.dart';
 
 final userToken = StateProvider<String>((ref) => '');
+final longLivedToken = StateProvider<String?>((ref) => null);
 final isLogged = StateProvider<bool>((ref) => false);
 
 final settingsProvider =
@@ -26,6 +29,11 @@ final userServiceDataProvider =
 final budgetServiceDataProvider =
     AsyncNotifierProvider<BudgetNotifier, BudgetServiceModel>(
         BudgetNotifier.new);
+
+Future<void> fetchLongLivedToken(WidgetRef ref) async {
+  final token = await getLongLivedToken();
+  ref.read(longLivedToken.notifier).state = token;
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +62,7 @@ class MyApp extends HookConsumerWidget {
     final SettingsData currentSettings = settings.maybeWhen(
         orElse: () => const SettingsData(language: "en", darkMode: false),
         data: (data) => data);
+
     return ShadApp(
       builder: (theme, darkTheme) => ShadApp.router(
         locale: Locale(currentSettings.language, ''),

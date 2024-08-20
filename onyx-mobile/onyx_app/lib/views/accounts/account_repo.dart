@@ -20,7 +20,7 @@ class AccountRepo {
   Future<List<Account>> getAccounts() async {
     try {
       final response = await http.get(
-        Uri.parse('${Config.API_URL}/accounts'),
+        Uri.parse('${Config.API_URL_BD}/accounts'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -47,7 +47,7 @@ class AccountRepo {
 
   Future<void> addAccount(Account account) async {
     final response = await http.post(
-      Uri.parse('${Config.API_URL}/accounts'),
+      Uri.parse('${Config.API_URL_BD}/accounts'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
